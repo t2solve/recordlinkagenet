@@ -80,3 +80,8 @@ other project RecordLinkageNetExamples
 | ----------- | ----------- |
 | RecordLinkageNet | c# library code  |
 | UnitTest | test for the lib 
+
+## thanks to
+- [jamesturk](https://github.com/jamesturk) for [jellfish](https://github.com/jamesturk/jellyfish) and his c implementation of string metrics
+- [jeff-atwood](https://codereview.stackexchange.com/users/136/jeff-atwood) for [Shannon Entropy](https://codereview.stackexchange.com/a/909)
+- [wickedshimmy](https://gist.github.com/wickedshimmy) and [joannaksk](https://gist.github.com/joannaksk) for [basic Damerau Levenshtein Distance](https://gist.github.com/joannaksk/da110f9b05ff38d3f4ea4d149a0eb55e)

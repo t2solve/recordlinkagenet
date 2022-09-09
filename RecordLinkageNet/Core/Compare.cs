@@ -1,7 +1,6 @@
 ﻿using Microsoft.ML;
 using Microsoft.ML.Data;
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -18,18 +17,12 @@ namespace RecordLinkageNet.Core
                         // jobID, index
         private Dictionary<long,IndexPair> myIndexJobMap = new Dictionary<long, IndexPair>();//lookup table
 
-        //private Dictionary<IndexPair, float[]> myIndexResultMap = new Dictionary<IndexPair, float[]>(); 
-        //private Dictionary<IndexPair,int> myResultIndexDictio = new Dictionary<IndexPair,int>();
-        
               //resultInd, conditionNr
         private float[,] result = null; //TODO check double needed ? or smaller ones short, bool?? 
         public ResultSet PackedResult = null;
         private long amountOfTotalJobsTODO = 0;
         private long amountOfTotalJobsDone = 0;
 
-                         //jobID     indexA,indexB,conditionNumber
-        //private Dictionary<long, Tuple<long, long,long>> mapIndex = new Dictionary<long, Tuple<long, long,long>>();
-        //private List<MemoryHandle> handles = new List<MemoryHandle>();
         private readonly int maxElementsInQueue = 1000000;  //TODO maybe make it adjustable
 
         public Compare(CandidateList c)
@@ -55,7 +48,7 @@ namespace RecordLinkageNet.Core
             //bool succes = ThreadPool.SetMaxThreads(amountCpu, amountCpu);
             //if(!succes)
             //{
-            //    throw new Exception("error during set nax threads");
+            //    throw new Exception("error during set max threads");
             //}
 
             //Console.WriteLine("foo: " + Process.GetCurrentProcess().ProcessorAffinity);
@@ -248,7 +241,7 @@ namespace RecordLinkageNet.Core
                             }
                             //wrong
                             //int resultIndex =(int) (indexA * indexB);
-                            //TODO use function to unify calc
+                            //TODO use function to unify calc, same in GetResultIndex(canList.canB.GetAmountRows()
                             int resultIndex = (int)((indexA * (amountRowsInB)) +  indexB); //TODO 
                             //int foo = conditionCounter;
                             //try //not needed here

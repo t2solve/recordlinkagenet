@@ -14,7 +14,7 @@ namespace RecordLinkageNet.Core.Distance
         /// <param name="s1">this</param>
         /// <param name="s2">string we compare to</param>
         /// <returns>distance as double</returns>
-        public static double MyDistance(this string s1, string s2)
+        public static double MyCustomizedDistance(this ReadOnlyMemory<Char> s1, ReadOnlyMemory<Char> s2)
         {
             double distance = 42;
 
@@ -22,6 +22,11 @@ namespace RecordLinkageNet.Core.Distance
             throw new NotImplementedException();
 
             return distance;
+        }
+
+        public static double MyCustomizedDistance(this string s1, string s2)
+        {
+            return MyCustomizedDistance(s1.AsMemory(), s2.AsMemory());
         }
     }
 }

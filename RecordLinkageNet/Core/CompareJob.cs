@@ -12,9 +12,11 @@ namespace RecordLinkageNet.Core
         {
             Exact,
             HammingDistance,
+            DamerauLevenshteinDistance,
             JaroDistance,
             JaroWinklerSimilarity,
-            CustomizedDistance, //TODO create a stup 
+            ShannonEntropyDistance,
+            MyCustomizedDistance, 
             Unknown
         }
         public enum CompareType
