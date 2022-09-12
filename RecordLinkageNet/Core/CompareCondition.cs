@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
+    /// <summary>
+    /// Class which defines what and how to compare datacolumns
+    /// </summary>
     public class CompareCondition
     {
         public enum StringMethod

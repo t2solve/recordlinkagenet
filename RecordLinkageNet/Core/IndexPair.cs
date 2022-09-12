@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
-    //a
+    /// <summary>
+    /// Class for index tuple 
+    /// 
+    /// </summary>
     public class IndexPair
     {
       
@@ -28,13 +31,6 @@ namespace RecordLinkageNet.Core
             this.conditionIndex = conIndex;
         }
 
-        //public IndexPair(long x, long y, short conIndex,int resultIdx)
-        //{
-        //    this.value = new Tuple<long, long>(x, y);
-        //    this.conditionIndex = conIndex;
-        //    this.resultIdx = resultIdx;
-        //}
-
         public override bool Equals(object obj) => this.Equals(obj as IndexPair);
 
         public bool Equals(IndexPair p)
@@ -50,14 +46,11 @@ namespace RecordLinkageNet.Core
         public override int GetHashCode()
         {
             return HashCode.Combine(value.Item1,value.Item2, conditionIndex);
-            //return base.GetHashCode();
         }
 
         public int GetResultIndex(long amountRowsInB)
         {
-            //i iterate a
-            //j iter b
-            //  int index = (i * (jMax)) + j; //+ (j+1) ;
+
             return (int)((value.Item1 * (amountRowsInB)) + value.Item2); 
         }
 

@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
+    /// <summary>
+    /// Class which does the comparision, internal iterating over DataSet A and B 
+    /// </summary>
+
     public class Compare
     {  
                                 //jobId, result

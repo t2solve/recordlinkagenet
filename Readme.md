@@ -1,7 +1,7 @@
 # Overview
 
 
-**aim:** opensource library for effective comparison of datasets (csv, database tables,classes) in a memory-limited enviroment 
+**aim:** opensource library which offers help to compare of datasets (csv, database tables,classes) in a memory-limited enviroment 
 
 **status:** non-stable but useable , ( no nuget package yet)
 
@@ -19,7 +19,7 @@ so:
 - Windows
  |
 
-## minimal example
+## minimal examples
 This project should look and feel like using the pyhton equivalent:
 ```c# 
 //we load the ml context for data parsing
@@ -71,8 +71,26 @@ if (success)
 }
 ```
 
+The project implements mutliple metrics for string comparision as extensions:
+
+- HammingDistance
+- DamerauLevenshteinDistance
+- JaroDistance
+- JaroWinklerSimilarity
+- ShannonEntropyDistance
+
+```c# 
+using RecordLinkageNet.Core.Distance;
+ 
+var result1 = "foo".HammingDistance("bar");//3
+var result2 = "foo".DamerauLevenshteinDistance("bar");//3
+var result3 = "foo".JaroWinklerSimilarity("bar");//0
+```
+The distances metrics are well tested with results from python lib [jellfish](https://github.com/jamesturk/jellyfish).
+
 For further reading or an executable example, please take a look into the 
 other project RecordLinkageNetExamples
+
 
 ## structure:
 

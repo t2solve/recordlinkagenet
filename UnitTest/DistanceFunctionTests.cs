@@ -55,6 +55,8 @@ namespace UnitTest
             //delete
             Assert.AreEqual(1, "foobar".DamerauLevenshteinDistance("fobar"), "TestDamerauLevenshteinDistance error no correct output");
 
+            Assert.AreEqual(3, "foo".DamerauLevenshteinDistance("bar"), "TestDamerauLevenshteinDistance error no correct output");
+
             Assert.AreEqual(1, "foo".DamerauLevenshteinDistance( "foo1"), "TestDamerauLevenshteinDistance error no correct output");
             Assert.AreEqual(1, "foo".DamerauLevenshteinDistance("1foo"), "TestDamerauLevenshteinDistance error no correct output");
             Assert.AreEqual(2, "foo".DamerauLevenshteinDistance("23foo"),"TestDamerauLevenshteinDistance error no correct output");
@@ -67,10 +69,10 @@ namespace UnitTest
         {
             //ref of results are: https://codereview.stackexchange.com/questions/868/calculating-entropy-of-a-string
 
-            Assert.AreEqual(4.00f, ShannonEntropyDistance.ShannonEntropy("abcdefghijklmnop".AsMemory()), "error wrong entropy calculation");
-            Assert.AreEqual(3.18f, ShannonEntropyDistance.ShannonEntropy("Hello, World!".AsMemory()), 0.01f, "error wrong entropy calculation");
-            Assert.AreEqual(2.85f, ShannonEntropyDistance.ShannonEntropy("hello world".AsMemory()), 0.01f, "error wrong entropy calculation");
-            Assert.AreEqual(0.0f, ShannonEntropyDistance.ShannonEntropy("aaaa".AsMemory()), "error wrong entropy calculation");
+            Assert.AreEqual(4.00f, ShannonEntropy.Calc("abcdefghijklmnop".AsMemory()), "error wrong entropy calculation");
+            Assert.AreEqual(3.18f, ShannonEntropy.Calc("Hello, World!".AsMemory()), 0.01f, "error wrong entropy calculation");
+            Assert.AreEqual(2.85f, ShannonEntropy.Calc("hello world".AsMemory()), 0.01f, "error wrong entropy calculation");
+            Assert.AreEqual(0.0f, ShannonEntropy.Calc("aaaa".AsMemory()), "error wrong entropy calculation");
 
         }
         [TestMethod]
@@ -78,8 +80,12 @@ namespace UnitTest
         {
             string aaaa = "aaaa";
             string aabb = "aabb";
-            double result = aaaa.EntropyDistance(aabb);
-            Assert.AreEqual(1.0f, result, "error failed distance calc"); 
+            double result = aaaa.ShannonEntropyDistance(aabb);
+            Assert.AreEqual(1.0f, result, "error failed distance calc");
+
+            Assert.AreEqual(0, "a".ShannonEntropyDistance("a"), "error failed distance calc");
+            Assert.AreEqual(1, "a".ShannonEntropyDistance("ab"), "error failed distance calc");
+
         }
 
 

@@ -9,19 +9,29 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
-    //! class to create index 
+    /// <summary>
+    /// Class to create an index of two datasets
+    /// </summary>
     public class Index
     {
 
         bool flagFullMode = false;
         //TODO: add block possibibilty
-        List<Tuple<string, string>> blockNames = null; 
+        List<Tuple<string, string>> blockNames = null;
 
+        /// <summary>
+        /// function to configure class to use a fullindex
+        /// </summary>
         public void full()
         {
             flagFullMode = true;
         }
 
+        /// <summary>
+        /// function to create a index 
+        /// </summary>
+        /// <param name="dataA">DataView of DataSet A</param>
+        /// <param name="dataB">DataView of DataSet B</param>
         public CandidateList index(IDataView dataA, IDataView dataB = null)
         {
             CandidateList candidates = new CandidateList();

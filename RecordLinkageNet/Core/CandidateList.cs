@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
+    /// <summary>
+    /// Class, which defines what we want to compare, Candidate A and Candidate B
+    /// </summary>
+
     public class CandidateList
     {
         public Candidate canA { get; set; } = null;

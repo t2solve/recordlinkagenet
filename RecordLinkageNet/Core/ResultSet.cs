@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
-    //no Dataframe yet, so we use a resultset
+    
+    /// <summary>
+    /// no Dataframe in ml net yet starts with 2.0 ?, so we use a own resultset structure
+    /// </summary>
     public class ResultSet
     {
         public List<Tuple<int, int>> indexList = null;
