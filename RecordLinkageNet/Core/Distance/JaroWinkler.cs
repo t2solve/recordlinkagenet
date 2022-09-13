@@ -17,7 +17,7 @@ namespace RecordLinkageNet.Core.Distance
             if (s1Len == s2Len)
             {
                 if(s1.Span.SequenceEqual(s2.Span))
-                    return 1.0;
+                    return 1.0; //is empty empty == 1.0 meaningful ? 
             }
             //else no event
             if (s1Len == 0 || s2Len == 0)

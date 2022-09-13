@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.ML;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +24,34 @@ namespace RecordLinkageNet.Core
             this.indexList = indexList;
             this.colNames = colNames;
             this.data = data;
+        }
+
+        public int GetConditionIndexByName(string name)
+        {
+            int retVal = -1;
+
+            if (colNames.Contains(name))
+            {
+                retVal = colNames.IndexOf(name);
+            }
+            else
+                Trace.WriteLine("warning 29839283, no condition found of name: " + name + " found in resultsset");
+
+            return retVal;
+        }
+
+        public float[] GetResultByConditonName(string name)
+        {
+            float[] result = { -1 }; //default
+            int indexNumber = GetConditionIndexByName(name); 
+            if(indexNumber>0)
+            {
+               result = Enumerable.Range(0, indexList.Count)
+                .Select(x => data[x, indexNumber])
+                .ToArray();
+            }
+
+            return result; 
         }
         
         public void PrintReadableDebug(int lineAmount = 100)
@@ -59,5 +90,28 @@ namespace RecordLinkageNet.Core
 
             }
         }
+
+        //public IDataView GetAsDataView()
+        //{
+        //    MLContext mlContext = new MLContext();
+        //    int m = indexList.Count;
+        //    int n = colNames.Count;
+        //    //BinaryData[] inMemoryCollection = new BinaryData[m];
+        //    //for (int i = 0; i < m; i++)
+        //    //{
+
+        //    //    inMemoryCollection[i] = new BinaryData
+        //    //    {
+        //    //         = data[0, i],
+        //    //        Label = Convert.ToBoolean(Convert.ToInt64(data[1, i]))
+        //    //    };
+        //    //}
+
+
+        //    IDataView dataView = mlContext.Data.LoadFromEnumerable<BinaryData>(inMemoryCollection);
+
+
+        //    return null;
+        //}
     }
 }

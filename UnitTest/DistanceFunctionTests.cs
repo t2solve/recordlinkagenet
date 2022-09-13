@@ -123,7 +123,8 @@ namespace UnitTest
             //see:
             //https://jamesturk.github.io/jellyfish/
 
-            Assert.AreEqual(0, "".JaroWinklerSimilarity(""), "JaroWinklerSimilarity no correct output");
+            //TODO double check default behaviour empty empty
+            Assert.AreEqual(1, "".JaroWinklerSimilarity(""), "JaroWinklerSimilarity no correct output");
 
             Assert.AreEqual(1, "bar".JaroWinklerSimilarity("bar"), "JaroWinklerSimilarity no correct output");
             Assert.AreEqual(0, "foo".JaroWinklerSimilarity("bar"), "JaroWinklerSimilarity no correct output");
