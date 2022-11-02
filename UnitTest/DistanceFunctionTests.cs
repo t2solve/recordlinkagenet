@@ -3,7 +3,7 @@ using System.Diagnostics;
 using RecordLinkageNet.Core;
 using System;
 using RecordLinkageNet.Core.Distance;
-
+using System.Threading.Tasks;
 
 namespace UnitTest
 {
@@ -26,6 +26,44 @@ namespace UnitTest
 
         //}
 
+        [TestMethod]
+        public async Task TestExactStringComparePositive()
+        {
+
+            CompareCondition job = new CompareCondition();
+            //job.Mode = CompareCondition.CompareType.Exact;
+            job.MyStringMethod = CompareCondition.StringMethod.Exact;
+
+            //eve
+            Task<Tuple<long, float>> taskResult1 = CompareTaskFactory.CreateStringCompare(12, job, "a".AsMemory(), "a".AsMemory());
+            taskResult1.Start();
+            await taskResult1;
+            Assert.AreEqual(1, taskResult1.Result.Item2, "TestExactStringCompare no correct output");
+
+
+        }
+
+        [TestMethod]
+        public async Task TestExactStringCompareEmpty()
+        {
+            CompareCondition job = new CompareCondition();
+            job.MyStringMethod = CompareCondition.StringMethod.Exact;
+            Task<Tuple<long, float>> taskResult2 = CompareTaskFactory.CreateStringCompare(12, job, "".AsMemory(), "".AsMemory());
+            taskResult2.Start();
+            await taskResult2;
+            Assert.AreEqual(0, taskResult2.Result.Item2, "TestExactStringCompare no correct output");
+        }
+
+        [TestMethod]
+        public async Task TestExactStringCompareNegativ()
+        {
+            CompareCondition job = new CompareCondition();
+            job.MyStringMethod = CompareCondition.StringMethod.Exact;
+            Task<Tuple<long, float>> taskResult3 = CompareTaskFactory.CreateStringCompare(12, job, "a".AsMemory(), "b".AsMemory());
+            taskResult3.Start();
+            await taskResult3;
+            Assert.AreEqual(0, taskResult3.Result.Item2, "TestExactStringCompare no correct output");
+        }
         [TestMethod]
         public void TestHammingJelly()
         {
@@ -57,12 +95,12 @@ namespace UnitTest
 
             Assert.AreEqual(3, "foo".DamerauLevenshteinDistance("bar"), "TestDamerauLevenshteinDistance error no correct output");
 
-            Assert.AreEqual(1, "foo".DamerauLevenshteinDistance( "foo1"), "TestDamerauLevenshteinDistance error no correct output");
+            Assert.AreEqual(1, "foo".DamerauLevenshteinDistance("foo1"), "TestDamerauLevenshteinDistance error no correct output");
             Assert.AreEqual(1, "foo".DamerauLevenshteinDistance("1foo"), "TestDamerauLevenshteinDistance error no correct output");
-            Assert.AreEqual(2, "foo".DamerauLevenshteinDistance("23foo"),"TestDamerauLevenshteinDistance error no correct output");
+            Assert.AreEqual(2, "foo".DamerauLevenshteinDistance("23foo"), "TestDamerauLevenshteinDistance error no correct output");
             Assert.AreEqual(8, "foo".DamerauLevenshteinDistance("funkyfoobar"), "TestDamerauLevenshteinDistance error no correct output");
         }
-     
+
 
         [TestMethod]
         public void TestShannonEntropy()
@@ -92,13 +130,13 @@ namespace UnitTest
         [TestMethod]
         public void TestJaroWinklerMemory()
         {
-            char[] arr1 = new char[3] {'b', 'a', 'r'};
-            ReadOnlyMemory<Char> bar = new ReadOnlyMemory<char> (arr1);
+            char[] arr1 = new char[3] { 'b', 'a', 'r' };
+            ReadOnlyMemory<Char> bar = new ReadOnlyMemory<char>(arr1);
             char[] arr2 = new char[3] { 'f', 'o', 'o' };
             ReadOnlyMemory<Char> foo = new ReadOnlyMemory<char>(arr2);
-            char[] arr3 = new char[4] { 'b', 'a', 'r' ,'1'};
+            char[] arr3 = new char[4] { 'b', 'a', 'r', '1' };
             ReadOnlyMemory<Char> bar1 = new ReadOnlyMemory<char>(arr3);
-            char[] arr4 = new char[4] { 'f', 'o', 'o','1' };
+            char[] arr4 = new char[4] { 'f', 'o', 'o', '1' };
             ReadOnlyMemory<Char> foo1 = new ReadOnlyMemory<char>(arr4);
 
             Assert.AreEqual(1, bar.JaroDistance(bar), "JaroDistance no correct output");
@@ -123,18 +161,18 @@ namespace UnitTest
             //see:
             //https://jamesturk.github.io/jellyfish/
 
-            //TODO double check default behaviour empty empty
-            Assert.AreEqual(1, "".JaroWinklerSimilarity(""), "JaroWinklerSimilarity no correct output");
+            //TODO double check default behaviour empty empty => wrong not even
+            Assert.AreEqual(0, "".JaroWinklerSimilarity(""), "JaroWinklerSimilarity no correct output");
 
             Assert.AreEqual(1, "bar".JaroWinklerSimilarity("bar"), "JaroWinklerSimilarity no correct output");
             Assert.AreEqual(0, "foo".JaroWinklerSimilarity("bar"), "JaroWinklerSimilarity no correct output");
             Assert.AreEqual(0.5, "foo1".JaroWinklerSimilarity("bar1"), "JaroWinklerSimilarity no correct output");
 
-            string s1="jellyfish";
+            string s1 = "jellyfish";
             string s2 = "smellyfish";
             double result = 0.8962962962962964;
             Assert.AreEqual(result, s1.JaroWinklerSimilarity(s2), "JaroWinklerSimilarity no correct output");
-       
+
         }
     }
 }

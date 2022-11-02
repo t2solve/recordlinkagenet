@@ -29,17 +29,18 @@ namespace RecordLinkageNet.Core
             Numeric,
             Unknown
         }
+
         public CompareType Mode { get; set; } = CompareType.Unknown;
         public string NameColA { get; set; } = null;
         public string NameColB { get; set; } = null;
-        public float threshold = -1.0f; //0.8f; //default ? 
+        public float threshold = -1.0f; //default Non ? 
+        //TODO: min max threshold
 
         public StringMethod MyStringMethod { get; set; } = StringMethod.Unknown;
         //foo
         public string NameColNewLabel { get; set; } = null;
 
         //an exlusive list we have implemted 
-
         public void SetNewColName()
         {
             if(String.IsNullOrEmpty(NameColNewLabel))

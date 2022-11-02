@@ -11,7 +11,6 @@ namespace RecordLinkageNet.Core
     /// <summary>
     /// Class which does the comparision, internal iterating over DataSet A and B 
     /// </summary>
-
     public class Compare
     {  
                                 //jobId, result
@@ -28,6 +27,15 @@ namespace RecordLinkageNet.Core
         private long amountOfTotalJobsDone = 0;
 
         private readonly int maxElementsInQueue = 1000000;  //TODO maybe make it adjustable
+
+        public enum ConditionCompareMode //Check is this clever here ? 
+        {
+            FullSetBased, // every condition one by one
+            DecisionTreeBased,
+            Unknown
+        }
+        public ConditionCompareMode ProcessMode = ConditionCompareMode.FullSetBased;
+
 
         public Compare(CandidateList c)
         {   
@@ -74,6 +82,7 @@ namespace RecordLinkageNet.Core
 
         public void Exact(string dataAColName, string dataBColName, string newColLabel =null)
         {
+            //TODO check  class recordlinkage.compare.Exact(left_on, right_on, agree_value=1, disagree_value=0, missing_value=0, label=None)
             //TODO check asserts 
             Debug.Assert(canList.CheckDataAHasColWithName(dataAColName), "error 29882938 col name not found");
             Debug.Assert(canList.CheckDataBHasColWithName(dataBColName), "error 23235325 col name not found");
@@ -112,6 +121,10 @@ namespace RecordLinkageNet.Core
 
         public bool Compute()
         {
+            //TODO: vector type
+            //TODO: bool type ? 
+            //TODO double type
+
             bool success = true; 
             long amountConditions = myConditionList.Count();
             if(amountConditions==0)

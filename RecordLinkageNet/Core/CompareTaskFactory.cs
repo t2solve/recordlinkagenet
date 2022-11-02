@@ -65,6 +65,15 @@ namespace RecordLinkageNet.Core
         private static Tuple<long, float> CompareExact(long id, ReadOnlyMemory<char> a, ReadOnlyMemory<char> b)
         {
             Tuple<long, float> result = Tuple.Create(id, 0.0f);  //default not eqaul
+
+            //case both empty 
+            if(a.Length==0 && b.Length==0)
+            {
+                result = Tuple.Create(id, 0.0f);
+                return result; //abort 
+            }
+
+            //compare seqs
             if (a.Span.SequenceEqual(b.Span))
             {
                 //yes
