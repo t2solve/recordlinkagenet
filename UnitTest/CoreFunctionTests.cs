@@ -3,6 +3,7 @@ using System.Diagnostics;
 using RecordLinkageNet.Core;
 using System;
 using Microsoft.ML;
+using System.IO;
 
 namespace UnitTest
 {
@@ -27,13 +28,13 @@ namespace UnitTest
 
             compare.Exact("PostalCode", "PostalCode");
             compare.String("NameFirst", "NameFirst", CompareCondition.StringMethod.JaroWinklerSimilarity, 0.9f);
-            compare.String("NameLast", "NameLast", CompareCondition.StringMethod.JaroWinklerSimilarity, -1.0f,"foo");
+            compare.String("NameLast", "NameLast", CompareCondition.StringMethod.JaroWinklerSimilarity, -1.0f, "foo");
             bool success = compare.Compute();
 
             Assert.IsTrue(success, "error during calc resulset");
 
             ResultSet res = compare.PackedResult;
-           
+
             Assert.AreEqual(res.colNames[0], "PostalCode", "error names mismatch");
             Assert.AreEqual(res.colNames[1], "NameFirst", "error names mismatch");
             Assert.AreEqual(res.colNames[2], "foo", "error names mismatch");
@@ -58,6 +59,41 @@ namespace UnitTest
 
             TimeSpan stopwatchElapsed = sw.Elapsed;
             Console.WriteLine("\tfinsihed used:\t" + Convert.ToInt32(stopwatchElapsed.TotalMilliseconds) + " ms");
+
+        }
+
+        [TestMethod]
+        public void ReadAndWriteResultSetTestFunction()
+        {
+            TestDataPerson[] inMemoryCollection = GenTestData();
+
+            //we load the ml context for data parsing
+            MLContext mlContext = new MLContext();
+            IDataView dataA = mlContext.Data.LoadFromEnumerable<TestDataPerson>(inMemoryCollection);
+
+            RecordLinkageNet.Core.Index indexer = new RecordLinkageNet.Core.Index();
+            indexer.full();
+            CandidateList can = indexer.index(dataA, dataA);
+            Compare compare = new Compare(can);
+
+            compare.Exact("PostalCode", "PostalCode");
+            compare.String("NameFirst", "NameFirst", CompareCondition.StringMethod.JaroWinklerSimilarity, 0.9f);
+            compare.String("NameLast", "NameLast", CompareCondition.StringMethod.JaroWinklerSimilarity, -1.0f, "foo");
+            compare.Compute();
+            ResultSet resIn = compare.PackedResult;
+            string folderWeStoreIn = Path.Combine(Environment.CurrentDirectory, "testdir");
+
+            Console.WriteLine(folderWeStoreIn);
+            bool succes = ResultSetIOHelper.WriteResultSetToFolder(folderWeStoreIn,resIn);
+            Assert.IsTrue(succes, "error during write");
+
+            ResultSet resOut = ResultSetIOHelper.ReadResultSetToFolder(folderWeStoreIn);
+            Assert.IsNotNull(resOut);
+
+            //we compare the sets 
+            Assert.AreEqual(resIn.colNames[0], resOut.colNames[0]);
+
+            Assert.AreEqual(resIn.data[0,1], resOut.data[0,1], "wrong data");
 
         }
 
