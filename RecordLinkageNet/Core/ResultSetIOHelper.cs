@@ -1,5 +1,6 @@
 ﻿//#define OLDDOTNETCOMPMODE
 
+using Microsoft.ML;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,13 +17,35 @@ namespace RecordLinkageNet.Core
 {
     public  class ResultSetIOHelper
     {
-        
-        public static bool WriteAsCsv<T>(List<T> tableList, string tablename, string filename)
-        {
-            bool success = false; 
-            DataTable datTab = ForkDataTable(tableList, tablename);
 
-            if(datTab!=null)
+        public static DataTable ToDataTable(IDataView dataView)
+        {
+            DataTable dt = null;
+            if (dataView != null)
+            {
+                dt = new DataTable();
+                var preview = dataView.Preview();
+                dt.Columns.AddRange(preview.Schema.Select(x => new DataColumn(x.Name)).ToArray());
+                foreach (var row in preview.RowView)
+                {
+                    var r = dt.NewRow();
+                    foreach (var col in row.Values)
+                    {
+                        r[col.Key] = col.Value;
+                    }
+                    dt.Rows.Add(r);
+
+                }
+            }
+            return dt;
+        }
+
+        public static bool WriteAsCsv<T>(IDataView dataView, string filename)
+        {
+            bool success = false;
+
+            DataTable datTab = ToDataTable(dataView);//ForkDataTable(tableList, tablename);
+            if (datTab != null)
             {
                 StringBuilder sb = new StringBuilder();
 
@@ -39,7 +62,7 @@ namespace RecordLinkageNet.Core
                 File.WriteAllText(filename, sb.ToString());
             }
 
-            return success; 
+            return success;
 
         }
         public static DataTable ForkDataTable<T>(List<T> list, string tableName)
