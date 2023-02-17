@@ -84,7 +84,7 @@ namespace UnitTest
             string folderWeStoreIn = Path.Combine(Environment.CurrentDirectory, "testdir");
 
             Console.WriteLine(folderWeStoreIn);
-            bool succes = ResultSetIOHelper.WriteResultSetToFolder(folderWeStoreIn,resIn);
+            bool succes = ResultSetIOHelper.WriteResultSetToFolder(folderWeStoreIn, resIn);
             Assert.IsTrue(succes, "error during write");
 
             ResultSet resOut = ResultSetIOHelper.ReadResultSetToFolder(folderWeStoreIn);
@@ -93,7 +93,7 @@ namespace UnitTest
             //we compare the sets 
             Assert.AreEqual(resIn.colNames[0], resOut.colNames[0]);
 
-            Assert.AreEqual(resIn.data[0,1], resOut.data[0,1], "wrong data");
+            Assert.AreEqual(resIn.data[0, 1], resOut.data[0, 1], "wrong data");
 
         }
 
@@ -108,17 +108,17 @@ namespace UnitTest
                         NameLast = "mueller",
                         City = "moxee",
                         Street = "91st ave",
-                        PostalCode = 98944
+                        PostalCode =  "98944"
                     },
-            new TestDataPerson
-            {
+                    new TestDataPerson
+                    {
 
-                NameFirst = "adalina",
-                NameLast = "nibbs",
-                City = "waterville",
-                Street = "jefferson",
-                PostalCode = 98858
-            }
+                        NameFirst = "adalina",
+                        NameLast = "nibbs",
+                        City = "waterville",
+                        Street = "jefferson",
+                        PostalCode = "98944"
+                    }
             };
 
             return inMemoryCollection;

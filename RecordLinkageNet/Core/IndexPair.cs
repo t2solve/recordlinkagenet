@@ -13,7 +13,7 @@ namespace RecordLinkageNet.Core
     public class IndexPair
     {
       
-            //  aIdx  bIdx
+                 //  aIdx  bIdx
         public Tuple<long, long> value = null;  //TODO check Z dimension ? 
         //public long resultIdx = -1;
         public short conditionIndex = -1;

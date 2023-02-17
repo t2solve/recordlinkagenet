@@ -19,7 +19,7 @@ namespace UnitTest
         [LoadColumn(3)]
         public string City { get; set; } = "";
         [LoadColumn(4)]
-        public float PostalCode { get; set; } = 0.0f;
+        public string PostalCode { get; set; } = "";
 
     }
 }
