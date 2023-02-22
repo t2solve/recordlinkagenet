@@ -1,6 +1,7 @@
-﻿//#define OLDDOTNETCOMPMODE
+﻿#define OLDDOTNETCOMPMODE
 
 using Microsoft.ML;
+using RecordLinkageNet.Core;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,9 +14,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 
 
-namespace RecordLinkageNet.Core
+namespace RecordLinkageNet.Util
 {
-    public  class ResultSetIOHelper
+    public class ResultSetIOHelper
     {
 
         public static DataTable ToDataTable(IDataView dataView)

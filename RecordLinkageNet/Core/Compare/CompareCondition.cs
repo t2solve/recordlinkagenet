@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordLinkageNet.Core
+namespace RecordLinkageNet.Core.Compare
 {
     /// <summary>
     /// Class which defines what and how to compare datacolumns
     /// </summary>
-    public class CompareCondition
+    public class Condition
     {
         public enum StringMethod
         {
@@ -19,7 +19,7 @@ namespace RecordLinkageNet.Core
             JaroDistance,
             JaroWinklerSimilarity,
             ShannonEntropyDistance,
-            MyCustomizedDistance, 
+            MyCustomizedDistance,
             Unknown
         }
         public enum CompareType
@@ -43,10 +43,10 @@ namespace RecordLinkageNet.Core
         //an exlusive list we have implemted 
         public void SetNewColName()
         {
-            if(String.IsNullOrEmpty(NameColNewLabel))
+            if (string.IsNullOrEmpty(NameColNewLabel))
             {
                 //we set by nameA
-                NameColNewLabel = NameColA; 
+                NameColNewLabel = NameColA;
             }
         }
     }

@@ -13,10 +13,39 @@ namespace RecordLinkageNet.Core.Data
     {
         //private List<DataColumn> columns = new List<DataColumn>();
         private Dictionary<string, DataColumn> namedColumnsMap = new Dictionary<string, DataColumn>();
+        private int amountRows = -1; 
 
-        public DataTable AddDataClassAsColumns(object data, int amnountRows)
+        public DataColumn GetColumnByName(string name)
         {
-            //wed add all columns
+            if( namedColumnsMap.TryGetValue(name, out DataColumn column))
+                return column;
+
+            return null; 
+        }
+
+        public int GetAmountRows()
+        {
+            return amountRows;
+        }
+        public int GetAmountColumns()
+        {
+            return namedColumnsMap.Keys.Count();
+        }
+
+        public DataTable AddDataClassAsColumns(object data, int amountRows)
+        {
+            //TODO type check data
+            if (data == null)
+                return null; 
+            if (this.amountRows == -1)
+            {
+                this.amountRows = amountRows;
+            }
+            if (this.amountRows != amountRows)
+            {
+                Trace.WriteLine("warning 29389832 misshaped columnsizes, old rowAmount is: " + this.amountRows);
+                throw new ArrayTypeMismatchException("wrong size");
+            }//wed add all columns
             PropertyInfo[] propertyInfoArr = data.GetType().GetProperties();
             foreach (PropertyInfo i in propertyInfoArr)
             {
@@ -24,7 +53,7 @@ namespace RecordLinkageNet.Core.Data
                 Type type = i.PropertyType;
                 //Trace.WriteLine("debug:  "+ name+ " "+ type);
 
-                DataColumn col = new DataColumn(amnountRows, type);
+                DataColumn col = new DataColumn(amountRows, type);
                 col.Name = name;
                 col.DataType = type;
 

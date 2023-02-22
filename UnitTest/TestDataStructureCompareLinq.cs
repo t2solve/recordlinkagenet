@@ -18,40 +18,27 @@ namespace UnitTest
 
     public class TestDataStructureCompareLinq
     {
-
-        private List<TestDataPerson> GenTestPersons(int x = 10)
-        {
-            var userInfoFaker = new Faker<TestDataPerson>(locale: "de")
-              //This will ensure  that all properties have rules defined -- Default is false
-              //.StrictMode(true)
-              //This sets a rule so that each id value is generated with a new GUID value
-              //.RuleFor(o => o.Id, f => Guid.NewGuid())
-
-              .RuleFor(o => o.NameFirst, f => f.Name.FirstName())
-              .RuleFor(o => o.NameLast, f => f.Name.LastName())
-              .RuleFor(o => o.City, f => f.Address.City())
-              .RuleFor(o => o.Street, f => f.Address.StreetName())
-              .RuleFor(o => o.PostalCode, f => f.Address.ZipCode());
-
-            List<TestDataPerson> list = userInfoFaker.Generate(x);
-            return list; 
-        }
+       
         [TestMethod]
         public void TestAutoBugsReadToDataStructure()
         {
             //generate test data
-            var testDataA = GenTestPersons(1000);
-            var testDataB = GenTestPersons(1000);
-            var testDataUnion = GenTestPersons(100); //generate union amount
+            var testDataA = TestDataGenerator.CreateTestPersons(1000);
+            var testDataB = TestDataGenerator.CreateTestPersons(1000);
+            var testDataUnion = TestDataGenerator.CreateTestPersons(100); //generate union amount
             testDataA.AddRange(testDataUnion);
             testDataB.AddRange(testDataUnion);
             int amountRows = testDataA.Count; 
 
             //we construct two tables
-            // conert 
+            // convert 
             DataTable tabA = new DataTable();
+
+            //TODO change to generic containter add
+            // like tab.AddListAndCreate
+
             tabA.AddDataClassAsColumns(new TestDataPerson(), amountRows);
-            foreach(TestDataPerson p in testDataA)            //we add all cells 
+            foreach(TestDataPerson p in testDataA)//we add all cells 
             {
                 tabA.AddRow(p);
             }
@@ -64,7 +51,24 @@ namespace UnitTest
             }
 
             //we compare 
+            //we use linq 
+            //working
+            var joined = from Item1 in tabA.GetColumnByName("NameLast")
+                         join Item2 in tabB.GetColumnByName("NameLast")
+                         on Item1.Value equals Item2.Value  // join on some property
+                         select new { IdA = Item1.Id, IdB = Item2.Id };
 
+            //int counter = 0;
+            int elementCount = joined.Count();
+
+            Assert.IsTrue(elementCount >= 100 && elementCount <= 1000, "error linq interface for datatable not working");
+
+            //foreach (var foo in joined)
+            //{
+            //    Trace.WriteLine(foo);
+            //    counter += 1;
+            //}
+            //Trace.WriteLine(joined);
         }
     }
 

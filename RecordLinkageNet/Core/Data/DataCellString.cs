@@ -9,16 +9,35 @@ namespace RecordLinkageNet.Core.Data
 {
     public class DataCellString : DataCell, IEqualityComparer<DataCellString>
     {
-        public new string Value { get; set; } = ""; 
+        private string myvalue = "";
+        public override string Value 
+        { 
+            get
+            {
+                return myvalue;
+            }
+            set 
+            {
+                myvalue = value;
+            } 
+        } 
 
         public bool Equals(DataCellString x, DataCellString y)
         {
-            throw new NotImplementedException();
+            if ( ReferenceEquals(x, y)) return true;
+
+            if(x !=null && y !=null)
+            {
+                if (x.GetHashCode() == y.GetHashCode())
+                    return true; 
+            }
+
+            return false; 
         }
 
         public int GetHashCode([DisallowNull] DataCellString obj)
         {
-            throw new NotImplementedException();
+           return obj.myvalue.GetHashCode();
         }
     }
 }

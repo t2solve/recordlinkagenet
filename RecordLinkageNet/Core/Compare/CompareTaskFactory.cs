@@ -6,53 +6,53 @@ using System.Text;
 using System.Threading.Tasks;
 using RecordLinkageNet.Core.Distance;
 
-namespace RecordLinkageNet.Core
+namespace RecordLinkageNet.Core.Compare
 {
     public class CompareTaskFactory
     {
-        public static Task<Tuple<long, float>> CreateStringCompare(long jobId, CompareCondition job, ReadOnlyMemory<char> textValueA, ReadOnlyMemory<char> textValueB)
+        public static Task<Tuple<long, float>> CreateStringCompare(long jobId, Condition job, ReadOnlyMemory<char> textValueA, ReadOnlyMemory<char> textValueB)
         {
             Task<Tuple<long, float>> task = null;
 
             //we create a compare task 
             switch (job.MyStringMethod)
             {
-                case CompareCondition.StringMethod.Exact:
+                case Condition.StringMethod.Exact:
                     task = new Task<Tuple<long, float>>(() =>
                         CompareExact(jobId, textValueA, textValueB));
                     break;
-                case CompareCondition.StringMethod.HammingDistance:
+                case Condition.StringMethod.HammingDistance:
                     task = new Task<Tuple<long, float>>(() =>
                         CompareFunctionOneOrZero(
                             Hamming.HammingDistance, jobId, textValueA, textValueB, job.threshold));
                     break;
-                case CompareCondition.StringMethod.JaroDistance:
+                case Condition.StringMethod.JaroDistance:
                     task = new Task<Tuple<long, float>>(() =>
                         CompareFunctionOneOrZero(
                             JaroWinkler.JaroDistance, jobId, textValueA, textValueB, job.threshold));
                     break;
-                case CompareCondition.StringMethod.JaroWinklerSimilarity:
+                case Condition.StringMethod.JaroWinklerSimilarity:
                     task = new Task<Tuple<long, float>>(() =>
                        CompareFunctionOneOrZero(
                            JaroWinkler.JaroWinklerSimilarity, jobId, textValueA, textValueB, job.threshold));
                     break;
-                case CompareCondition.StringMethod.DamerauLevenshteinDistance:
+                case Condition.StringMethod.DamerauLevenshteinDistance:
                     task = new Task<Tuple<long, float>>(() =>
                         CompareFunctionOneOrZero(
                            DamerauLevenshtein.DamerauLevenshteinDistance, jobId, textValueA, textValueB, job.threshold));
                     break;
-                case CompareCondition.StringMethod.ShannonEntropyDistance:
+                case Condition.StringMethod.ShannonEntropyDistance:
                     task = new Task<Tuple<long, float>>(() =>
                        CompareFunctionOneOrZero(
                           ShannonEntropy.ShannonEntropyDistance, jobId, textValueA, textValueB, job.threshold));
                     break;
-                case CompareCondition.StringMethod.MyCustomizedDistance:
+                case Condition.StringMethod.MyCustomizedDistance:
                     task = new Task<Tuple<long, float>>(() =>
                         CompareFunctionOneOrZero(
                            CustomizedDistance.MyCustomizedDistance, jobId, textValueA, textValueB, job.threshold));
                     break;
 
-                case CompareCondition.StringMethod.Unknown:
+                case Condition.StringMethod.Unknown:
                 default:
                     Trace.WriteLine("error 232323298 compare method not implemented");
                     throw new NotImplementedException("compare method not implemted");
@@ -62,12 +62,12 @@ namespace RecordLinkageNet.Core
             return task;
         }
 
-        private static Tuple<long, float> CompareExact(long id, ReadOnlyMemory<char> a, ReadOnlyMemory<char> b)
+        public static Tuple<long, float> CompareExact(long id, ReadOnlyMemory<char> a, ReadOnlyMemory<char> b)
         {
             Tuple<long, float> result = Tuple.Create(id, 0.0f);  //default not eqaul
 
             //case both empty 
-            if(a.Length==0 && b.Length==0)
+            if (a.Length == 0 && b.Length == 0)
             {
                 result = Tuple.Create(id, 0.0f);
                 return result; //abort 

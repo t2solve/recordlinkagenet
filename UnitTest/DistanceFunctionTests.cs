@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
-using RecordLinkageNet.Core;
 using System;
 using RecordLinkageNet.Core.Distance;
 using System.Threading.Tasks;
+using RecordLinkageNet.Core.Compare;
 
 namespace UnitTest
 {
@@ -30,9 +30,9 @@ namespace UnitTest
         public async Task TestExactStringComparePositive()
         {
 
-            CompareCondition job = new CompareCondition();
+            Condition job = new Condition();
             //job.Mode = CompareCondition.CompareType.Exact;
-            job.MyStringMethod = CompareCondition.StringMethod.Exact;
+            job.MyStringMethod = Condition.StringMethod.Exact;
 
             //eve
             Task<Tuple<long, float>> taskResult1 = CompareTaskFactory.CreateStringCompare(12, job, "a".AsMemory(), "a".AsMemory());
@@ -46,8 +46,8 @@ namespace UnitTest
         [TestMethod]
         public async Task TestExactStringCompareEmpty()
         {
-            CompareCondition job = new CompareCondition();
-            job.MyStringMethod = CompareCondition.StringMethod.Exact;
+            Condition job = new Condition();
+            job.MyStringMethod = Condition.StringMethod.Exact;
             Task<Tuple<long, float>> taskResult2 = CompareTaskFactory.CreateStringCompare(12, job, "".AsMemory(), "".AsMemory());
             taskResult2.Start();
             await taskResult2;
@@ -57,8 +57,8 @@ namespace UnitTest
         [TestMethod]
         public async Task TestExactStringCompareNegativ()
         {
-            CompareCondition job = new CompareCondition();
-            job.MyStringMethod = CompareCondition.StringMethod.Exact;
+            Condition job = new Condition();
+            job.MyStringMethod = Condition.StringMethod.Exact;
             Task<Tuple<long, float>> taskResult3 = CompareTaskFactory.CreateStringCompare(12, job, "a".AsMemory(), "b".AsMemory());
             taskResult3.Start();
             await taskResult3;

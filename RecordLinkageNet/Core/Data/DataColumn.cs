@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Data
 {
-    public class DataColumn
+    public class DataColumn : IEnumerable<DataCell>
     {
         public DataTable ParentTable = null; 
         public DataCell[] Rows= null; //TODO use init 
@@ -35,6 +36,12 @@ namespace RecordLinkageNet.Core.Data
   
             }
         }
+        public DataCell At(int idx)
+        {
+            if (idx < 0 || idx >= indexLimit)
+                return null; 
+            return Rows[idx];
+        }
 
         public bool AddCell(DataCell cell)
         {
@@ -57,6 +64,17 @@ namespace RecordLinkageNet.Core.Data
 
             return true; 
         }
+
+        public IEnumerator<DataCell> GetEnumerator()
+        {
+            return (new List<DataCell>(Rows)).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator(); 
+        }
+
         private void InitStringCells(int amount)
         {
             Rows = new DataCellString[amount];
