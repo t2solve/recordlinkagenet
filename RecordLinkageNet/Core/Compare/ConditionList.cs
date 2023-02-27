@@ -105,7 +105,7 @@ namespace RecordLinkageNet.Core.Compare
             return j;
         }
 
-        public Condition String(string dataAColName, string dataBColName, Condition.StringMethod method, float threshold = -1.0f, string newColLabel = null)
+        public Condition String(string dataAColName, string dataBColName, Condition.StringMethod method,  string newColLabel = null)
         {
 
             //Debug.Assert(canList.CheckDataAHasColWithName(dataAColName), "error 2342346534 col name not found");
@@ -119,13 +119,18 @@ namespace RecordLinkageNet.Core.Compare
             j.NameColA = dataAColName;
             j.NameColB = dataBColName;
             j.MyStringMethod = method;
-            j.threshold = threshold;
+            //j.threshold = threshold;
             j.NameColNewLabel = newColLabel;
 
             j.SetNewColName();
             conditionList.Add(j);
 
             return j;
+        }
+
+        public void SortByScoreWeight()
+        {
+            conditionList.Sort(); //do default sort
         }
 
         public IEnumerator<Condition> GetEnumerator()

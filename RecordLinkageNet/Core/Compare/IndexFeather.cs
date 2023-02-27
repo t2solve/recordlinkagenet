@@ -13,14 +13,14 @@ namespace RecordLinkageNet.Core.Compare
     /// <summary>
     /// Class to create an index of two datasets
     /// </summary>
-    public class Index //TODO rename to avoid conflict
+    public class IndexFeather //TODO rename to avoid conflict
     {
-        public enum ConstructionState
-        {
-            UNKNOWN,
-            ONLY_MAX_STORED,
-            ARRAY_FULL_CREATED
-        }
+        //public enum ConstructionState
+        //{
+        //    UNKNOWN,
+        //    ONLY_MAX_STORED,
+        //    ARRAY_FULL_CREATED
+        //}
 
         public enum IndexType
         {
@@ -30,19 +30,19 @@ namespace RecordLinkageNet.Core.Compare
         }
 
         public IndexType type = IndexType.UNKNOWN;
-        public ConstructionState state = ConstructionState.UNKNOWN;
+        //public ConstructionState state = ConstructionState.UNKNOWN;
         //bool flagFullMode = false;
         //private List<IndexPair> indexList = new List<IndexPair>();
-        private IndexPair[] indexArray = null;
+        //private IndexPair[] indexArray = null;
         private uint idxAMax = uint.MaxValue;
         private uint idxBMax = uint.MaxValue;
         public DataTable dataTabA = null; 
         public DataTable dataTabB = null;
 
-        public int GetAmountIndexPairs()
-        {
-            return indexArray.Length; 
-        }
+        //public int GetAmountIndexPairs()
+        //{
+        //    return indexArray.Length; 
+        //}
         public uint GetMaxADim()
         {
             return idxAMax; 
@@ -68,7 +68,7 @@ namespace RecordLinkageNet.Core.Compare
         /// </summary>
         /// <param name="dataA">DataTable of DataSet A</param>
         /// <param name="dataB">DataTable of DataSet B</param>
-        public IndexPair[] Create(DataTable dataA, DataTable dataB = null, Condition prefilter = null)
+        public IndexFeather Create(DataTable dataA, DataTable dataB = null, Condition prefilter = null)
         {
             idxAMax = (uint) dataA.GetAmountRows();
             dataTabA = dataA;
@@ -85,43 +85,43 @@ namespace RecordLinkageNet.Core.Compare
                     dataTabB = dataTabA;
                     idxBMax = idxAMax; 
 
-                    long max = (long)idxAMax;
-                    //short estitmate 
-                    long amoountValues = max * max ;
-                    int appIndexPairSize = 2 * 4; //2times 4 Byte(int) 
-                    if(MemoryUsageEstimator.CheckCreateArrayPossible(amoountValues, appIndexPairSize))
-                    {
-                        //we init the array 
-                        indexArray = new IndexPair[amoountValues];
+                    //long max = (long)idxAMax;
+                    ////short estitmate 
+                    //long amoountValues = max * max ;
+                    //int appIndexPairSize = 2 * 4; //2times 4 Byte(int) 
+                    //if(MemoryUsageEstimator.CheckCreateArrayPossible(amoountValues, appIndexPairSize))
+                    //{
+                    //    //we init the array 
+                    //    indexArray = new IndexPair[amoountValues];
 
-                        uint counter = 0;
-                        for (uint i = 0; i < max; i++)
-                            for (uint j = 0; j < max; j++)
-                            {
-                                //if (i % 100== 0 && j % 100 == 0)
-                                //    Trace.WriteLine("foo"); 
-                                //indexList.Add(new IndexPair(i, j));
-                                indexArray[counter] = new IndexPair(i, j);
-                                counter += 1;
-                                if (counter > amoountValues)
-                                    Trace.WriteLine("bar");
+                    //    uint counter = 0;
+                    //    for (uint i = 0; i < max; i++)
+                    //        for (uint j = 0; j < max; j++)
+                    //        {
+                    //            //if (i % 100== 0 && j % 100 == 0)
+                    //            //    Trace.WriteLine("foo"); 
+                    //            //indexList.Add(new IndexPair(i, j));
+                    //            indexArray[counter] = new IndexPair(i, j);
+                    //            counter += 1;
+                    //            if (counter > amoountValues)
+                    //                Trace.WriteLine("bar");
 
-                            }
-                        state = ConstructionState.ARRAY_FULL_CREATED; 
-                    }
-                    else
-                    {
-                        state = ConstructionState.ONLY_MAX_STORED;
+                    //        }
+                    //    state = ConstructionState.ARRAY_FULL_CREATED; 
+                    //}
+                    //else
+                    //{
+                    //state = ConstructionState.ONLY_MAX_STORED;
+                    //save start and end 
 
-                        //TODO save start and end 
-                        throw new NotImplementedException(); 
-                    }
+                    //    throw new NotImplementedException(); 
+                    //}
                 }
                 else
                 {
                     idxBMax = (uint)dataB.GetAmountRows();
-                    state = ConstructionState.ONLY_MAX_STORED;
-                    throw new NotImplementedException();
+                    //state = ConstructionState.ONLY_MAX_STORED;
+                    //throw new NotImplementedException();
                     //TODO rewrite
                     ////short estitmate 
                     //uint amoountValues = idxAMax * idxBMax;
@@ -155,7 +155,9 @@ namespace RecordLinkageNet.Core.Compare
                 //Trace.WriteLine("warning no index specified, will use full");
                 //candidates.CreateFullIndexList();
             }
-            return indexArray;
+            //return indexArray;
+
+            return this;
         }
 
     }

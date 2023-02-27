@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RecordLinkage.Core;
 using RecordLinkageNet.Core;
 using RecordLinkageNet.Core.Compare;
 using RecordLinkageNet.Core.Data;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using static RecordLinkageNet.Core.WorkScheduler;
@@ -16,72 +18,110 @@ namespace UnitTest
     [TestClass]
     public class TestConfig
     {
+        private void ManipulateSet(List<TestDataPerson> list)
+        {
+            foreach(TestDataPerson person in list)
+            {
+                person.NameFirst = 'a' + person.NameFirst.Remove(0, 1);
+                person.NameLast = 'a' + person.NameLast.Remove(0, 1);
+                person.City  = 'a' + person.City.Remove(0, 1);
+
+            }
+        }
         [TestMethod]
         public async Task TestConfigEstiamte()
         {
-            int amountTestValue = 10000; 
-            var testDataA = TestDataGenerator.CreateTestPersons(amountTestValue);
-            DataTable tabA = new DataTable();
+            int amountTestValueUnion = 100; 
+            var testDataA = TestDataGenerator.CreateTestPersons(1000);
+            var testDataUnion = TestDataGenerator.CreateTestPersons(amountTestValueUnion); //generate union amount
+            //we fake manipulate all 
+            //we do a copy of a list https://stackoverflow.com/a/65584515/14105642
+            var testDataUnion2 = testDataUnion.Select(b => b with { }).ToList();
+            
+            ManipulateSet(testDataUnion2);
+            testDataA.AddRange(testDataUnion2);
+            testDataA.AddRange(testDataUnion);
 
             //TODO change to generic containter add
+            DataTable tabA = new DataTable();
             // like tab.AddListAndCreate
-
             tabA.AddDataClassAsColumns(new TestDataPerson(), testDataA.Count);
             foreach (TestDataPerson p in testDataA)//we add all cells 
             {
                 tabA.AddRow(p);
             }
 
-            ConditionList con = new ConditionList();
-            con.String("NameLast", "NameLast", Condition.StringMethod.Exact);
+            DataTable tabB = new DataTable();
+            tabB.AddDataClassAsColumns(new TestDataPerson(), testDataUnion.Count);
+            foreach (TestDataPerson p in testDataUnion) //we add all cells 
+            {
+                tabB.AddRow(p);
+            }
 
-            con.String("NameFirst", "NameLast", Condition.StringMethod.Exact);
+            ConditionList conList = new ConditionList();
+            Condition.StringMethod testMethod = Condition.StringMethod.JaroWinklerSimilarity; 
+            conList.String("NameFirst", "NameFirst", testMethod);
+            conList.String("Street", "Street", testMethod);
+            conList.String("PostalCode", "PostalCode", testMethod);
+            conList.String("NameLast", "NameLast", testMethod);
 
-            con.String("Street", "Street", Condition.StringMethod.Exact);
-            con.String("PostalCode", "PostalCode", Condition.StringMethod.Exact);
+            //add scores
+            Dictionary<string, float> scoreTable = new Dictionary<string, float>();
+            scoreTable.Add("NameLast", 2.0f);
+            scoreTable.Add("NameFirst", 1.5f);
+            scoreTable.Add("Street", 0.9f);
+            scoreTable.Add("PostalCode", 0.7f);
 
-            var index = new RecordLinkageNet.Core.Compare.Index();
-            index.Create(tabA);
+            foreach(Condition c in conList)
+            {
+                c.ScoreWeight = scoreTable[c.NameColNewLabel];
+            }
+            //we sort it for a small speed up
+            conList.SortByScoreWeight();
+            //float stepSize = 0.01f;
+            //float maxCompareValueOutPut = 255;
+            //float scale = 1.0f;
+            ////laut by 
+            //float con1plzWeight = 0.7f * scale; //1  //dataA[0,].Average();//TODO use linq
+            //float con2vornameWeight = 1.5f * scale;//5
+            //float con3nameWeight = 2.0f * scale;//4
+            //float con4gbdateWeight = 4.0f * scale;//4.0f* scale;//10
+            //float con5ibanWeight = scoreIBANuser * scale;//4.0f* 255;
+            //float con6placeWeight = 0.5f * scale;
+            //float con7streetWeight = 0.9f * scale;
+            //float con8streetNumberWeight = 0.4f * scale;
 
             Configuration config = new Configuration();
-            config.Index = index;
-            config.ConditionList = con; 
 
+            config.AddIndex(new IndexFeather().Create(tabB, tabA));
+            config.AddConditionList(conList);
+            config.NumberTransposeModus = NumberTransposeHelper.TransposeModus.LOG10;
+            //we do change some pre set things
+            config.ScoreProducer.SetMinimumAcceptanceThresholdInPerentage(0.8f);
+
+            //we init a worker
             WorkScheduler workScheduler = new WorkScheduler(config);
-            workScheduler.EstimateWork();
+            //workScheduler.EstimateWork();
+            var pipeLineCancellation = new CancellationTokenSource();
+            var resultTask = workScheduler.Compare(pipeLineCancellation.Token);
 
-           //var options = new DataflowBlockOptions() 
-            // Define the mesh.
-            var queue = new BufferBlock<JobSet>();
+            await resultTask;
 
-            // Start the producer and consumer.
-            WorkScheduler.ProduceCompareJobs(queue,config);
-            int processorCount = Environment.ProcessorCount;
-            var consumerOptions = new ExecutionDataflowBlockOptions
-            {
-                MaxDegreeOfParallelism = processorCount
-            };
+            ResultSet result = resultTask.Result; 
 
-//    https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-implement-a-producer-consumer-dataflow-pattern
+                  int amount = result.MatchingScoreCompareResulList.Count;
+            Assert.IsTrue(amount >= amountTestValueUnion, "wrong amount of results");
 
-            List<ResultSet> results = new List<ResultSet>(); 
-            var consumer = new ActionBlock<JobSet>(x => results.Add(WorkScheduler.ProcessJob(x)), consumerOptions);
-            queue.LinkTo(consumer, new DataflowLinkOptions { PropagateCompletion = true, });
+            Trace.WriteLine("amount of pot: matches in result set :" + amount);
+            var groupsComplete =  result.GroupResultAsMatchingBlocks();
 
-            //old: var consumer = WorkScheduler.Consume(queue);
+            //we do a filter selection 
+            Trace.WriteLine("amount of groups: " + groupsComplete.Count);
 
-            // Wait for everything to complete.
-            await Task.WhenAll(consumer.Completion, queue.Completion);
+            var groupsFiltered = result.FilterByConditon(config, 0.8f, 0.2f);
+            Trace.WriteLine("amount of groups: " + groupsFiltered.Count);
 
-            // Ensure the consumer got what the producer sent (in the correct order).
-            //var results = await consumer;
-            Trace.WriteLine(results);
-            int foobar = 0;
-            foreach (ResultSet rs in results)
-                foobar += rs.indexMap.Count;
 
-            Assert.IsTrue(foobar == (amountTestValue * amountTestValue),"wrong amount of results");
-           
         }
     }
 }

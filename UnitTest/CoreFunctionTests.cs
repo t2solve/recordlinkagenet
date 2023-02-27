@@ -11,57 +11,57 @@ namespace UnitTest
     [TestClass]
     public class CoreFunctionTests
     {
-        //[TestMethod]
-        //public void BasicSystemTest1()
-        //{
-        //    Stopwatch sw = new Stopwatch();
+        [TestMethod]
+        public void BasicSystemTest1()
+        {
+            Stopwatch sw = new Stopwatch();
 
-        //    TestDataPerson[] inMemoryCollection = GenTestData();
+            TestDataPerson[] inMemoryCollection = GenTestData();
 
-        //    //we load the ml context for data parsing
-        //    MLContext mlContext = new MLContext();
-        //    IDataView dataA = mlContext.Data.LoadFromEnumerable<TestDataPerson>(inMemoryCollection);
+            //we load the ml context for data parsing
+            MLContext mlContext = new MLContext();
+            IDataView dataA = mlContext.Data.LoadFromEnumerable<TestDataPerson>(inMemoryCollection);
 
-        //    RecordLinkageNet.Core.Compare.Index indexer = new RecordLinkageNet.Core.Index();
-        //    indexer.full();
-        //    CandidateList can = indexer.index(dataA, dataA);
-        //    ConditionList compare = new Compare(can);
+            RecordLinkageNet.Core.Compare.Index indexer = new RecordLinkageNet.Core.Index();
+            indexer.full();
+            CandidateList can = indexer.index(dataA, dataA);
+            ConditionList compare = new Compare(can);
 
-        //    compare.Exact("PostalCode", "PostalCode");
-        //    compare.String("NameFirst", "NameFirst", Condition.StringMethod.JaroWinklerSimilarity, 0.9f);
-        //    compare.String("NameLast", "NameLast", Condition.StringMethod.JaroWinklerSimilarity, -1.0f, "foo");
-        //    bool success = compare.Compute();
+            compare.Exact("PostalCode", "PostalCode");
+            compare.String("NameFirst", "NameFirst", Condition.StringMethod.JaroWinklerSimilarity, 0.9f);
+            compare.String("NameLast", "NameLast", Condition.StringMethod.JaroWinklerSimilarity, -1.0f, "foo");
+            bool success = compare.Compute();
 
-        //    Assert.IsTrue(success, "error during calc resulset");
+            Assert.IsTrue(success, "error during calc resulset");
 
-        //    ResultSet res = compare.PackedResult;
+            ResultSet res = compare.PackedResult;
 
-        //    Assert.AreEqual(res.colNames[0], "PostalCode", "error names mismatch");
-        //    Assert.AreEqual(res.colNames[1], "NameFirst", "error names mismatch");
-        //    Assert.AreEqual(res.colNames[2], "foo", "error names mismatch");
+            Assert.AreEqual(res.colNames[0], "PostalCode", "error names mismatch");
+            Assert.AreEqual(res.colNames[1], "NameFirst", "error names mismatch");
+            Assert.AreEqual(res.colNames[2], "foo", "error names mismatch");
 
-        //    //res.data[] idx,condition
-        //    //case a1 == b1 ? 
-        //    Assert.AreEqual(1, res.data[0, 0], "resultset mismatch con1");
-        //    Assert.AreEqual(1, res.data[0, 1], "resultset mismatch con2");
-        //    Assert.AreEqual(1, res.data[0, 2], "resultset mismatch con3");
-        //    //case a1 == b2 ?
-        //    Assert.AreEqual(0, res.data[1, 0], "resultset mismatch con1");
-        //    Assert.AreEqual(0, res.data[1, 1], "resultset mismatch con2");
-        //    Assert.AreEqual(0, res.data[1, 2], "resultset mismatch con3");
-        //    //case a2 == b1 ?
-        //    Assert.AreEqual(0, res.data[2, 0], "resultset mismatch con1");
-        //    Assert.AreEqual(0, res.data[2, 1], "resultset mismatch con2");
-        //    Assert.AreEqual(0, res.data[2, 2], "resultset mismatch con3");
-        //    //case a2 == b2 ?
-        //    Assert.AreEqual(1, res.data[3, 0], "resultset mismatch con1");
-        //    Assert.AreEqual(1, res.data[3, 1], "resultset mismatch con2");
-        //    Assert.AreEqual(1, res.data[3, 2], "resultset mismatch con3");
+            //res.data[] idx,condition
+            //case a1 == b1 ? 
+            Assert.AreEqual(1, res.data[0, 0], "resultset mismatch con1");
+            Assert.AreEqual(1, res.data[0, 1], "resultset mismatch con2");
+            Assert.AreEqual(1, res.data[0, 2], "resultset mismatch con3");
+            //case a1 == b2 ?
+            Assert.AreEqual(0, res.data[1, 0], "resultset mismatch con1");
+            Assert.AreEqual(0, res.data[1, 1], "resultset mismatch con2");
+            Assert.AreEqual(0, res.data[1, 2], "resultset mismatch con3");
+            //case a2 == b1 ?
+            Assert.AreEqual(0, res.data[2, 0], "resultset mismatch con1");
+            Assert.AreEqual(0, res.data[2, 1], "resultset mismatch con2");
+            Assert.AreEqual(0, res.data[2, 2], "resultset mismatch con3");
+            //case a2 == b2 ?
+            Assert.AreEqual(1, res.data[3, 0], "resultset mismatch con1");
+            Assert.AreEqual(1, res.data[3, 1], "resultset mismatch con2");
+            Assert.AreEqual(1, res.data[3, 2], "resultset mismatch con3");
 
-        //    TimeSpan stopwatchElapsed = sw.Elapsed;
-        //    Console.WriteLine("\tfinsihed used:\t" + Convert.ToInt32(stopwatchElapsed.TotalMilliseconds) + " ms");
+            TimeSpan stopwatchElapsed = sw.Elapsed;
+            Console.WriteLine("\tfinsihed used:\t" + Convert.ToInt32(stopwatchElapsed.TotalMilliseconds) + " ms");
 
-        //}
+        }
 
         //[TestMethod]
         //public void ReadAndWriteResultSetTestFunction()

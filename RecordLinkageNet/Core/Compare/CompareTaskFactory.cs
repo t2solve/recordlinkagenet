@@ -10,60 +10,64 @@ namespace RecordLinkageNet.Core.Compare
 {
     public class CompareTaskFactory
     {
-        public static Task<Tuple<long, float>> CreateStringCompare(long jobId, Condition job, ReadOnlyMemory<char> textValueA, ReadOnlyMemory<char> textValueB)
-        {
-            Task<Tuple<long, float>> task = null;
 
-            //we create a compare task 
-            switch (job.MyStringMethod)
-            {
-                case Condition.StringMethod.Exact:
-                    task = new Task<Tuple<long, float>>(() =>
-                        CompareExact(jobId, textValueA, textValueB));
-                    break;
-                case Condition.StringMethod.HammingDistance:
-                    task = new Task<Tuple<long, float>>(() =>
-                        CompareFunctionOneOrZero(
-                            Hamming.HammingDistance, jobId, textValueA, textValueB, job.threshold));
-                    break;
-                case Condition.StringMethod.JaroDistance:
-                    task = new Task<Tuple<long, float>>(() =>
-                        CompareFunctionOneOrZero(
-                            JaroWinkler.JaroDistance, jobId, textValueA, textValueB, job.threshold));
-                    break;
-                case Condition.StringMethod.JaroWinklerSimilarity:
-                    task = new Task<Tuple<long, float>>(() =>
-                       CompareFunctionOneOrZero(
-                           JaroWinkler.JaroWinklerSimilarity, jobId, textValueA, textValueB, job.threshold));
-                    break;
-                case Condition.StringMethod.DamerauLevenshteinDistance:
-                    task = new Task<Tuple<long, float>>(() =>
-                        CompareFunctionOneOrZero(
-                           DamerauLevenshtein.DamerauLevenshteinDistance, jobId, textValueA, textValueB, job.threshold));
-                    break;
-                case Condition.StringMethod.ShannonEntropyDistance:
-                    task = new Task<Tuple<long, float>>(() =>
-                       CompareFunctionOneOrZero(
-                          ShannonEntropy.ShannonEntropyDistance, jobId, textValueA, textValueB, job.threshold));
-                    break;
-                case Condition.StringMethod.MyCustomizedDistance:
-                    task = new Task<Tuple<long, float>>(() =>
-                        CompareFunctionOneOrZero(
-                           CustomizedDistance.MyCustomizedDistance, jobId, textValueA, textValueB, job.threshold));
-                    break;
+    //{
+    //    public static Task<Tuple<long, float>> CreateStringCompare(long jobId, Condition job, ReadOnlyMemory<char> textValueA, ReadOnlyMemory<char> textValueB)
+    //    {
+    //        Task<Tuple<long, float>> task = null;
 
-                case Condition.StringMethod.Unknown:
-                default:
-                    Trace.WriteLine("error 232323298 compare method not implemented");
-                    throw new NotImplementedException("compare method not implemted");
-                    break;
-            }
+    //        //we create a compare task 
+    //        switch (job.MyStringMethod)
+    //        {
+    //            case Condition.StringMethod.Exact:
+    //                task = new Task<Tuple<long, float>>(() =>
+    //                    CompareExact(jobId, textValueA, textValueB));
+    //                break;
+    //            case Condition.StringMethod.HammingDistance:
+    //                task = new Task<Tuple<long, float>>(() =>
+    //                    CompareFunctionOneOrZero(
+    //                        Hamming.HammingDistance, jobId, textValueA, textValueB, job.threshold));
+    //                break;
+    //            case Condition.StringMethod.JaroDistance:
+    //                task = new Task<Tuple<long, float>>(() =>
+    //                    CompareFunctionOneOrZero(
+    //                        JaroWinkler.JaroDistance, jobId, textValueA, textValueB, job.threshold));
+    //                break;
+    //            case Condition.StringMethod.JaroWinklerSimilarity:
+    //                task = new Task<Tuple<long, float>>(() =>
+    //                   CompareFunctionOneOrZero(
+    //                       JaroWinkler.JaroWinklerSimilarity, jobId, textValueA, textValueB, job.threshold));
+    //                break;
+    //            case Condition.StringMethod.DamerauLevenshteinDistance:
+    //                task = new Task<Tuple<long, float>>(() =>
+    //                    CompareFunctionOneOrZero(
+    //                       DamerauLevenshtein.DamerauLevenshteinDistance, jobId, textValueA, textValueB, job.threshold));
+    //                break;
+    //            case Condition.StringMethod.ShannonEntropyDistance:
+    //                task = new Task<Tuple<long, float>>(() =>
+    //                   CompareFunctionOneOrZero(
+    //                      ShannonEntropy.ShannonEntropyDistance, jobId, textValueA, textValueB, job.threshold));
+    //                break;
+    //            case Condition.StringMethod.MyCustomizedDistance:
+    //                task = new Task<Tuple<long, float>>(() =>
+    //                    CompareFunctionOneOrZero(
+    //                       CustomizedDistance.MyCustomizedDistance, jobId, textValueA, textValueB, job.threshold));
+    //                break;
 
-            return task;
-        }
+    //            case Condition.StringMethod.Unknown:
+    //            default:
+    //                Trace.WriteLine("error 232323298 compare method not implemented");
+    //                throw new NotImplementedException("compare method not implemted");
+    //                break;
+    //        }
+
+    //        return task;
+    //    }
 
         public static Tuple<long, float> CompareExact(long id, ReadOnlyMemory<char> a, ReadOnlyMemory<char> b)
         {
+
+            //TODO speed up
             Tuple<long, float> result = Tuple.Create(id, 0.0f);  //default not eqaul
 
             //case both empty 

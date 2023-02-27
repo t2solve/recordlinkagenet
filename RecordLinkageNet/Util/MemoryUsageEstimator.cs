@@ -12,10 +12,23 @@ namespace RecordLinkageNet.Util
     public static class MemoryUsageEstimator
     {
         private static readonly long converionFactorByteToMB = 1048576;
-        //magic number , found at:
+        //amount limit of elements allowed in array, is magic number , found at:
         //https://stackoverflow.com/a/59730621/14105642
         private static readonly long magicNumberMaxElementsInArray = 2146435071;//2 billion
 
+        //found here
+        //https://stackoverflow.com/questions/750574/how-to-get-memory-available-or-used-in-c-sharp
+        private static float GetRamUsedInMegaByte()
+        {
+            //TODO check difference GetAmountMemoryWeUseFromGCInMiB
+            float memory = 0.0f;
+            using (Process proc = Process.GetCurrentProcess())
+            {
+                // The proc.PrivateMemorySize64 will returns the private memory usage in byte.
+                memory = proc.PrivateMemorySize64 / (converionFactorByteToMB);
+            }
+            return memory;
+        }
         public static bool CheckGCAllowsHugeObjects()
         {
             if (Environment.Is64BitProcess)
@@ -40,9 +53,7 @@ namespace RecordLinkageNet.Util
         public static bool CheckCreateArrayPossible(long amountElement, int approxmiatedSizeOfElementInBytes)
         {
             long memLimitMaxInMiB = 2000;
-           
 
-           
             //A) constraint a, limit elements in array
             if (amountElement>=magicNumberMaxElementsInArray)
             {
@@ -88,6 +99,7 @@ namespace RecordLinkageNet.Util
         //get system infos found at: 
         // https://stackoverflow.com/a/10028263/14105642
 
+        //TODO change to make linux useable 
         [DllImport("psapi.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetPerformanceInfo([Out] out PerformanceInformation PerformanceInformation, [In] int Size);

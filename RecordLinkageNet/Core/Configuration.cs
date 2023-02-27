@@ -1,34 +1,52 @@
-﻿using RecordLinkageNet.Core.Compare;
+﻿using RecordLinkage.Core;
+using RecordLinkageNet.Core.Compare;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Index = RecordLinkageNet.Core.Compare.Index;
+using IndexFeather = RecordLinkageNet.Core.Compare.IndexFeather;
 
 namespace RecordLinkageNet.Core
 {
     public class Configuration
     {
 
-        public ConditionList ConditionList { get; set; }
-        public Index Index { get; set; }
-        //public int AmountCPUtoUse { get; set; }
+        public ConditionList ConditionList { get; private set; } = null;
+        public IndexFeather Index { get; private set; } = null; 
+        public NumberTransposeHelper.TransposeModus NumberTransposeModus { get; set;  } = NumberTransposeHelper.TransposeModus.LINEAR;
+        
+        //computational 
+        public int AmountCPUtoUse { get; set; } = Environment.ProcessorCount;
 
+        public ScoreProducer ScoreProducer { get; private set; } = null;
 
-        //found here
-        //https://stackoverflow.com/questions/750574/how-to-get-memory-available-or-used-in-c-sharp
-        public float GetRamUsedInMegaByte()
+        public Configuration AddIndex( IndexFeather index)
         {
-            float memory = 0.0f;
-            using (Process proc = Process.GetCurrentProcess())
-            {
-                // The proc.PrivateMemorySize64 will returns the private memory usage in byte.
-                // Would like to Convert it to Megabyte? divide it by 2^20
-                memory = proc.PrivateMemorySize64 / (1024 * 1024);
-            }
-            return memory;
+            this.Index = index;
+            return this; 
         }
+
+        public Configuration AddConditionList(ConditionList list)
+        {
+            this.ConditionList = list;
+
+            //we crerate our default score producer
+            this.ScoreProducer = new ScoreProducer(this.ConditionList, this.NumberTransposeModus);
+
+            return this; 
+        }
+
+        public Configuration SetScoreProducer( ScoreProducer scoreProducer)
+        {
+            this.ScoreProducer = scoreProducer;
+
+            //we crerate our score producer
+
+            return this;
+        }
+
+
     }
 }

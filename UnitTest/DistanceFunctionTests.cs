@@ -26,44 +26,44 @@ namespace UnitTest
 
         //}
 
-        [TestMethod]
-        public async Task TestExactStringComparePositive()
-        {
+        //[TestMethod]
+        //public async Task TestExactStringComparePositive()
+        //{
 
-            Condition job = new Condition();
-            //job.Mode = CompareCondition.CompareType.Exact;
-            job.MyStringMethod = Condition.StringMethod.Exact;
+        //    Condition job = new Condition();
+        //    //job.Mode = CompareCondition.CompareType.Exact;
+        //    job.MyStringMethod = Condition.StringMethod.Exact;
 
-            //eve
-            Task<Tuple<long, float>> taskResult1 = CompareTaskFactory.CreateStringCompare(12, job, "a".AsMemory(), "a".AsMemory());
-            taskResult1.Start();
-            await taskResult1;
-            Assert.AreEqual(1, taskResult1.Result.Item2, "TestExactStringCompare no correct output");
+        //    //eve
+        //    Task<Tuple<long, float>> taskResult1 = CompareTaskFactory.CreateStringCompare(12, job, "a".AsMemory(), "a".AsMemory());
+        //    taskResult1.Start();
+        //    await taskResult1;
+        //    Assert.AreEqual(1, taskResult1.Result.Item2, "TestExactStringCompare no correct output");
 
 
-        }
+        //}
 
-        [TestMethod]
-        public async Task TestExactStringCompareEmpty()
-        {
-            Condition job = new Condition();
-            job.MyStringMethod = Condition.StringMethod.Exact;
-            Task<Tuple<long, float>> taskResult2 = CompareTaskFactory.CreateStringCompare(12, job, "".AsMemory(), "".AsMemory());
-            taskResult2.Start();
-            await taskResult2;
-            Assert.AreEqual(0, taskResult2.Result.Item2, "TestExactStringCompare no correct output");
-        }
+        //[TestMethod]
+        //public async Task TestExactStringCompareEmpty()
+        //{
+        //    Condition job = new Condition();
+        //    job.MyStringMethod = Condition.StringMethod.Exact;
+        //    Task<Tuple<long, float>> taskResult2 = CompareTaskFactory.CreateStringCompare(12, job, "".AsMemory(), "".AsMemory());
+        //    taskResult2.Start();
+        //    await taskResult2;
+        //    Assert.AreEqual(0, taskResult2.Result.Item2, "TestExactStringCompare no correct output");
+        //}
 
-        [TestMethod]
-        public async Task TestExactStringCompareNegativ()
-        {
-            Condition job = new Condition();
-            job.MyStringMethod = Condition.StringMethod.Exact;
-            Task<Tuple<long, float>> taskResult3 = CompareTaskFactory.CreateStringCompare(12, job, "a".AsMemory(), "b".AsMemory());
-            taskResult3.Start();
-            await taskResult3;
-            Assert.AreEqual(0, taskResult3.Result.Item2, "TestExactStringCompare no correct output");
-        }
+        //[TestMethod]
+        //public async Task TestExactStringCompareNegativ()
+        //{
+        //    Condition job = new Condition();
+        //    job.MyStringMethod = Condition.StringMethod.Exact;
+        //    Task<Tuple<long, float>> taskResult3 = CompareTaskFactory.CreateStringCompare(12, job, "a".AsMemory(), "b".AsMemory());
+        //    taskResult3.Start();
+        //    await taskResult3;
+        //    Assert.AreEqual(0, taskResult3.Result.Item2, "TestExactStringCompare no correct output");
+        //}
         [TestMethod]
         public void TestHammingJelly()
         {

@@ -11,6 +11,7 @@ namespace RecordLinkage.Core
     {
         public enum TransposeModus
         {
+            UNKNOWN,
             LINEAR,
             LOG10
         }

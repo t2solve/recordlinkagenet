@@ -28,7 +28,7 @@ namespace UnitTest
         }
     }
     //small test data class
-    public class TestDataPerson
+    public record TestDataPerson
     {
         [LoadColumn(0)]
         public string NameFirst { get; set; } = "";
