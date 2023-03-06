@@ -10,7 +10,7 @@ namespace RecordLinkageNet.Core.Data
 {
     public class DataColumn : IEnumerable<DataCell>
     {
-        public DataTable ParentTable = null; 
+        public DataTableFeather ParentTable = null; 
         public DataCell[] Rows= null; //TODO use init 
         //public DataCell current = null;
         //public DataCell last = null;
@@ -88,8 +88,6 @@ namespace RecordLinkageNet.Core.Data
             indexLimit = amount; 
 
         }
-
-
 
     }
 }

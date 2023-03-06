@@ -32,7 +32,7 @@ namespace UnitTest
 
             //we construct two tables
             // convert 
-            DataTable tabA = new DataTable();
+            DataTableFeather tabA = new DataTableFeather();
 
             //TODO change to generic containter add
             // like tab.AddListAndCreate
@@ -43,7 +43,7 @@ namespace UnitTest
                 tabA.AddRow(p);
             }
 
-            DataTable tabB = new DataTable();
+            DataTableFeather tabB = new DataTableFeather();
             tabB.AddDataClassAsColumns(new TestDataPerson(), amountRows);
             foreach (TestDataPerson p in testDataB) //we add all cells 
             {

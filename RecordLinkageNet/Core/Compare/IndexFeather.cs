@@ -36,8 +36,8 @@ namespace RecordLinkageNet.Core.Compare
         //private IndexPair[] indexArray = null;
         private uint idxAMax = uint.MaxValue;
         private uint idxBMax = uint.MaxValue;
-        public DataTable dataTabA = null; 
-        public DataTable dataTabB = null;
+        public DataTableFeather dataTabA = null; 
+        public DataTableFeather dataTabB = null;
 
         //public int GetAmountIndexPairs()
         //{
@@ -68,7 +68,7 @@ namespace RecordLinkageNet.Core.Compare
         /// </summary>
         /// <param name="dataA">DataTable of DataSet A</param>
         /// <param name="dataB">DataTable of DataSet B</param>
-        public IndexFeather Create(DataTable dataA, DataTable dataB = null, Condition prefilter = null)
+        public IndexFeather Create(DataTableFeather dataA, DataTableFeather dataB = null, Condition prefilter = null)
         {
             idxAMax = (uint) dataA.GetAmountRows();
             dataTabA = dataA;

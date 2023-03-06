@@ -9,7 +9,7 @@ using Microsoft.ML.Data;
 
 namespace RecordLinkageNet.Core.Data
 {
-    public class DataTable
+    public class DataTableFeather
     {
         //private List<DataColumn> columns = new List<DataColumn>();
         private Dictionary<string, DataColumn> namedColumnsMap = new Dictionary<string, DataColumn>();
@@ -32,7 +32,7 @@ namespace RecordLinkageNet.Core.Data
             return namedColumnsMap.Keys.Count();
         }
 
-        public DataTable AddDataClassAsColumns(object data, int amountRows)
+        public DataTableFeather AddDataClassAsColumns(object data, int amountRows)
         {
             //TODO type check data
             if (data == null)
@@ -62,7 +62,7 @@ namespace RecordLinkageNet.Core.Data
             return this; 
         }
 
-        public DataTable AddColumn(string name, DataColumn c)
+        public DataTableFeather AddColumn(string name, DataColumn c)
         {
             //TODO check 
             namedColumnsMap.Add(name, c);
@@ -71,7 +71,7 @@ namespace RecordLinkageNet.Core.Data
             return this; 
         }
 
-        public DataTable AddRow(object a)
+        public DataTableFeather AddRow(object a)
         {
             //we try to find names and add them 
             PropertyInfo[] propertyInfoArr = a.GetType().GetProperties();

@@ -2,9 +2,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Diagnostics;
 using RecordLinkageNet.Core;
 using System;
-using Microsoft.ML;
 using System.IO;
 using RecordLinkageNet.Core.Compare;
+using RecordLinkage.Core;
+using System.Collections.Generic;
+using System.Linq;
+using RecordLinkageNet.Core.Data;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace UnitTest
 {
@@ -12,51 +17,91 @@ namespace UnitTest
     public class CoreFunctionTests
     {
         [TestMethod]
-        public void BasicSystemTest1()
+        public async Task BasicSystemTest1()
         {
             Stopwatch sw = new Stopwatch();
+            int amountTestSet = 100000; 
 
-            TestDataPerson[] inMemoryCollection = GenTestData();
 
-            //we load the ml context for data parsing
-            MLContext mlContext = new MLContext();
-            IDataView dataA = mlContext.Data.LoadFromEnumerable<TestDataPerson>(inMemoryCollection);
+            int amountTestValueUnion = (int)( (float) amountTestSet  * (0.1f)); // 10 percent
+            var testDataA = TestDataGenerator.CreateTestPersons(amountTestSet);
+            var testDataUnion = TestDataGenerator.CreateTestPersons(amountTestValueUnion); //generate union amount
+           
+            //we do a copy of a list https://stackoverflow.com/a/65584515/14105642
+            var testDataUnion2 = testDataUnion.Select(b => b with { }).ToList();
+            //we fake manipulate all 
+            TestDataGenerator.ManipulateListAddAa(testDataUnion2);
+            //we add the data
+            testDataA.AddRange(testDataUnion2);
+            testDataA.AddRange(testDataUnion);
 
-            RecordLinkageNet.Core.Compare.Index indexer = new RecordLinkageNet.Core.Index();
-            indexer.full();
-            CandidateList can = indexer.index(dataA, dataA);
-            ConditionList compare = new Compare(can);
+            //TODO change to generic containter add
+            DataTableFeather tabA = new DataTableFeather();
+            // like tab.AddListAndCreate
+            tabA.AddDataClassAsColumns(new TestDataPerson(), testDataA.Count);
+            foreach (TestDataPerson p in testDataA)//we add all cells 
+            {
+                tabA.AddRow(p);
+            }
 
-            compare.Exact("PostalCode", "PostalCode");
-            compare.String("NameFirst", "NameFirst", Condition.StringMethod.JaroWinklerSimilarity, 0.9f);
-            compare.String("NameLast", "NameLast", Condition.StringMethod.JaroWinklerSimilarity, -1.0f, "foo");
-            bool success = compare.Compute();
+            DataTableFeather tabB = new DataTableFeather();
+            tabB.AddDataClassAsColumns(new TestDataPerson(), testDataUnion.Count);
+            foreach (TestDataPerson p in testDataUnion) //we add all cells 
+            {
+                tabB.AddRow(p);
+            }
 
-            Assert.IsTrue(success, "error during calc resulset");
+            ConditionList conList = new ConditionList();
+            Condition.StringMethod testMethod = Condition.StringMethod.JaroWinklerSimilarity;
+            conList.String("NameFirst", "NameFirst", testMethod);
+            conList.String("Street", "Street", testMethod);
+            conList.String("PostalCode", "PostalCode", testMethod);
+            conList.String("NameLast", "NameLast", testMethod);
 
-            ResultSet res = compare.PackedResult;
+            //add scores
+            Dictionary<string, float> scoreTable = new Dictionary<string, float>();
+            scoreTable.Add("NameLast", 2.0f);
+            scoreTable.Add("NameFirst", 1.5f);
+            scoreTable.Add("Street", 0.9f);
+            scoreTable.Add("PostalCode", 0.7f);
 
-            Assert.AreEqual(res.colNames[0], "PostalCode", "error names mismatch");
-            Assert.AreEqual(res.colNames[1], "NameFirst", "error names mismatch");
-            Assert.AreEqual(res.colNames[2], "foo", "error names mismatch");
+            foreach (Condition c in conList)
+            {
+                c.ScoreWeight = scoreTable[c.NameColNewLabel];
+            }
+            //we sort it for a small speed up
+            conList.SortByScoreWeight();
 
-            //res.data[] idx,condition
-            //case a1 == b1 ? 
-            Assert.AreEqual(1, res.data[0, 0], "resultset mismatch con1");
-            Assert.AreEqual(1, res.data[0, 1], "resultset mismatch con2");
-            Assert.AreEqual(1, res.data[0, 2], "resultset mismatch con3");
-            //case a1 == b2 ?
-            Assert.AreEqual(0, res.data[1, 0], "resultset mismatch con1");
-            Assert.AreEqual(0, res.data[1, 1], "resultset mismatch con2");
-            Assert.AreEqual(0, res.data[1, 2], "resultset mismatch con3");
-            //case a2 == b1 ?
-            Assert.AreEqual(0, res.data[2, 0], "resultset mismatch con1");
-            Assert.AreEqual(0, res.data[2, 1], "resultset mismatch con2");
-            Assert.AreEqual(0, res.data[2, 2], "resultset mismatch con3");
-            //case a2 == b2 ?
-            Assert.AreEqual(1, res.data[3, 0], "resultset mismatch con1");
-            Assert.AreEqual(1, res.data[3, 1], "resultset mismatch con2");
-            Assert.AreEqual(1, res.data[3, 2], "resultset mismatch con3");
+            Configuration config = new Configuration();
+
+            config.AddIndex(new IndexFeather().Create(tabB, tabA));
+            config.AddConditionList(conList);
+
+            config.NumberTransposeModus = NumberTransposeHelper.TransposeModus.LOG10;
+            //we do change some pre set things
+            config.ScoreProducer.SetMinimumAcceptanceThresholdInPerentage(0.8f);
+
+            //we init a worker
+            WorkScheduler workScheduler = new WorkScheduler(config);
+            //workScheduler.EstimateWork();
+            var pipeLineCancellation = new CancellationTokenSource();
+            var resultTask = workScheduler.Compare(pipeLineCancellation.Token);
+
+            await resultTask;
+
+            ResultSet result = resultTask.Result;
+
+            int amount = result.MatchingScoreCompareResulList.Count;
+            Assert.IsTrue(amount >= amountTestValueUnion, "wrong amount of results");
+
+            Trace.WriteLine("amount of pot: matches in result set :" + amount);
+            var groupsComplete = result.GroupResultAsMatchingBlocks();
+
+            //we do a filter selection 
+            Trace.WriteLine("amount of groups: " + groupsComplete.Count);
+
+            var groupsFiltered = result.FilterByConditon(config, 0.8f, 0.2f);
+            Trace.WriteLine("amount of groups: " + groupsFiltered.Count);
 
             TimeSpan stopwatchElapsed = sw.Elapsed;
             Console.WriteLine("\tfinsihed used:\t" + Convert.ToInt32(stopwatchElapsed.TotalMilliseconds) + " ms");
@@ -98,31 +143,31 @@ namespace UnitTest
 
         //}
 
-        private TestDataPerson[] GenTestData()
-        {
-            //we do basic functional
-            TestDataPerson[] inMemoryCollection = new TestDataPerson[]
-            {
-                    new TestDataPerson
-                    {
-                        NameFirst = "thomas",
-                        NameLast = "mueller",
-                        City = "moxee",
-                        Street = "91st ave",
-                        PostalCode =  "98944"
-                    },
-                    new TestDataPerson
-                    {
+        //private TestDataPerson[] GenTestData()
+        //{
+        //    //we do basic functional
+        //    TestDataPerson[] inMemoryCollection = new TestDataPerson[]
+        //    {
+        //            new TestDataPerson
+        //            {
+        //                NameFirst = "thomas",
+        //                NameLast = "mueller",
+        //                City = "moxee",
+        //                Street = "91st ave",
+        //                PostalCode =  "98944"
+        //            },
+        //            new TestDataPerson
+        //            {
 
-                        NameFirst = "adalina",
-                        NameLast = "nibbs",
-                        City = "waterville",
-                        Street = "jefferson",
-                        PostalCode = "98944"
-                    }
-            };
+        //                NameFirst = "adalina",
+        //                NameLast = "nibbs",
+        //                City = "waterville",
+        //                Street = "jefferson",
+        //                PostalCode = "98944"
+        //            }
+        //    };
 
-            return inMemoryCollection;
-        }
+        //    return inMemoryCollection;
+        //}
     }
 }

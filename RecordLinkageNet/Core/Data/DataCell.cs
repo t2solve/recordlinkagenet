@@ -17,7 +17,7 @@ namespace RecordLinkageNet.Core.Data
 
         public virtual string Value
         {
-            get {
+            get {               
                 throw new NotImplementedException();
             } 
             set

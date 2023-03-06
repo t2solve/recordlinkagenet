@@ -10,21 +10,22 @@ namespace UnitTest
     [TestClass]
     public class DistanceFunctionTests
     {
-        //[TestMethod]
-        //public void TestHamming()
-        //{
-        //    Assert.AreEqual(0, "bar".HammingDistance("bar"), "HammingDistance no correct output");
-        //    Assert.AreEqual(3, "foo".HammingDistance("bar"), "HammingDistance no correct output");
-        //    Assert.AreEqual(3, "foo1".HammingDistance("bar1"), "HammingDistance no correct output");
+        [TestMethod]
+        public void TestHamming()
+        {
+            Assert.AreEqual(0, "bar".HammingDistance("bar"), "HammingDistance no correct output");
+            Assert.AreEqual(3, "foo".HammingDistance("bar"), "HammingDistance no correct output");
+            Assert.AreEqual(3, "foo1".HammingDistance("bar1"), "HammingDistance no correct output");
 
-        //    //test non even length strings
-        //    Assert.AreEqual(3, "foobar".HammingDistance("bar"), "HammingDistance no correct output");
-        //    string s1 = "jellyfish";
-        //    string s2 = "smellyfish";
-        //    double result = 8;
-        //    Assert.AreEqual(result, s1.HammingDistance(s2), "HammingDistance no correct output");
+            //test non even length strings
+            //TODO double check how to implement here
+            ////Assert.AreEqual(3, "foobar".HammingDistance("bar"), "HammingDistance no correct output");
+            //string s1 = "jellyfish";
+            //string s2 = "smellyfish";
+            //double result = 8;
+            //Assert.AreEqual(result, s1.HammingDistance(s2), "HammingDistance no correct output");
 
-        //}
+        }
 
         //[TestMethod]
         //public async Task TestExactStringComparePositive()

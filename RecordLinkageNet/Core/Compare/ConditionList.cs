@@ -29,13 +29,13 @@ namespace RecordLinkageNet.Core.Compare
 
         //private readonly int maxElementsInQueue = 1000000;  //TODO maybe make it adjustable
 
-        public enum ConditionCompareMode //Check is this clever here ? 
-        {
-            FullSetBased, // every condition one by one
-            DecisionTreeBased,
-            Unknown
-        }
-        public ConditionCompareMode ProcessMode = ConditionCompareMode.FullSetBased;
+        //public enum ConditionCompareMode //Check is this clever here ? 
+        //{
+        //    FullSetBased, // every condition one by one
+        //    DecisionTreeBased,
+        //    Unknown
+        //}
+        //public ConditionCompareMode ProcessMode = ConditionCompareMode.FullSetBased;
 
         public int GetAmountConditions()
         {

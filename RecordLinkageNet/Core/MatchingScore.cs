@@ -65,9 +65,9 @@ namespace RecordLinkageNet.Core
             return result;
         }
 
-        //TODO move to own class 
         private float EuclidianDistanceMultiDim(IEnumerable<byte> one, IEnumerable<byte> two)
         {
+            //TODO move to own class 
             //TODO move this to score producer ??? 
             var sum = one.Select((x, i) => (x - two.ElementAt(i)) * (x - two.ElementAt(i))).Sum();
             return (float)Math.Sqrt(sum);

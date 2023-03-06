@@ -35,7 +35,7 @@ namespace RecordLinkageNet.Core.Compare
         public string NameColB { get; set; } = null;
         //TODO: min max threshold
         //public float threshold = -1.0f; //default Non ? 
-        public float ScoreWeight { get; set; } = -1.0f;
+        public float ScoreWeight { get; set; } = 1.0f; //default neutral one
 
         public StringMethod MyStringMethod { get; set; } = StringMethod.Unknown;
         public string NameColNewLabel { get; set; } = null;

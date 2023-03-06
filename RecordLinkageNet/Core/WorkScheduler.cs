@@ -105,6 +105,9 @@ namespace RecordLinkageNet.Core
 
         private static async void ProduceCompareJobs(BufferBlock<JobSet> queue,Configuration config)
         {
+            //TODO check what is when b is small but a very big ?? 
+            //--> leads to huge jobs
+
             //found here: 
             //https://blog.stephencleary.com/2012/11/async-producerconsumer-queue-using.html
             //int limitComparison = 100000;
@@ -135,14 +138,14 @@ namespace RecordLinkageNet.Core
             MatchingScore matchingScore = new MatchingScore(configuration.ScoreProducer, p);
 
             int conditionCounter = 0;
-            int conditionAmount = configuration.ConditionList.GetAmountConditions(); 
+            //int conditionAmount = configuration.ConditionList.GetAmountConditions(); 
             //we do compare all
             foreach (Condition cond in configuration.ConditionList)
             {
                 DataColumn colA = configuration.Index.dataTabA.GetColumnByName(cond.NameColA);
                 DataColumn colB = configuration.Index.dataTabB.GetColumnByName(cond.NameColB);
 
-                //TODO fix fixed cast
+                //TODO fix fixed cast ??? how todo
                 DataCellString cellA = (DataCellString)colA.At((int)p.aIdx);
                 DataCellString cellB = (DataCellString)colB.At((int)p.bIdx);
 
@@ -178,6 +181,8 @@ namespace RecordLinkageNet.Core
 
                 if (result != -1.0f)
                     matchingScore.AddScore(cond.NameColNewLabel, result);
+
+                //test if min Score is still reachable at all 
 
                 //version 1 //TODO optimize reprogramm fluent score calc,  
                 // is ~ 30 percent faster than version 2 , tested with 4 conditions

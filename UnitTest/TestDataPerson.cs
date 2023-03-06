@@ -9,6 +9,18 @@ namespace UnitTest
 {
     public class TestDataGenerator
     {
+        public static List<TestDataPerson> ManipulateListAddAa(List<TestDataPerson> list)
+        {
+            foreach (TestDataPerson person in list)
+            {
+                person.NameFirst = 'a' + person.NameFirst.Remove(0, 1);
+                person.NameLast = 'a' + person.NameLast.Remove(0, 1);
+                person.City = 'a' + person.City.Remove(0, 1);
+
+            }
+            return list; 
+        }
+
         public static List<TestDataPerson> CreateTestPersons(int x = 10)
         {
             var userInfoFaker = new Faker<TestDataPerson>(locale: "de")

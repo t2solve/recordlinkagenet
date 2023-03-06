@@ -24,27 +24,6 @@ namespace RecordLinkageNet.Core
         public List<MatchingScore> MatchingScoreCompareResulList = new List<MatchingScore>();
         List<MatchingResultGroup> GroupedMatchingResultList = new List<MatchingResultGroup>();
 
-        public enum GroupingDirection
-        {
-            Unknown,
-            IndexAIsKeyForGroup,
-            IndexBIsKeyGorGroup,
-        }
-
-        public class MatchingResultGroup
-        {
-            public GroupingDirection GroupingDirection = GroupingDirection.Unknown;
-            public uint IndexKey   = uint.MaxValue;
-            public List<MatchingScore> CandidateList = new List<MatchingScore>();
-            public List<float> CandidateListDistancesToTopScore = new List<float>(); //TODO refactor to dictio is dangerous, when resort 
-            public MatchingScore GetTopScore()
-            {
-                if (CandidateList.Count > 0)
-                    return CandidateList.First();
-                return null; 
-            }
-        }
-
         private void SortAllCandidateListByTotalScoreTopDown(List<MatchingResultGroup> resultGroupCandidates)
         {
             if (resultGroupCandidates == null)
@@ -80,32 +59,31 @@ namespace RecordLinkageNet.Core
             }
         }
 
-        public List<MatchingResultGroup> GroupResultAsMatchingBlocks(GroupingDirection direction = GroupingDirection.IndexAIsKeyForGroup)
+        public List<MatchingResultGroup> GroupResultAsMatchingBlocks(MatchingResultGroup.GroupingDirection direction = MatchingResultGroup.GroupingDirection.IndexAIsKeyForGroup)
         {
-            //List<ResultGroupCandidates> resultGroupCandidates = new List<ResultGroupCandidates>();
-            //IEnumerable groups;
+           
             //group via linq
             //everything in one 
             List < MatchingResultGroup > resultGroupCandidates = null;
-            if (direction == GroupingDirection.IndexAIsKeyForGroup)
+            if (direction == MatchingResultGroup.GroupingDirection.IndexAIsKeyForGroup)
             {
                 resultGroupCandidates = (from p in MatchingScoreCompareResulList
                          group p by p.Pair.aIdx into g
                          select new MatchingResultGroup
                          {
-                             GroupingDirection = direction,
+                             MyGroupingDirection = direction,
                              IndexKey = g.Key,
                              CandidateList = g.ToList()
                          }).ToList();
                 //select new { KeyId = g.Key, Set = g.ToList() };
             }
-            if (direction == GroupingDirection.IndexBIsKeyGorGroup)
+            if (direction == MatchingResultGroup.GroupingDirection.IndexBIsKeyGorGroup)
             {
                 resultGroupCandidates = (from p in MatchingScoreCompareResulList
                                          group p by p.Pair.bIdx into g
                                          select new MatchingResultGroup
                                          {
-                                             GroupingDirection = direction,
+                                             MyGroupingDirection = direction,
                                              IndexKey = g.Key,
                                              CandidateList = g.ToList()
                                          }).ToList();
@@ -113,14 +91,10 @@ namespace RecordLinkageNet.Core
             GroupedMatchingResultList = resultGroupCandidates;
 
             //TODO seperate this steps
-
             //we sort
             SortAllCandidateListByTotalScoreTopDown(resultGroupCandidates);
-
             //we calc distance 
             CalcEuclidianDistanceToTop();
-
-            //TODO tests ? 
 
             //we save it 
             return GroupedMatchingResultList; 
@@ -128,7 +102,6 @@ namespace RecordLinkageNet.Core
 
         public List<MatchingResultGroup> FilterByConditon(Configuration config, float scoreMinValueRelative, float distanceMinValueRelative )
         {
-
 
             List<MatchingResultGroup> selectedList =  new List<MatchingResultGroup>();
             if (GroupedMatchingResultList == null)
@@ -176,7 +149,7 @@ namespace RecordLinkageNet.Core
                 bool flagFoundAtLeastOneElement = false;
                 //we do a member copy 
                 newGroup.IndexKey = groupOld.IndexKey;
-                newGroup.GroupingDirection = groupOld.GroupingDirection;
+                newGroup.MyGroupingDirection = groupOld.MyGroupingDirection;
 
                 //and item pairs if needed
                 for (int i=0;i<groupOld.CandidateList.Count; i++)

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
+    //TODO make this to an inteface 
     public class ScoreProducer
     {
         public float ScoreAbsTotalMinAccepted = -1.0f;
