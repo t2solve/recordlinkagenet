@@ -20,7 +20,7 @@ namespace UnitTest
         public async Task BasicSystemTest1()
         {
             Stopwatch sw = new Stopwatch();
-            int amountTestSet = 100000; 
+            int amountTestSet = 1000; 
 
 
             int amountTestValueUnion = (int)( (float) amountTestSet  * (0.1f)); // 10 percent

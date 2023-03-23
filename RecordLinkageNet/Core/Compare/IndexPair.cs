@@ -11,6 +11,7 @@ namespace RecordLinkageNet.Core.Compare
     /// Class for index tuple 
     /// 
     /// </summary>
+    [Serializable]
     public struct IndexPair : IEqualityComparer<IndexPair>
     {
 
@@ -20,10 +21,9 @@ namespace RecordLinkageNet.Core.Compare
         ////public Tuple<uint, uint> value = null;  //TODO check Z dimension ? 
         ////public long resultIdx = -1;
         ////public short conditionIndex = -1;
-        //public IndexPair()
-        //{
-        //    //value = new Tuple<uint, uint>(uint.MaxValue, uint.MaxValue);
-        //}
+        public IndexPair()
+        {
+        }
         public IndexPair(uint x, uint y)
         {
             aIdx = x;

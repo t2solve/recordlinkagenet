@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace RecordLinkageNet.Core.Distance
-{
+{ 
     public static class JaroWinkler
     {
         public static double JaroDistance(this ReadOnlyMemory<Char> s1, ReadOnlyMemory<Char> s2)
         {
+
             //see best explanation https://www.geeksforgeeks.org/jaro-and-jaro-winkler-similarity/
 
             int s1Len = s1.Length;

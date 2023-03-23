@@ -16,7 +16,6 @@ namespace RecordLinkageNet.Core
 {
     public class WorkScheduler
     {
-
         public Configuration config = null; // TODO delete here
         public WorkScheduler(Configuration configuration)
         {
@@ -28,49 +27,61 @@ namespace RecordLinkageNet.Core
         {
             public uint aIdxStart = 0;
             public uint aIdxEnd = 0;
+            public uint aIdxAmount = 0;
             public uint bIdxStart = 0;
             public uint bIdxEnd = 0;
+            public uint bIdxAmount = 0;
             public Configuration configuration = null;
 
             public JobSet()
             {
             }
+
+            public int CalcPercentageDone()
+            {
+                UInt64 amountTODO = aIdxAmount * bIdxAmount; 
+                UInt64 amountDone = aIdxEnd * bIdxAmount;
+
+                UInt64 percentage = amountDone * 100 / amountTODO; 
+                return (int)percentage;
+            }
         }
 
-        public async Task<ResultSet> Compare(CancellationToken stopToken )
+        public async Task<ResultSet> Compare(CancellationToken stopToken, IProgress<int> progress = null)
         {
+           
             ////TODO check config
             //Task< ResultSet>  t = Task.Run(() =>
             //{
-                ResultSet allResults = new ResultSet();
-                //using tpl to compute in consumer producer pattern 
-                //    https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-implement-a-producer-consumer-dataflow-pattern
+            ResultSet allResults = new ResultSet();
+            //using tpl to compute in consumer producer pattern 
+            //    https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-implement-a-producer-consumer-dataflow-pattern
 
-                //define a queue to exchange data
-                var queue = new BufferBlock<JobSet>();
+            //define a queue to exchange data
+            var queue = new BufferBlock<JobSet>();
 
-                // Start the producer and consumer.
-                WorkScheduler.ProduceCompareJobs(queue, config);
+            // Start the producer and consumer.
+            WorkScheduler.ProduceCompareJobs(queue, config);
 
-                //define options for comsumer
-                var consumerOptions = new ExecutionDataflowBlockOptions
-                {
-                    MaxDegreeOfParallelism = config.AmountCPUtoUse,
-                    CancellationToken = stopToken
-                };
+            //define options for comsumer
+            var consumerOptions = new ExecutionDataflowBlockOptions
+            {
+                MaxDegreeOfParallelism = config.AmountCPUtoUse,
+                CancellationToken = stopToken
+            };
 
-                List<ResultSet> resultList = new List<ResultSet>();
-                var consumer = new ActionBlock<JobSet>(x => resultList.Add(WorkScheduler.ProcessJobSet(x)), consumerOptions);
-                queue.LinkTo(consumer, new DataflowLinkOptions { PropagateCompletion = true, });
+            List<ResultSet> resultList = new List<ResultSet>();
+            var consumer = new ActionBlock<JobSet>(x => resultList.Add(WorkScheduler.ProcessJobSet(x,progress)), consumerOptions);
+            queue.LinkTo(consumer, new DataflowLinkOptions { PropagateCompletion = true, });
 
-                // Wait for everything to complete.
-                await Task.WhenAll(consumer.Completion, queue.Completion);
+            // Wait for everything to complete.
+            await Task.WhenAll(consumer.Completion, queue.Completion);
 
-                //we sum up all results 
-                foreach (ResultSet rs in resultList)
-                    allResults.MatchingScoreCompareResulList.AddRange(rs.MatchingScoreCompareResulList);
+            //we sum up all results 
+            foreach (ResultSet rs in resultList)
+                allResults.MatchingScoreCompareResulList.AddRange(rs.MatchingScoreCompareResulList);
 
-                Trace.WriteLine("debug: amount of matches is: " + allResults.MatchingScoreCompareResulList.Count);
+            Trace.WriteLine("debug: amount of matches is: " + allResults.MatchingScoreCompareResulList.Count);
 
             return allResults;
             //}
@@ -87,7 +98,7 @@ namespace RecordLinkageNet.Core
         //    uint numberJobs = amountConditions * amountCandidates;
         //    int appIndexPairSize = 2 * 4; //2times 4 Byte(int) 
         //    MemoryUsageEstimator.CheckCreateArrayPossible(numberJobs, appIndexPairSize);
-        
+
         //    //TODO react 
         //}
 
@@ -101,7 +112,7 @@ namespace RecordLinkageNet.Core
         //    queue.Complete();
         //}
 
-        
+
 
         private static async void ProduceCompareJobs(BufferBlock<JobSet> queue,Configuration config)
         {
@@ -118,12 +129,17 @@ namespace RecordLinkageNet.Core
 
             for (uint a = 0; a < aMaxTest ; a+=stepSize)
             {
+                if (a >= aMaxTest) //do a padding
+                    a = aMaxTest - 1;
+
                 JobSet set = new JobSet();
                 set.aIdxStart = a;
                 set.aIdxEnd =  a + stepSize;
+                set.aIdxAmount = config.Index.GetMaxADim();
                 //complete B
                 set.bIdxStart = 0;
                 set.bIdxEnd = config.Index.GetMaxBDim();
+                set.bIdxAmount = config.Index.GetMaxBDim();
                 set.configuration = config;
 
                 await queue.SendAsync(set);
@@ -145,37 +161,53 @@ namespace RecordLinkageNet.Core
                 DataColumn colA = configuration.Index.dataTabA.GetColumnByName(cond.NameColA);
                 DataColumn colB = configuration.Index.dataTabB.GetColumnByName(cond.NameColB);
 
+                if (colA== null || colB == null)
+                {
+                    Trace.WriteLine("error 98392839 column in datatable not found will be irngored ");
+                    continue;
+                }
+
+
                 //TODO fix fixed cast ??? how todo
                 DataCellString cellA = (DataCellString)colA.At((int)p.aIdx);
                 DataCellString cellB = (DataCellString)colB.At((int)p.bIdx);
 
                 float result = -1.0f;
-                //we compare
-                switch (cond.MyStringMethod)
+                //we do a short cut 
+                if (cellA == null || cellB == null)
                 {
-                    case Condition.StringMethod.Exact:
-                        result = IsStringSame(cellA.Value, cellB.Value);
-                        break;
-                    case Condition.StringMethod.JaroWinklerSimilarity:
-                        result =(float) JaroWinkler.JaroDistance(cellA.Value, cellB.Value);
-                        break;
-                    case Condition.StringMethod.HammingDistance:
-                        result = (float)Hamming.HammingDistance(cellA.Value, cellB.Value);
-                        break;
-                    case Condition.StringMethod.DamerauLevenshteinDistance:
-                        result = (float)DamerauLevenshtein.DamerauLevenshteinDistance(cellA.Value, cellB.Value);
-                        break;
-                    case Condition.StringMethod.ShannonEntropyDistance:
-                        result = (float)ShannonEntropy.ShannonEntropyDistance(cellA.Value, cellB.Value);
-                        break;
-                    case Condition.StringMethod.MyCustomizedDistance:
-                        result = (float)CustomizedDistance.MyCustomizedDistance(cellA.Value, cellB.Value);
-                        break;
-                    default:
-                        Trace.WriteLine("error critical  20392093 try to use not implemented compare method");
-                        throw new NotImplementedException(); 
-                        break;
+                    result = 0.0f;
+                    //Trace.WriteLine("warning 29398238 data cell is null at indexA:"+ p.aIdx + " and indexB:"+ p.bIdx);
                 }
+                else
+                {
+                    //we compare
+                    switch (cond.MyStringMethod)
+                    {
+                        case Condition.StringMethod.Exact:
+                            result = IsStringSame(cellA.Value, cellB.Value);
+                            break;
+                        case Condition.StringMethod.JaroWinklerSimilarity:
+                            result = (float)JaroWinkler.JaroDistance(cellA.Value, cellB.Value);
+                            break;
+                        case Condition.StringMethod.HammingDistance:
+                            result = (float)Hamming.HammingDistance(cellA.Value, cellB.Value);
+                            break;
+                        case Condition.StringMethod.DamerauLevenshteinDistance:
+                            result = (float)DamerauLevenshtein.DamerauLevenshteinDistance(cellA.Value, cellB.Value);
+                            break;
+                        case Condition.StringMethod.ShannonEntropyDistance:
+                            result = (float)ShannonEntropy.ShannonEntropyDistance(cellA.Value, cellB.Value);
+                            break;
+                        case Condition.StringMethod.MyCustomizedDistance:
+                            result = (float)CustomizedDistance.MyCustomizedDistance(cellA.Value, cellB.Value);
+                            break;
+                        default:
+                            Trace.WriteLine("error critical  20392093 try to use not implemented compare method");
+                            throw new NotImplementedException();
+                            break;
+                    }
+                }//end comparable
 
                 conditionCounter += 1;
 
@@ -218,7 +250,7 @@ namespace RecordLinkageNet.Core
                 return 0.0f;
         }
 
-        private static ResultSet ProcessJobSet(JobSet jobSet)
+        private static ResultSet ProcessJobSet(JobSet jobSet, IProgress<int> progressInformer=null)
         {
             ResultSet ret = new ResultSet();
 
@@ -227,7 +259,7 @@ namespace RecordLinkageNet.Core
 
             ret.MatchingScoreCompareResulList = new List<MatchingScore>();
 
-            int jobIdCounter = 0;
+            uint jobIdCounter = 0;
             //int amountConditions = jobSet.configuration.ConditionList.GetAmountConditions();
             //DataTable datA = jobSet.configuration.Index.dataTabA;
             //DataTable datB = jobSet.configuration.Index.dataTabB;
@@ -247,6 +279,10 @@ namespace RecordLinkageNet.Core
                     jobIdCounter += 1;
                   
                 }
+
+            //we calc a progress
+            if (progressInformer != null)
+                 progressInformer.Report(jobSet.CalcPercentageDone()); 
 
             return ret;
         }

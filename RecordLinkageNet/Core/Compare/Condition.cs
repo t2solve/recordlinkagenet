@@ -9,6 +9,7 @@ namespace RecordLinkageNet.Core.Compare
     /// <summary>
     /// Class which defines what and how to compare datacolumns
     /// </summary>
+    [Serializable]
     public class Condition : IEquatable<Condition> , IComparable<Condition>
     {
         public enum StringMethod

@@ -12,6 +12,7 @@ namespace RecordLinkageNet.Core.Compare
     /// <summary>
     /// Class which does the comparision, internal iterating over DataSet A and B 
     /// </summary>
+    [Serializable]
     public class ConditionList : IEnumerable<Condition>
     {
         //jobId, result
@@ -36,6 +37,11 @@ namespace RecordLinkageNet.Core.Compare
         //    Unknown
         //}
         //public ConditionCompareMode ProcessMode = ConditionCompareMode.FullSetBased;
+
+        public void Add(Condition con )
+        {
+            this.conditionList.Add(con );
+        }
 
         public int GetAmountConditions()
         {
@@ -85,25 +91,25 @@ namespace RecordLinkageNet.Core.Compare
         //    return false; 
         //}
 
-        public Condition Exact(string dataAColName, string dataBColName, string newColLabel = null)
-        {
-            //TODO check  class recordlinkage.compare.Exact(left_on, right_on, agree_value=1, disagree_value=0, missing_value=0, label=None)
-            //TODO check asserts 
-            //Debug.Assert(canList.CheckDataAHasColWithName(dataAColName), "error 29882938 col name not found");
-            //Debug.Assert(canList.CheckDataBHasColWithName(dataBColName), "error 23235325 col name not found");
+        //public Condition Exact(string dataAColName, string dataBColName, string newColLabel = null)
+        //{
+        //    //TODO check  class recordlinkage.compare.Exact(left_on, right_on, agree_value=1, disagree_value=0, missing_value=0, label=None)
+        //    //TODO check asserts 
+        //    //Debug.Assert(canList.CheckDataAHasColWithName(dataAColName), "error 29882938 col name not found");
+        //    //Debug.Assert(canList.CheckDataBHasColWithName(dataBColName), "error 23235325 col name not found");
 
-            //we save the have 
-            Condition j = new Condition();
-            j.Mode = Condition.CompareType.Exact;
-            j.NameColA = dataAColName;
-            j.NameColB = dataBColName;
-            j.NameColNewLabel = newColLabel;
+        //    //we save the have 
+        //    Condition j = new Condition();
+        //    j.Mode = Condition.CompareType.Exact;
+        //    j.NameColA = dataAColName;
+        //    j.NameColB = dataBColName;
+        //    j.NameColNewLabel = newColLabel;
 
-            j.SetNewColName();
-            conditionList.Add(j);
+        //    j.SetNewColName();
+        //    conditionList.Add(j);
 
-            return j;
-        }
+        //    return j;
+        //}
 
         public Condition String(string dataAColName, string dataBColName, Condition.StringMethod method,  string newColLabel = null)
         {

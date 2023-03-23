@@ -6,20 +6,30 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace RecordLinkageNet.Core
 {
+    [Serializable]
+
     public class MatchingScore : IEquatable<MatchingScore>, IComparable<MatchingScore>
     {
         public IndexPair Pair = new IndexPair(uint.MaxValue, uint.MaxValue);
         public float ScoreTotal = -1.0f;
-        public Dictionary<string, byte> MatchScoreColumnByName = null;
+        [XmlIgnore]
+        public Dictionary<string, byte> MatchScoreColumnByName = new Dictionary<string, byte>();
+
+        [XmlIgnore]
         private ScoreProducer scoProducer = null;
+        public MatchingScore()
+        {
+
+        }
+
         public MatchingScore(ScoreProducer scoreProducer, IndexPair pair)
         {
             this.Pair = pair;
             this.scoProducer = scoreProducer;
-            MatchScoreColumnByName = new Dictionary<string, byte>();
         }
 
         public void AddScore(string columnName, float score)

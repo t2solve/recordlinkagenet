@@ -37,22 +37,5 @@ namespace RecordLinkageNet.Core.Data
         }
 
 
-
-        //public virtual int CompareTo(DataCell other)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-
-        //public bool Equals(DataCell<T> x, DataCell<T> y)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-
-        //public int GetHashCode([DisallowNull] DataCell<T> obj)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }

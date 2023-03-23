@@ -13,6 +13,8 @@ namespace RecordLinkageNet.Core.Data
     {
         //private List<DataColumn> columns = new List<DataColumn>();
         private Dictionary<string, DataColumn> namedColumnsMap = new Dictionary<string, DataColumn>();
+        private Dictionary<int, DataColumn> indexedColumnsMap = new Dictionary<int, DataColumn>();
+        private int indexCounter = 0; 
         private int amountRows = -1; 
 
         public DataColumn GetColumnByName(string name)
@@ -21,6 +23,24 @@ namespace RecordLinkageNet.Core.Data
                 return column;
 
             return null; 
+        }
+        public DataColumn GetColumnByIndex(int index)
+        {
+            if ( index<0|| index>= indexCounter)
+            {
+                Trace.WriteLine("error 2938928398 wrong index ");
+                throw new IndexOutOfRangeException("GetColumnByIndex wrong index");
+                return null; 
+            }
+            DataColumn col = null; 
+            if( indexedColumnsMap.TryGetValue(index, out col))
+            {
+                return col; 
+            }
+            else
+                Trace.WriteLine("error 2324252523 during indexexing data column");
+            
+            return null;
         }
 
         public int GetAmountRows()
@@ -32,20 +52,34 @@ namespace RecordLinkageNet.Core.Data
             return namedColumnsMap.Keys.Count();
         }
 
-        public DataTableFeather AddDataClassAsColumns(object data, int amountRows)
+        public List<string> GetColumnNames()
         {
-            //TODO type check data
-            if (data == null)
-                return null; 
+            return namedColumnsMap.Keys.ToList();
+        }
+
+        private bool CheckRowAmountViolationIsPresent(int amountRows)
+        {
             if (this.amountRows == -1)
             {
                 this.amountRows = amountRows;
             }
-            if (this.amountRows != amountRows)
+            else if (this.amountRows != amountRows)
             {
-                Trace.WriteLine("warning 29389832 misshaped columnsizes, old rowAmount is: " + this.amountRows);
+                Trace.WriteLine("warning 29389832 misshaped rowSizes, old rowAmount is: " + this.amountRows);
                 throw new ArrayTypeMismatchException("wrong size");
+                return true;
             }//wed add all columns
+            return false;
+        }
+
+        public DataTableFeather AddDataClassAsColumns(object data, int amountRows)
+        {
+            //TODO type check data
+            if (data == null)
+                return null;
+            if (CheckRowAmountViolationIsPresent(amountRows))
+                Trace.WriteLine("warning 29389832 misshaped ");
+            
             PropertyInfo[] propertyInfoArr = data.GetType().GetProperties();
             foreach (PropertyInfo i in propertyInfoArr)
             {
@@ -64,9 +98,19 @@ namespace RecordLinkageNet.Core.Data
 
         public DataTableFeather AddColumn(string name, DataColumn c)
         {
-            //TODO check 
+            //TODO check if the names exists !! 
+
             namedColumnsMap.Add(name, c);
-            c.ParentTable = this; 
+            c.ParentTable = this;
+
+            indexedColumnsMap.Add(indexCounter, c);
+            indexCounter += 1;
+
+            //we update the amount of rows
+            amountRows = c.Rows.Length;
+
+            if (CheckRowAmountViolationIsPresent(amountRows))
+                Trace.WriteLine("error 2983298398"); 
 
             return this; 
         }

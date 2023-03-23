@@ -16,12 +16,12 @@ namespace RecordLinkageNet.Core
         public float ScoreAbsTotalMax = -1.0f;
         public NumberTransposeHelper.TransposeModus TransposeModus = NumberTransposeHelper.TransposeModus.UNKNOWN;//TODO reunite with config 
         //public float ScoreTotalReached = -1.0f;
-        public ConditionList conditionList = null; 
+        public ConditionList conditionList = null;
         public ScoreProducer(ConditionList conList, NumberTransposeHelper.TransposeModus transposeModus)
         {
             conditionList = conList;
             TransposeModus = transposeModus;
-            
+
             this.CalcAbsTotalMaxScore();
 
             //default percentag is 60 percent
@@ -30,10 +30,10 @@ namespace RecordLinkageNet.Core
 
         public void SetMinimumAcceptanceThresholdInPerentage(float percentage)
         {
-            if(percentage < 0 || percentage > 1.0f)
+            if (percentage < 0 || percentage > 1.0f)
             {
                 Trace.WriteLine("error 2093029309 percetage out of range ");
-                throw new ArgumentOutOfRangeException(); 
+                throw new ArgumentOutOfRangeException();
             }
             else
             {
@@ -49,20 +49,20 @@ namespace RecordLinkageNet.Core
         public float CalcAbsTotalMaxScore()
         {
             float scoreMaxPossible = 0.0f;
-            byte maxByte = byte.MaxValue; 
-            foreach(Condition con in conditionList)
+            byte maxByte = byte.MaxValue;
+            foreach (Condition con in conditionList)
             {
-                if(con.ScoreWeight==-1.0f)
+                if (con.ScoreWeight == -1.0f)
                 {
-                    Trace.WriteLine("warning 287387378 score weight for condtion not set, will ignore this conditon"); 
+                    Trace.WriteLine("warning 287387378 score weight for condtion not set, will ignore this conditon");
                 }
                 else
                 {
-                    scoreMaxPossible +=  (ScaleWeightToByteRange(con.ScoreWeight) * maxByte);
+                    scoreMaxPossible += (ScaleWeightToByteRange(con.ScoreWeight) * maxByte);
                 }
             }
-            ScoreAbsTotalMax = scoreMaxPossible; 
-            return scoreMaxPossible; 
+            ScoreAbsTotalMax = scoreMaxPossible;
+            return scoreMaxPossible;
         }
 
         public float CalcAbsTotalReachedScore(MatchingScore m)
@@ -93,21 +93,21 @@ namespace RecordLinkageNet.Core
 
         public bool CheckScoreReachedForMinimumReachable(MatchingScore m)
         {
-            bool success = false; 
+            bool success = false;
             byte maxByte = byte.MaxValue;
             //update //TODO no calc every time ??
-            float scoreReached =  CalcAbsTotalReachedScore(m);
+            float scoreReached = CalcAbsTotalReachedScore(m);
 
             //we check if we will be able to reach our minimum 
             float possibleRestScore = 0.0f;
             Dictionary<string, float> conditionColNames = new Dictionary<string, float>();
-            foreach(Condition con in conditionList)
+            foreach (Condition con in conditionList)
             {
                 if (con.ScoreWeight != -1.0f)//only if set
                     conditionColNames.Add(con.NameColNewLabel, con.ScoreWeight);
             }
             //we calc 
-            foreach(var data in conditionColNames)
+            foreach (var data in conditionColNames)
             {
                 if (!m.MatchScoreColumnByName.ContainsKey(data.Key))
                 {
@@ -116,10 +116,10 @@ namespace RecordLinkageNet.Core
             }
 
             if ((scoreReached + possibleRestScore) > ScoreAbsTotalMinAccepted)
-                success = true; 
+                success = true;
 
 
-            return success; 
+            return success;
         }
 
         public float CalcScoreRelativePercentageFrom(MatchingScore m)
@@ -132,9 +132,9 @@ namespace RecordLinkageNet.Core
             else
             {
                 Trace.WriteLine("warning 2982983 please configure score");
-                throw new ArgumentOutOfRangeException(); 
+                throw new ArgumentOutOfRangeException();
             }
-            return relativeValue; 
+            return relativeValue;
         }
 
         public float CalcScoreAbsoluteValueFromPercentage(float percentage)
@@ -154,12 +154,12 @@ namespace RecordLinkageNet.Core
             }
             return absoluteValue;
         }
-            public byte TransposeComparisonResult(float result)
+        public byte TransposeComparisonResult(float result)
         {
-            if(TransposeModus == NumberTransposeHelper.TransposeModus.UNKNOWN)
+            if (TransposeModus == NumberTransposeHelper.TransposeModus.UNKNOWN)
             {
                 Trace.WriteLine("error 2039029309 set transpose modus before");
-                return 0; 
+                return 0;
             }
             return NumberTransposeHelper.TransposeFloatToByteRange01(result, TransposeModus);
 

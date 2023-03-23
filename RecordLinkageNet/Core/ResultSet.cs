@@ -17,19 +17,20 @@ namespace RecordLinkageNet.Core
     /// no Dataframe in ml net yet starts with 2.0 ?, so we use a own resultset structure
     /// </summary>
     //[ProtoContract]
+    [Serializable]
     public class ResultSet
     {
 
         //public Dictionary<IndexPair, int> indexMap = null;
         public List<MatchingScore> MatchingScoreCompareResulList = new List<MatchingScore>();
-        List<MatchingResultGroup> GroupedMatchingResultList = new List<MatchingResultGroup>();
+        ResultGroup GroupedMatchingResultList = new ResultGroup();
 
-        private void SortAllCandidateListByTotalScoreTopDown(List<MatchingResultGroup> resultGroupCandidates)
+        private void SortAllCandidateListByTotalScoreTopDown(ResultGroup resultGroupCandidates)
         {
             if (resultGroupCandidates == null)
                 return; 
 
-            foreach(MatchingResultGroup c in resultGroupCandidates)
+            foreach(MatchingResultGroup c in resultGroupCandidates.Data)
             {
                 c.CandidateList.Sort();
             }
@@ -40,7 +41,7 @@ namespace RecordLinkageNet.Core
             if (GroupedMatchingResultList == null)
                 return;
 
-            foreach (MatchingResultGroup group in GroupedMatchingResultList)
+            foreach (MatchingResultGroup group in GroupedMatchingResultList.Data)
             {
                 MatchingScore topScore = group.GetTopScore();
 
@@ -59,15 +60,15 @@ namespace RecordLinkageNet.Core
             }
         }
 
-        public List<MatchingResultGroup> GroupResultAsMatchingBlocks(MatchingResultGroup.GroupingDirection direction = MatchingResultGroup.GroupingDirection.IndexAIsKeyForGroup)
+        public ResultGroup GroupResultAsMatchingBlocks(MatchingResultGroup.GroupingDirection direction = MatchingResultGroup.GroupingDirection.IndexAIsKeyForGroup)
         {
-           
+
             //group via linq
             //everything in one 
-            List < MatchingResultGroup > resultGroupCandidates = null;
+            ResultGroup resultGroupCandidates = new ResultGroup();
             if (direction == MatchingResultGroup.GroupingDirection.IndexAIsKeyForGroup)
             {
-                resultGroupCandidates = (from p in MatchingScoreCompareResulList
+                resultGroupCandidates.Data = (from p in MatchingScoreCompareResulList
                          group p by p.Pair.aIdx into g
                          select new MatchingResultGroup
                          {
@@ -79,7 +80,7 @@ namespace RecordLinkageNet.Core
             }
             if (direction == MatchingResultGroup.GroupingDirection.IndexBIsKeyGorGroup)
             {
-                resultGroupCandidates = (from p in MatchingScoreCompareResulList
+                resultGroupCandidates.Data = (from p in MatchingScoreCompareResulList
                                          group p by p.Pair.bIdx into g
                                          select new MatchingResultGroup
                                          {
@@ -88,6 +89,7 @@ namespace RecordLinkageNet.Core
                                              CandidateList = g.ToList()
                                          }).ToList();
             }
+            //save ref global
             GroupedMatchingResultList = resultGroupCandidates;
 
             //TODO seperate this steps
@@ -100,17 +102,17 @@ namespace RecordLinkageNet.Core
             return GroupedMatchingResultList; 
         }
 
-        public List<MatchingResultGroup> FilterByConditon(Configuration config, float scoreMinValueRelative, float distanceMinValueRelative )
+        public ResultGroup FilterByConditon(Configuration config, float scoreMinValueRelative, float distanceMinValueRelative )
         {
 
-            List<MatchingResultGroup> selectedList =  new List<MatchingResultGroup>();
+            ResultGroup selectedList =  new ResultGroup();
             if (GroupedMatchingResultList == null)
                 return null;
 
             //we get a head 
-            if (GroupedMatchingResultList.Count == 0)
+            if (GroupedMatchingResultList.Data.Count == 0)
                 return null; 
-            MatchingResultGroup firstGroup = GroupedMatchingResultList[0];
+            MatchingResultGroup firstGroup = GroupedMatchingResultList.Data[0];
 
             //we get a head 
             if (firstGroup.CandidateList.Count == 0)
@@ -143,7 +145,7 @@ namespace RecordLinkageNet.Core
             //        CandidateListDistances = m.CandidateListDistances.Where(u => u > scoreMinValue).ToList()
             //    }).ToList();
 
-            foreach ( MatchingResultGroup groupOld in GroupedMatchingResultList )
+            foreach ( MatchingResultGroup groupOld in GroupedMatchingResultList.Data )
             {
                 MatchingResultGroup newGroup = new MatchingResultGroup();
                 bool flagFoundAtLeastOneElement = false;
@@ -166,7 +168,7 @@ namespace RecordLinkageNet.Core
                     }
                  }
                 if( flagFoundAtLeastOneElement)
-                    selectedList.Add(newGroup);
+                    selectedList.Data.Add(newGroup);
             }
 
             return selectedList; 
@@ -195,6 +197,6 @@ namespace RecordLinkageNet.Core
 
         //public HugeMatrix<byte> data = null;
 
-
+        
     }
 }
