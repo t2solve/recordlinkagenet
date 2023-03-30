@@ -10,6 +10,7 @@ namespace RecordLinkageNet.Core.Data
 {
     public class DataColumn : IEnumerable<DataCell>
     {
+        //TODO avoid public
         public DataTableFeather ParentTable = null; 
         public DataCell[] Rows= null; //TODO use init 
         //public DataCell current = null;
@@ -23,8 +24,14 @@ namespace RecordLinkageNet.Core.Data
         //public  CompareCondition compareCondition = null;
         public DataColumn(int cellAmount, Type type)
         {
-            //if(
-            //    Type intType when intType == typeof(int):
+            if (cellAmount < 0)
+                throw new ArgumentOutOfRangeException("cellamount");
+            if( type==null)
+                throw new ArgumentNullException("type");
+
+            //set type
+            DataType = type; 
+            
             switch (type)
             {
                 case Type stringType when stringType == typeof(string):
@@ -36,6 +43,11 @@ namespace RecordLinkageNet.Core.Data
   
             }
         }
+        public Type GetDataTypeOfCol()
+        {
+            return DataType;
+        }
+
         public DataCell At(int idx)
         {
             if (idx < 0 || idx >= indexLimit)
@@ -43,7 +55,7 @@ namespace RecordLinkageNet.Core.Data
             return Rows[idx];
         }
 
-        public bool AddCell(DataCell cell)
+        public bool AppendCell(DataCell cell)
         {
             if(indexCounter==-1)
             {

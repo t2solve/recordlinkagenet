@@ -7,6 +7,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,12 +18,13 @@ namespace RecordLinkageNet.Core
     /// no Dataframe in ml net yet starts with 2.0 ?, so we use a own resultset structure
     /// </summary>
     //[ProtoContract]
-    [Serializable]
+    [DataContract(Name = "ResultSet", Namespace = "DataContracts")]
     public class ResultSet
     {
-
+        [DataMember(Name = "MatchingScoreCompareResulList")]
         //public Dictionary<IndexPair, int> indexMap = null;
         public List<MatchingScore> MatchingScoreCompareResulList = new List<MatchingScore>();
+        [DataMember(Name = "GroupedMatchingResultList")]
         ResultGroup GroupedMatchingResultList = new ResultGroup();
 
         private void SortAllCandidateListByTotalScoreTopDown(ResultGroup resultGroupCandidates)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace RecordLinkageNet.Core.Compare
     /// <summary>
     /// Class which defines what and how to compare datacolumns
     /// </summary>
-    [Serializable]
+    [DataContract(Name = "Condition", Namespace = "DataContracts")]
     public class Condition : IEquatable<Condition> , IComparable<Condition>
     {
         public enum StringMethod
@@ -30,15 +31,19 @@ namespace RecordLinkageNet.Core.Compare
             Numeric,
             Unknown
         }
-
+        [DataMember(Name = "Mode")]
         public CompareType Mode { get; set; } = CompareType.Unknown;
+        [DataMember(Name = "NameColA")]
         public string NameColA { get; set; } = null;
+        [DataMember(Name = "NameColB")]
         public string NameColB { get; set; } = null;
         //TODO: min max threshold
         //public float threshold = -1.0f; //default Non ? 
+        [DataMember(Name = "ScoreWeight")]
         public float ScoreWeight { get; set; } = 1.0f; //default neutral one
-
+        [DataMember(Name = "MyStringMethod")]
         public StringMethod MyStringMethod { get; set; } = StringMethod.Unknown;
+        [DataMember(Name = "NameColNewLabel")]
         public string NameColNewLabel { get; set; } = null;
 
         //an exlusive list we have implemted 

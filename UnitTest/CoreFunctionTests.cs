@@ -98,10 +98,10 @@ namespace UnitTest
             var groupsComplete = result.GroupResultAsMatchingBlocks();
 
             //we do a filter selection 
-            Trace.WriteLine("amount of groups: " + groupsComplete.Count);
+            Trace.WriteLine("amount of groups: " + groupsComplete.Data.Count);
 
             var groupsFiltered = result.FilterByConditon(config, 0.8f, 0.2f);
-            Trace.WriteLine("amount of groups: " + groupsFiltered.Count);
+            Trace.WriteLine("amount of groups: " + groupsFiltered.Data.Count);
 
             TimeSpan stopwatchElapsed = sw.Elapsed;
             Console.WriteLine("\tfinsihed used:\t" + Convert.ToInt32(stopwatchElapsed.TotalMilliseconds) + " ms");

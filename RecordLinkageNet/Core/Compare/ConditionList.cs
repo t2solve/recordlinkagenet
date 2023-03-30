@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Compare
@@ -12,12 +13,20 @@ namespace RecordLinkageNet.Core.Compare
     /// <summary>
     /// Class which does the comparision, internal iterating over DataSet A and B 
     /// </summary>
-    [Serializable]
+    [DataContract(Name = "ConditionList", Namespace = "DataContracts")]
     public class ConditionList : IEnumerable<Condition>
     {
         //jobId, result
         //private Queue<Task<Tuple<long, float>>> myTaskList = new Queue<Task<Tuple<long, float>>>(); //really ?? 
+        [DataMember(Name = "ConditionListData")]
         private List<Condition> conditionList = new List<Condition>();//condition list 
+        private Dictionary<string,Tuple<string,string>> colNamesMappingNewToCond = new Dictionary<string, Tuple<string, string>> ();
+        //[DataMember(Name = "ConditionListData")]
+        //public List<Condition> ConditionListData
+        //{
+        //    get { return conditionList; }
+        //    set { conditionList = value; }
+        //}
         //private CandidateList canList = null;
         //                // jobID, index
         //private Dictionary<long,IndexPair> myIndexJobMap = new Dictionary<long, IndexPair>();//lookup table
@@ -37,9 +46,21 @@ namespace RecordLinkageNet.Core.Compare
         //    Unknown
         //}
         //public ConditionCompareMode ProcessMode = ConditionCompareMode.FullSetBased;
+        public Tuple<string, string> GetOldNamesOfColumn(string name)
+        {
+            Tuple<string, string> retVal = null;
 
+            if(colNamesMappingNewToCond.ContainsKey(name))
+            {
+                retVal = colNamesMappingNewToCond[name];    
+            }
+
+            return retVal; 
+        }
         public void Add(Condition con )
         {
+            RememberConditionNamesForTranslation(con);
+
             this.conditionList.Add(con );
         }
 
@@ -111,6 +132,18 @@ namespace RecordLinkageNet.Core.Compare
         //    return j;
         //}
 
+        private void RememberConditionNamesForTranslation(Condition j)
+        {
+            //we remember what we renames 
+            if (colNamesMappingNewToCond.ContainsKey(j.NameColNewLabel))
+            {
+                Trace.WriteLine("error 2932983 doubled condition names are not allowed ");
+                throw new ArgumentException();
+            }
+            colNamesMappingNewToCond.Add(j.NameColNewLabel, new Tuple<string, string>(j.NameColA, j.NameColB));
+
+        }
+
         public Condition String(string dataAColName, string dataBColName, Condition.StringMethod method,  string newColLabel = null)
         {
 
@@ -129,6 +162,9 @@ namespace RecordLinkageNet.Core.Compare
             j.NameColNewLabel = newColLabel;
 
             j.SetNewColName();
+
+            RememberConditionNamesForTranslation(j);
+
             conditionList.Add(j);
 
             return j;

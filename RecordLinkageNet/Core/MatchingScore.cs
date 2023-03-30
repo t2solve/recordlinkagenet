@@ -4,28 +4,38 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace RecordLinkageNet.Core
 {
-    [Serializable]
-
+    [DataContract(Name = "MatchingScore", Namespace = "DataContracts")]
     public class MatchingScore : IEquatable<MatchingScore>, IComparable<MatchingScore>
     {
+        public enum AcceptanceLevel
+        {
+            Unknown,
+            MatchAccepted,
+            MatchRejected,
+        }
+        [DataMember(Name = "AcceptanceLevel")]
+        public AcceptanceLevel AcceptanceLvl = AcceptanceLevel.Unknown;
+
+        [DataMember(Name = "Pair")]
         public IndexPair Pair = new IndexPair(uint.MaxValue, uint.MaxValue);
+        [DataMember(Name = "ScoreTotal")]
         public float ScoreTotal = -1.0f;
-        [XmlIgnore]
+        [DataMember(Name = "MatchScoreColumnByName")]
         public Dictionary<string, byte> MatchScoreColumnByName = new Dictionary<string, byte>();
 
-        [XmlIgnore]
+        [IgnoreDataMember]
         private ScoreProducer scoProducer = null;
         public MatchingScore()
         {
 
         }
-
         public MatchingScore(ScoreProducer scoreProducer, IndexPair pair)
         {
             this.Pair = pair;
