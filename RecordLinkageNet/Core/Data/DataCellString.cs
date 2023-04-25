@@ -35,7 +35,7 @@ namespace RecordLinkageNet.Core.Data
             return false; 
         }
 
-        public int GetHashCode([DisallowNull] DataCellString obj)
+        public int GetHashCode( DataCellString obj)
         {
            return obj.myvalue.GetHashCode();
         }

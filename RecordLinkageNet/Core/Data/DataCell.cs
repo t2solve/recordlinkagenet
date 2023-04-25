@@ -31,7 +31,7 @@ namespace RecordLinkageNet.Core.Data
             throw new NotImplementedException();
         }
 
-        public int GetHashCode([DisallowNull] DataCell obj)
+        public int GetHashCode( DataCell obj)
         {
             throw new NotImplementedException();
         }

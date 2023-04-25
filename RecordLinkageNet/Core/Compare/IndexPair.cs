@@ -14,15 +14,13 @@ namespace RecordLinkageNet.Core.Compare
     [Serializable]
     public struct IndexPair : IEqualityComparer<IndexPair>
     {
-
         public uint aIdx = uint.MaxValue;
         public uint bIdx = uint.MaxValue;
-        ////  aIdx  bIdx  //ulong is to huge 
-        ////public Tuple<uint, uint> value = null;  //TODO check Z dimension ? 
-        ////public long resultIdx = -1;
-        ////public short conditionIndex = -1;
+
         public IndexPair()
         {
+            aIdx = uint.MaxValue; ;
+            bIdx = uint.MaxValue; ;
         }
         public IndexPair(uint x, uint y)
         {
@@ -38,46 +36,20 @@ namespace RecordLinkageNet.Core.Compare
                     return true;
             return false;
         }
-        public int GetHashCode([DisallowNull] IndexPair obj)
+        public int GetHashCode( IndexPair obj)
         {
-            return HashCode.Combine(obj.aIdx, obj.bIdx);
+            // .net core version:
+            //return HashCode.Combine(obj.aIdx, obj.bIdx);
+            //see
+            //https://stackoverflow.com/questions/60956569/hashcode-equivalent-in-net-framework
+            return new { obj.aIdx, obj.bIdx }.GetHashCode();
         }
 
         public override string ToString()
         {
             return "Pair<" + aIdx + "," + bIdx + ">";
         }
-        ////public IndexPair(uint x, uint y, short conIndex)
-        ////{
-        ////    this.value = new Tuple<uint, uint>(x, y);
-        ////    this.conditionIndex = conIndex;
-        ////}
-
-        //public override bool Equals(object obj) => Equals(obj as IndexPair);
-
-        //public bool Equals(IndexPair p)
-        //{
-        //    //bool success=false;
-        //    //if(this.conditionIndex==p.conditionIndex)
-        //    //if (value.Item2 == p.value.Item2)
-        //    //    if (value.Item1 == p.value.Item1)
-        //    //        return true;
-        //    if (this.aIdx == p.aIdx)
-        //        if (this.bIdx == p.bIdx)
-        //            return true;
-        //    return false;
-        //}
-
-        //public override int GetHashCode()
-        //{
-        //    return HashCode.Combine(aIdx,bIdx);
-        //}
-
-        //public int GetResultIndex(uint amountRowsInB)
-        //{
-
-        //    return (int)((value.Item1 * (amountRowsInB)) + value.Item2); 
-        //}
+      
 
     }
 }

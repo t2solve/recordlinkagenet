@@ -1,11 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
+  <!--PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+  </PropertyGroup-->
+  <PropertyGroup>
+    
+	<TargetFramework>net472</TargetFramework>
+	<Platforms>AnyCPU;x64</Platforms>
+	<LangVersion>10.0</LangVersion>
+	<PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="AutoBogus" Version="2.13.1" />
     <PackageReference Include="Microsoft.ML" Version="2.0.1" />
@@ -17,7 +24,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\RecordLinkageNet\RecordLinkageNet.csproj" />
   </ItemGroup>
