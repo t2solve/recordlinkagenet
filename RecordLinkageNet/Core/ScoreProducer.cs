@@ -14,14 +14,15 @@ namespace RecordLinkageNet.Core
     {
         public float ScoreAbsTotalMinAccepted = -1.0f;
         public float ScoreAbsTotalMax = -1.0f;
-        public NumberTransposeHelper.TransposeModus TransposeModus = NumberTransposeHelper.TransposeModus.UNKNOWN;//TODO reunite with config 
+        //public NumberTransposeHelper.TransposeModus TransposeModus = NumberTransposeHelper.TransposeModus.UNKNOWN;//TODO reunite with config 
         //public float ScoreTotalReached = -1.0f;
-        public ConditionList conditionList = null;
-        public ScoreProducer(ConditionList conList, NumberTransposeHelper.TransposeModus transposeModus)
+        private ConditionList conditionList = null;
+        private Configuration config = null;
+        public ScoreProducer(Configuration config) //ConditionList conList, Configuration config)// NumberTransposeHelper.TransposeModus transposeModus)
         {
-            conditionList = conList;
-            TransposeModus = transposeModus;
-
+            conditionList = config.ConditionList;
+            //TransposeModus = transposeModus;
+            this.config = config;
             this.CalcAbsTotalMaxScore();
 
             //default percentag is 60 percent
@@ -156,12 +157,12 @@ namespace RecordLinkageNet.Core
         }
         public byte TransposeComparisonResult(float result)
         {
-            if (TransposeModus == NumberTransposeHelper.TransposeModus.UNKNOWN)
+            if (config.NumberTransposeModus == NumberTransposeHelper.TransposeModus.UNKNOWN)
             {
                 Trace.WriteLine("error 2039029309 set transpose modus before");
                 return 0;
             }
-            return NumberTransposeHelper.TransposeFloatToByteRange01(result, TransposeModus);
+            return NumberTransposeHelper.TransposeFloatToByteRange01(result, config.NumberTransposeModus);
 
         }
 

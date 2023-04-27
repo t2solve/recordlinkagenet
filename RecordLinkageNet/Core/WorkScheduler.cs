@@ -16,10 +16,12 @@ namespace RecordLinkageNet.Core
 {
     public class WorkScheduler
     {
-        public Configuration config = null; // TODO delete here
-        public WorkScheduler(Configuration configuration)
+        private Configuration config = null; // TODO delete here
+        public WorkScheduler()//Configuration configuration)
         {
-            config = configuration;
+            //small redirect
+            config = Configuration.Instance;
+            //config = configuration;
         }
 
         //! helper class for job handling
@@ -31,7 +33,7 @@ namespace RecordLinkageNet.Core
             public uint bIdxStart = 0;
             public uint bIdxEnd = 0;
             public uint bIdxAmount = 0;
-            public Configuration configuration = null;
+            //public Configuration configuration = null;
 
             public JobSet()
             {
@@ -61,7 +63,7 @@ namespace RecordLinkageNet.Core
             var queue = new BufferBlock<JobSet>();
 
             // Start the producer and consumer.
-            WorkScheduler.ProduceCompareJobs(queue, config);
+            WorkScheduler.ProduceCompareJobs(queue);
 
             //define options for comsumer
             var consumerOptions = new ExecutionDataflowBlockOptions
@@ -114,8 +116,9 @@ namespace RecordLinkageNet.Core
 
 
 
-        private static async void ProduceCompareJobs(BufferBlock<JobSet> queue,Configuration config)
+        private static async void ProduceCompareJobs(BufferBlock<JobSet> queue)
         {
+            Configuration config = Configuration.Instance;
             //TODO check what is when b is small but a very big ?? 
             //--> leads to huge jobs
 
@@ -140,7 +143,7 @@ namespace RecordLinkageNet.Core
                 set.bIdxStart = 0;
                 set.bIdxEnd = config.Index.GetMaxBDim();
                 set.bIdxAmount = config.Index.GetMaxBDim();
-                set.configuration = config;
+                //set.configuration = config;
 
                 await queue.SendAsync(set);
                
@@ -149,9 +152,10 @@ namespace RecordLinkageNet.Core
 
         }
 
-        private static MatchingScore DoMatching(IndexPair p, Configuration configuration)
+        private static MatchingScore DoMatching(IndexPair p)//, Configuration configuration)
         {
-            MatchingScore matchingScore = new MatchingScore(configuration.ScoreProducer, p);
+            Configuration configuration = Configuration.Instance;
+            MatchingScore matchingScore = new MatchingScore( p);
 
             int conditionCounter = 0;
             //int conditionAmount = configuration.ConditionList.GetAmountConditions(); 
@@ -272,7 +276,7 @@ namespace RecordLinkageNet.Core
                 {
                     var indexPair = new IndexPair(a, b);
 
-                    var matchingResult = DoMatching(indexPair, jobSet.configuration);
+                    var matchingResult = DoMatching(indexPair); //, jobSet.configuration);
                     if(matchingResult!=null)
                         ret.MatchingScoreCompareResulList.Add(matchingResult);
 

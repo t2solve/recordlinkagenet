@@ -10,8 +10,20 @@ using IndexFeather = RecordLinkageNet.Core.Compare.IndexFeather;
 
 namespace RecordLinkageNet.Core
 {
-    public class Configuration
+    //singelon class for config
+    public sealed class Configuration
     {
+        //accoring to https://csharpindepth.com/Articles/Singleton
+        private static readonly Lazy<Configuration> lazy =
+        new Lazy<Configuration>(() => new Configuration());
+
+        public static Configuration Instance { get { return lazy.Value; } }
+
+        private Configuration()
+        {
+        }
+
+        //TODO implement a computation modus, to not change config while calc
 
         public ConditionList ConditionList { get; private set; } = null;
         public IndexFeather Index { get; private set; } = null; 
@@ -30,22 +42,35 @@ namespace RecordLinkageNet.Core
 
         public Configuration AddConditionList(ConditionList list)
         {
+            if (list == null)
+            {
+                Trace.WriteLine("error 29389389 null ref list"); 
+            }
+            //clear when existing
+            if (ConditionList != null)
+            {
+                if (ConditionList.GetAmountConditions() > 0)
+                    ConditionList.Clear();
+            }
+
+        
             this.ConditionList = list;
 
+            //TODO: remove here
             //we crerate our default score producer
-            this.ScoreProducer = new ScoreProducer(this.ConditionList, this.NumberTransposeModus);
+            this.ScoreProducer = new ScoreProducer(this);
 
             return this; 
         }
 
-        public Configuration SetScoreProducer( ScoreProducer scoreProducer)
-        {
-            this.ScoreProducer = scoreProducer;
+        //public Configuration SetScoreProducer( ScoreProducer scoreProducer)
+        //{
+        //    this.ScoreProducer = scoreProducer;
 
-            //we crerate our score producer
+        //    //we crerate our score producer
 
-            return this;
-        }
+        //    return this;
+        //}
 
 
     }

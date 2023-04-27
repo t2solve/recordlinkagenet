@@ -69,6 +69,11 @@ namespace RecordLinkageNet.Core.Compare
             return conditionList.Count;
         }
 
+        public void Clear()
+        {
+            conditionList.Clear();
+        }
+
         //public Compare(CandidateList c)
         //{   
         //    canList = c;

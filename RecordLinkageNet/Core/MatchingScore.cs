@@ -30,23 +30,30 @@ namespace RecordLinkageNet.Core
         [DataMember(Name = "MatchScoreColumnByName")]
         public Dictionary<string, byte> MatchScoreColumnByName = new Dictionary<string, byte>();
 
-        [IgnoreDataMember]
-        private ScoreProducer scoProducer = null;
-        public MatchingScore()
-        {
+//        [IgnoreDataMember]
+        //private ScoreProducer scoProducer = null;
+        //public MatchingScore()
+        //{
 
-        }
-        public MatchingScore(ScoreProducer scoreProducer, IndexPair pair)
+        //}
+        public MatchingScore( IndexPair pair)
         {
             this.Pair = pair;
-            this.scoProducer = scoreProducer;
         }
 
         public void AddScore(string columnName, float score)
         {
             //we do a conversion
 
-            MatchScoreColumnByName.Add(columnName, scoProducer.TransposeComparisonResult(score));
+            MatchScoreColumnByName.Add(columnName, Configuration.Instance.ScoreProducer.TransposeComparisonResult(score));
+        }
+
+        public float CalcScoreRelativePercentage()
+        {
+            if (Configuration.Instance.ScoreProducer == null)
+                return 0.0f;
+            //    scoProducer = new ScoreProducer(conList,)
+            return Configuration.Instance.ScoreProducer.CalcScoreRelativePercentageFrom(this);
         }
 
         public int CompareTo(MatchingScore other)
