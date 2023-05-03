@@ -13,6 +13,10 @@ namespace RecordLinkageNet.Core
     //singelon class for config
     public sealed class Configuration
     {
+        //TODO implement a computation modus, to not change config while calc
+        
+        
+        //singeleon pattern
         //accoring to https://csharpindepth.com/Articles/Singleton
         private static readonly Lazy<Configuration> lazy =
         new Lazy<Configuration>(() => new Configuration());
@@ -23,7 +27,8 @@ namespace RecordLinkageNet.Core
         {
         }
 
-        //TODO implement a computation modus, to not change config while calc
+
+        public List<string> ImportantIdList = new List<string>();
 
         public ConditionList ConditionList { get; private set; } = null;
         public IndexFeather Index { get; private set; } = null; 

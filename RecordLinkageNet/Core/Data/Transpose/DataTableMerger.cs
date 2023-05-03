@@ -38,7 +38,7 @@ namespace RecordLinkageNet.Core.Transpose
             return newName;
         }
 
-        public DataTableFeather MergeDataTableBy(ResultGroup resultGroup, DataTableFeather dA, DataTableFeather dB,bool flagWriteNonMatchedAsArow = false)
+        public DataTableFeather MergeDataTableBy(ResultGroup resultGroup, DataTableFeather dA, DataTableFeather dB,bool flagWriteNonMatchedAsRow = false)
         {
             //TODO informa abount A linked to B 
 
@@ -120,7 +120,7 @@ namespace RecordLinkageNet.Core.Transpose
             }
 
             //
-            if(flagWriteNonMatchedAsArow)
+            if(flagWriteNonMatchedAsRow)
             {
                 for (int i=0;i< amountDataA;i++)
                 {

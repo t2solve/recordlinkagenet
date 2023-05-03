@@ -81,9 +81,9 @@ namespace RecordLinkageNet.Core
 
             //we sum up all results 
             foreach (ResultSet rs in resultList)
-                allResults.MatchingScoreCompareResulList.AddRange(rs.MatchingScoreCompareResulList);
+                allResults.MatchingScoreCompareResultList.AddRange(rs.MatchingScoreCompareResultList);
 
-            Trace.WriteLine("debug: amount of matches is: " + allResults.MatchingScoreCompareResulList.Count);
+            Trace.WriteLine("debug: amount of matches is: " + allResults.MatchingScoreCompareResultList.Count);
 
             return allResults;
             //}
@@ -155,7 +155,7 @@ namespace RecordLinkageNet.Core
         private static MatchingScore DoMatching(IndexPair p)//, Configuration configuration)
         {
             Configuration configuration = Configuration.Instance;
-            MatchingScore matchingScore = new MatchingScore( p);
+            MatchingScore matchingScore = new MatchingScore( p);            
 
             int conditionCounter = 0;
             //int conditionAmount = configuration.ConditionList.GetAmountConditions(); 
@@ -261,7 +261,7 @@ namespace RecordLinkageNet.Core
             //TODO init
             //ret.indexMap = new Dictionary<IndexPair, int>();
 
-            ret.MatchingScoreCompareResulList = new List<MatchingScore>();
+            ret.MatchingScoreCompareResultList = new List<MatchingScore>();
 
             uint jobIdCounter = 0;
             //int amountConditions = jobSet.configuration.ConditionList.GetAmountConditions();
@@ -278,7 +278,7 @@ namespace RecordLinkageNet.Core
 
                     var matchingResult = DoMatching(indexPair); //, jobSet.configuration);
                     if(matchingResult!=null)
-                        ret.MatchingScoreCompareResulList.Add(matchingResult);
+                        ret.MatchingScoreCompareResultList.Add(matchingResult);
 
                     jobIdCounter += 1;
                   

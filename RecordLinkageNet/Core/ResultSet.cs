@@ -1,5 +1,7 @@
 ﻿using Microsoft.ML;
 using RecordLinkageNet.Core.Compare;
+using RecordLinkageNet.Core.Data;
+using RecordLinkageNet.Core.Transpose;
 //using ProtoBuf;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using DataRow = RecordLinkageNet.Core.Data.DataRow;
 
 namespace RecordLinkageNet.Core
 {
@@ -23,7 +26,7 @@ namespace RecordLinkageNet.Core
     {
         [DataMember(Name = "MatchingScoreCompareResulList")]
         //public Dictionary<IndexPair, int> indexMap = null;
-        public List<MatchingScore> MatchingScoreCompareResulList = new List<MatchingScore>();
+        public List<MatchingScore> MatchingScoreCompareResultList = new List<MatchingScore>();
         [DataMember(Name = "GroupedMatchingResultList")]
         ResultGroup GroupedMatchingResultList = new ResultGroup();
 
@@ -70,7 +73,7 @@ namespace RecordLinkageNet.Core
             ResultGroup resultGroupCandidates = new ResultGroup();
             if (direction == MatchingResultGroup.GroupingDirection.IndexAIsKeyForGroup)
             {
-                resultGroupCandidates.Data = (from p in MatchingScoreCompareResulList
+                resultGroupCandidates.Data = (from p in MatchingScoreCompareResultList
                          group p by p.Pair.aIdx into g
                          select new MatchingResultGroup
                          {
@@ -82,7 +85,7 @@ namespace RecordLinkageNet.Core
             }
             if (direction == MatchingResultGroup.GroupingDirection.IndexBIsKeyGorGroup)
             {
-                resultGroupCandidates.Data = (from p in MatchingScoreCompareResulList
+                resultGroupCandidates.Data = (from p in MatchingScoreCompareResultList
                                          group p by p.Pair.bIdx into g
                                          select new MatchingResultGroup
                                          {
@@ -104,8 +107,11 @@ namespace RecordLinkageNet.Core
             return GroupedMatchingResultList; 
         }
 
-        public ResultGroup FilterByConditon(Configuration config, float scoreMinValueRelative, float distanceMinValueRelative )
+        public ResultGroup FilterByMinScore(Configuration config, float scoreMinValueRelative)//, float distanceMinValueRelative )
         {
+
+            //TODO move  distance separate filter
+            //
 
             ResultGroup selectedList =  new ResultGroup();
             if (GroupedMatchingResultList == null)
@@ -147,6 +153,7 @@ namespace RecordLinkageNet.Core
             //        CandidateListDistances = m.CandidateListDistances.Where(u => u > scoreMinValue).ToList()
             //    }).ToList();
 
+            //TODO do it in linq
             foreach ( MatchingResultGroup groupOld in GroupedMatchingResultList.Data )
             {
                 MatchingResultGroup newGroup = new MatchingResultGroup();
@@ -160,8 +167,8 @@ namespace RecordLinkageNet.Core
                 {
                     //new test
                     float score = groupOld.CandidateList[i].ScoreTotal;
-                    float distance = groupOld.CandidateListDistancesToTopScore[i];
-                    if (score >= scoreMinValueAbs && distance <= distanceMinValueAbs)
+                    //float distance = groupOld.CandidateListDistancesToTopScore[i];
+                    if (score >= scoreMinValueAbs )// && distance <= distanceMinValueAbs) //TODO: check again assumption
                     {
                         flagFoundAtLeastOneElement = true;
                         newGroup.CandidateList.Add(groupOld.CandidateList[i]);
@@ -176,29 +183,6 @@ namespace RecordLinkageNet.Core
             return selectedList; 
         }
 
-
-        //              [a,b]    
-        //[ProtoMember(1)]
-        //public FLatIndexPair[] indexArray = null;
-
-        ////! we need a own managed structure, because of huge data
-        //public HugeMatrix<byte> compareData = null;
-        ////[ProtoMember(2)]
-        ////public ulong indexCount = 0;
-        ////[ProtoMember(3)]
-        ////public long indexCountB = 0;
-        ////[ProtoMember(4)]
-        //public List<string> colNames = null;
-        //[ProtoMember(5)]
-        //public byte[,] data = null; //compare data
-
-        //save data for fast analayse
-        //public float[] scoresValuesAbsolute = null;
-        //public float[] scoresValuesRelativToMax = null;
-
-
-        //public HugeMatrix<byte> data = null;
-
-        
     }
+
 }

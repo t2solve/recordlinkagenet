@@ -18,14 +18,21 @@ namespace RecordLinkageNet.Util
 
         //found here
         //https://stackoverflow.com/questions/750574/how-to-get-memory-available-or-used-in-c-sharp
-        private static float GetRamUsedInMegaByte()
+        public static float GetRamUsedInMegaByte()
         {
-            //TODO check difference GetAmountMemoryWeUseFromGCInMiB
             float memory = 0.0f;
-            using (Process proc = Process.GetCurrentProcess())
+            try
             {
-                // The proc.PrivateMemorySize64 will returns the private memory usage in byte.
-                memory = proc.PrivateMemorySize64 / (converionFactorByteToMB);
+                //TODO check difference GetAmountMemoryWeUseFromGCInMiB
+                using (Process proc = Process.GetCurrentProcess())
+                {
+                    // The proc.PrivateMemorySize64 will returns the private memory usage in byte.
+                    memory = proc.PrivateMemorySize64 / (converionFactorByteToMB);
+                }
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine("error 29382983 during get mem info :" + e.ToString());
             }
             return memory;
         }
@@ -62,7 +69,7 @@ namespace RecordLinkageNet.Util
             }
 
             //long memLimitPhysicalInMB = GetPhysicalAvailableMemoryInMiB(); //alias mem left
-            long memLimitTotallInMiB = GetTotalMemoryInMiB();
+            long memLimitTotallInMiB = (long) GetRamUsedInMegaByte();// GetTotalMemoryInMiB();
             //long memWeUseInMiB = GetAmountMemoryWeUseFromGCInMiB();
             //TODO repair
             if (CheckGCAllowsHugeObjects())
@@ -137,18 +144,19 @@ namespace RecordLinkageNet.Util
 
         }
 
-        public static long GetTotalMemoryInMiB()
-        {
-            PerformanceInformation pi = new PerformanceInformation();
-            if (GetPerformanceInfo(out pi, Marshal.SizeOf(pi)))
-            {
-                return Convert.ToInt64((pi.PhysicalTotal.ToInt64() * pi.PageSize.ToInt64() / converionFactorByteToMB));
-            }
-            else
-            {
-                return -1;
-            }
+        //dismiss is non- functioning
+        //public static long GetTotalMemoryInMiB()
+        //{
+        //    PerformanceInformation pi = new PerformanceInformation();
+        //    if (GetPerformanceInfo(out pi, Marshal.SizeOf(pi)))
+        //    {
+        //        return Convert.ToInt64((pi.PhysicalTotal.ToInt64() * pi.PageSize.ToInt64() / converionFactorByteToMB));
+        //    }
+        //    else
+        //    {
+        //        return -1;
+        //    }
 
-        }
+        //}
     }
 }

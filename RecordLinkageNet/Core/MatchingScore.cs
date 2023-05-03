@@ -30,12 +30,26 @@ namespace RecordLinkageNet.Core
         [DataMember(Name = "MatchScoreColumnByName")]
         public Dictionary<string, byte> MatchScoreColumnByName = new Dictionary<string, byte>();
 
+        [DataMember(Name = "EvenMatchingScoreChilds")]
+        private List<MatchingScore> evenChildMatches = new List<MatchingScore>();
 //        [IgnoreDataMember]
         //private ScoreProducer scoProducer = null;
         //public MatchingScore()
         //{
 
         //}
+
+        //we add a score as child, beecause its similiar 
+        public void AddEvenChild(MatchingScore ms)
+        {
+            evenChildMatches.Add(ms);
+        }
+
+        public List<MatchingScore> GetEventChilds()
+        {
+            return evenChildMatches;
+        }
+
         public MatchingScore( IndexPair pair)
         {
             this.Pair = pair;
