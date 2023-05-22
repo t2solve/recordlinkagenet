@@ -148,6 +148,7 @@ namespace RecordLinkageNet.Core.Data
 
             namedColumnsMap.Add(name, c);
             c.ParentTable = this;
+            c.Name = name; 
 
             indexedColumnsMap.Add(columnIndexMax, c);
             columnIndexMax += 1;
@@ -218,5 +219,60 @@ namespace RecordLinkageNet.Core.Data
 
             return this; 
         }
+
+        public DataCell GetCellAt(int columnIndex, int rowIndex)
+        {
+            DataCell cell = null;
+            if (rowIndex >= 0 && rowIndex < rowIndexMax)
+            {
+                int amountColumns = GetAmountColumns();
+                if(columnIndex>=0 && columnIndex < amountColumns)
+                {
+                    DataColumn column = null; 
+                    if (indexedColumnsMap.TryGetValue(columnIndex, out column))
+                    {
+                        cell = column.At(rowIndex);
+                        if(cell != null)
+                            return cell;
+                        else 
+                            Trace.WriteLine("error 546456 during get cell in table ");
+
+                    }
+                    else
+                        Trace.WriteLine("error 2398324989 during get cell in table ");
+                }
+            }
+            return cell;
+        }
+
+        //public DataTableFeather Append(DataRow row)
+        //{
+        //    int rowIndexLast = this.rowIndexMax + 1; 
+
+        //    //TODO create a copy of each column to increase the size 
+        //    foreach (var colName in row.Data.Keys)
+        //    {
+        //            DataColumn col = null;
+        //            if (namedColumnsMap.TryGetValue(colName, out col))
+        //            {
+        //                //TODO we do a type check
+        //                //we get the cell 
+        //                DataCell cell = col.At(rowIndex);
+        //                //we replace
+        //                if (cell != null)
+        //                {
+        //                    cell.Value = row.Data[colName].Value;
+        //                }
+        //                else Trace.WriteLine("error 342349898398 cell not found in table at col: " + colName + " with rowIndex: " + rowIndex);
+
+        //            }
+        //            else Trace.WriteLine("error 23253459 col name not found int table :" + colName);
+
+        //        }
+          
+
+        //    return this;
+        //}
+
     }
 }

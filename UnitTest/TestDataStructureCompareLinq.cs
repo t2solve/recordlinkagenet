@@ -11,6 +11,7 @@ using UnitTest;
 using RecordLinkageNet.Core.Data;
 using System.Reflection;
 using System.Diagnostics;
+using RecordLinkageNet.Core.Data.Transpose;
 
 namespace UnitTest
 {
@@ -32,24 +33,8 @@ namespace UnitTest
 
             //we construct two tables
             // convert 
-            DataTableFeather tabA = new DataTableFeather();
-
-            //TODO change to generic containter add
-            // like tab.AddListAndCreate
-
-            tabA.AddDataClassAsColumns(new TestDataPerson(), amountRows);
-            foreach(TestDataPerson p in testDataA)//we add all cells 
-            {
-                tabA.AddRow(p);
-            }
-
-            DataTableFeather tabB = new DataTableFeather();
-            tabB.AddDataClassAsColumns(new TestDataPerson(), amountRows);
-            foreach (TestDataPerson p in testDataB) //we add all cells 
-            {
-                tabB.AddRow(p);
-            }
-
+            DataTableFeather tabA = TableConverter.CreateTableFeatherFromDataObjectList(testDataA);
+            DataTableFeather tabB = TableConverter.CreateTableFeatherFromDataObjectList(testDataB);
             //we compare 
             //we use linq 
             //working

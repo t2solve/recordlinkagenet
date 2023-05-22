@@ -33,29 +33,43 @@ namespace RecordLinkageNet.Core.Transpose
 
             Encoding ourEncoding = Encoding.GetEncoding("ISO-8859-1");  //is iso 8859-1 
             bool appendFlag = false;
-            using (var sw = new StreamWriter(file, appendFlag, ourEncoding))
-            {
-                //we write the column header 
-                //this is the header row with display name
-                sw.Write("\"" + string.Join("\""+sep+"\"", data.GetColumnNames().ToArray()) + "\"" + newLine);
-                int rowAmount = data.GetAmountRows();
-                for(int i=0;i<rowAmount;i++)
+                using (var sw = new StreamWriter(file, appendFlag, ourEncoding))
                 {
-                    DataRow row = data.GetRow(i);
-                    StringBuilder rowBuilder = new StringBuilder(); 
-                    foreach(var dataCell  in row.Data.Values)
+                    //we write the column header 
+                    //this is the header row with display name
+                    sw.Write("\"" + string.Join("\"" + sep + "\"", data.GetColumnNames().ToArray()) + "\"" + newLine);
+                    int rowAmount = data.GetAmountRows();
+                    for (int i = 0; i < rowAmount; i++)
                     {
-                        rowBuilder.Append(dataCell.Value);
-                        rowBuilder.Append(sep); 
+                        DataRow row = data.GetRow(i);
+                        if (row == null)
+                        {
+                            Trace.WriteLine("error 29839389 during write row with index: " + i + " is null, row will be ignored");
+                            throw new NullReferenceException("error 29839389 row is null in DataTableFeather");
+                        }
+                        else
+                        {
+                            StringBuilder rowBuilder = new StringBuilder();
+                            foreach (DataCell dataCell in row.Data.Values)
+                            {
+                                if (dataCell == null)
+                                {
+                                    Trace.WriteLine("warning 23425 datacell is null, will be ignored");
+                                    rowBuilder.Append(String.Empty);
+                                }
+                                else
+                                    rowBuilder.Append(dataCell.Value);
+                                rowBuilder.Append(sep);
+                            }
+                            rowBuilder.Append(newLine);
+                            //this acts as datacolumn
+                            sw.Write(rowBuilder.ToString());
+                        }
                     }
-                    rowBuilder.Append(newLine); 
-                    //this acts as datacolumn
-                    sw.Write(rowBuilder.ToString());
-
+                    success = true;
                 }
-                    success = true; 
             }
-            }catch(Exception e)
+            catch(Exception e)
             {
                 Trace.WriteLine("error 20983928398 during write DataTable to csv: " + e.ToString() );
                 success = false; 

@@ -25,10 +25,11 @@ namespace RecordLinkageNet.Core.Data
             {
                 if (Data.ContainsKey(colName))
                 {
-                    sb.Append(Data[colName]);
+                    sb.Append(Data[colName].Value);
                 }
                 else Trace.WriteLine("warning 29389283  colname " + colName + " not found, will be ignored");
             }
+            Trace.WriteLine("debug: hash string double: " + sb.ToString());
             return HashString(sb.ToString());
         }
 

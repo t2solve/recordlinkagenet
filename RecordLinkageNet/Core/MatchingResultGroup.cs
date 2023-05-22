@@ -68,6 +68,8 @@ namespace RecordLinkageNet.Core
                 CandidateListDistancesToTopScore.RemoveAt(i);
                 succes = true;
             }
+
+            //TODO recalc the distances
             return succes;
         }
     }

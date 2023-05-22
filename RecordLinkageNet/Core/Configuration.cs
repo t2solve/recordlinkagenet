@@ -16,7 +16,7 @@ namespace RecordLinkageNet.Core
         //TODO implement a computation modus, to not change config while calc
         
         
-        //singeleon pattern
+        //singeleton pattern
         //accoring to https://csharpindepth.com/Articles/Singleton
         private static readonly Lazy<Configuration> lazy =
         new Lazy<Configuration>(() => new Configuration());

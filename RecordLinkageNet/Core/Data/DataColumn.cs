@@ -19,7 +19,7 @@ namespace RecordLinkageNet.Core.Data
         public Type DataType = null;
 
         private int indexCounter = -1; 
-        private int indexLimit = -1;
+        private int rowIndexLimit = -1;
         
         //public  CompareCondition compareCondition = null;
         public DataColumn(int cellAmount, Type type)
@@ -48,11 +48,11 @@ namespace RecordLinkageNet.Core.Data
             return DataType;
         }
 
-        public DataCell At(int idx)
+        public DataCell At(int rowIndex)
         {
-            if (idx < 0 || idx >= indexLimit)
+            if (rowIndex < 0 || rowIndex >= rowIndexLimit)
                 return null; 
-            return Rows[idx];
+            return Rows[rowIndex];
         }
 
         public bool AppendCell(DataCell cell)
@@ -63,7 +63,7 @@ namespace RecordLinkageNet.Core.Data
                 return false; 
             
             }
-            if(indexCounter >= indexLimit)
+            if(indexCounter >= rowIndexLimit)
             {
                 Trace.WriteLine("error 3f9g235235 array limit reached");
                 return false;
@@ -97,7 +97,7 @@ namespace RecordLinkageNet.Core.Data
                 Rows[i].Id = i;
             }
             indexCounter = 0;
-            indexLimit = amount; 
+            rowIndexLimit = amount; 
 
         }
 

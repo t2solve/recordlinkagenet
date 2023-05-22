@@ -73,7 +73,7 @@ namespace RecordLinkageNet.Core
             List<string> colNamesOfComapre = new List<string>();
             foreach (Condition con in config.ConditionList)
             {
-                colNamesOfComapre.Append(con.NameColB);
+                colNamesOfComapre.Add(con.NameColNewLabel);
             }
 
 
