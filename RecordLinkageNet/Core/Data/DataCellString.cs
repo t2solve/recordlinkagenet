@@ -9,6 +9,7 @@ namespace RecordLinkageNet.Core.Data
 {
     public class DataCellString : DataCell, IEqualityComparer<DataCellString>
     {
+        //TODO refactor eveything is a string here
         private string myvalue = "";
         public override string Value 
         { 

@@ -58,12 +58,15 @@ namespace RecordLinkageNet.Core.Compare
 
         public bool Equals(Condition other)
         {
+            //TODO fix, this doesnt make sense here
             if (other == null) return false;
             return (this.ScoreWeight.Equals(other.ScoreWeight));
         }
 
         public int CompareTo(Condition other)
         {
+            //TODO fix, this doesnt make sense here
+
             if (ScoreWeight == -1.0f)
                 return 1;
             else

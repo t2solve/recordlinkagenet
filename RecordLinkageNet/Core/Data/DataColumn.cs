@@ -10,6 +10,7 @@ namespace RecordLinkageNet.Core.Data
 {
     public class DataColumn : IEnumerable<DataCell>
     {
+        //TODO 
         //TODO avoid public
         public DataTableFeather ParentTable = null; 
         public DataCell[] Rows= null; //TODO use init 

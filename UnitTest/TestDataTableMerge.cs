@@ -60,9 +60,7 @@ namespace UnitTest
         public void TestCountDoubleRowsInIndexList()
         {
 
-            //we construct two tables
             DataTableFeather tabA = GenTestData();
-            DataTableFeather tabB = GenTestData();
 
             DataTableMerger merger = new DataTableMerger();
             List<IndexPair> indexList = new List<IndexPair>();

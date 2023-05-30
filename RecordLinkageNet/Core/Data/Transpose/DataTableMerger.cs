@@ -120,20 +120,28 @@ namespace RecordLinkageNet.Core.Transpose
                 }
 
                 //TODO test what we got as parameter  
-                Dictionary<string, string> namesMapTabA = null; 
-                dMerged = CreateTableHeader(dA, dB, amountRows, out namesMapTabA);
+                Dictionary<string, string> namesMapTabB = null; 
+                dMerged = CreateTableHeader( dB, dA, amountRows, out namesMapTabB);
 
                 //we do add it to our  
                 int rowCounter = 0;
                 foreach (IndexPair indexPair in indexList)
                 {
                     DataRow rowA = dA.GetRow((int)indexPair.aIdx);
-                    DataRow rowB = dB.GetRow((int)indexPair.bIdx);
+                    DataRow rowB = dB.GetRow((int)indexPair.bIdx); ; 
+                    //if indexRowB is max we add empty row ??? TODO remove againg
+                    //uint indexRowB = indexPair.bIdx; 
+                    //if (indexRowB == uint.MaxValue)
+                    //{
+                    //    foreach (KeyValuePair<string, DataCell> d in rowB.Data)
+                    //        d.Value.Value = "";
+                    //}
+                    
 
                     //we translate a data
-                    DataRow rowATranslated = TranslateAllColumnNames(rowA, namesMapTabA);
+                    DataRow rowATranslated = TranslateAllColumnNames(rowB, namesMapTabB);
                     //merge
-                    DataRow mergedRow = MergeTwoRows(rowATranslated, rowB);
+                    DataRow mergedRow = MergeTwoRows(rowATranslated, rowA);
                     dMerged.AddRow(rowCounter, mergedRow);
                     rowCounter += 1;
                 }
@@ -192,118 +200,118 @@ namespace RecordLinkageNet.Core.Transpose
         }
 
 
-        public DataTableFeather MergeDataTableBy(ResultGroup resultGroup, DataTableFeather dA, DataTableFeather dB,bool flagWriteNonMatchedAsRow = false, bool flagWriteDoubleAcceptedAsDoubleRows = false)
-        {
-            //TODO informa abount A linked to B 
+        //public DataTableFeather MergeDataTableBy(ResultGroup resultGroup, DataTableFeather dA, DataTableFeather dB,bool flagWriteNonMatchedAsRow = false, bool flagWriteDoubleAcceptedAsDoubleRows = false)
+        //{
+        //    //TODO informa abount A linked to B 
 
-            DataTableFeather dMerged = new DataTableFeather();
-            List<string> colNamesA = dA.GetColumnNames();
-            List<string> colNamesB = dB.GetColumnNames();
-            //we unfiy all col a name
-            //we do a translation for equal names
-            Dictionary<string, string> namesMapTabA = new Dictionary<string, string>();
-            foreach (string nameA in colNamesA)
-            {
-                string newNameA = UnifyColumName(nameA, colNamesB);
-                namesMapTabA[nameA] = newNameA;
-            }
+        //    DataTableFeather dMerged = new DataTableFeather();
+        //    List<string> colNamesA = dA.GetColumnNames();
+        //    List<string> colNamesB = dB.GetColumnNames();
+        //    //we unfiy all col a name
+        //    //we do a translation for equal names
+        //    Dictionary<string, string> namesMapTabA = new Dictionary<string, string>();
+        //    foreach (string nameA in colNamesA)
+        //    {
+        //        string newNameA = UnifyColumName(nameA, colNamesB);
+        //        namesMapTabA[nameA] = newNameA;
+        //    }
 
-            //get some infos we need
+        //    //get some infos we need
 
-            int amountDataA = dA.GetAmountRows();
-            int amountDataB = dB.GetAmountRows();
+        //    int amountDataA = dA.GetAmountRows();
+        //    int amountDataB = dB.GetAmountRows();
 
-            int amountRowsForFutureTable = amountDataA;
+        //    int amountRowsForFutureTable = amountDataA;
 
-            if (flagWriteDoubleAcceptedAsDoubleRows)
-            {
-                amountRowsForFutureTable = 0;
-                //we need to count all accepted rows 
-                foreach (var rsGroup in resultGroup.Data)
-                {
-                    bool oneEntryAccepted = false;
-                    foreach (var rsMatch in rsGroup.CandidateList)
-                    {
+        //    if (flagWriteDoubleAcceptedAsDoubleRows)
+        //    {
+        //        amountRowsForFutureTable = 0;
+        //        //we need to count all accepted rows 
+        //        foreach (var rsGroup in resultGroup.Data)
+        //        {
+        //            bool oneEntryAccepted = false;
+        //            foreach (var rsMatch in rsGroup.CandidateList)
+        //            {
 
-                        if (rsMatch.AcceptanceLvl == MatchingScore.AcceptanceLevel.MatchAccepted)
-                        {
-                            if (flagWriteDoubleAcceptedAsDoubleRows && !oneEntryAccepted)
-                            {
+        //                if (rsMatch.AcceptanceLvl == MatchingScore.AcceptanceLevel.MatchAccepted)
+        //                {
+        //                    if (flagWriteDoubleAcceptedAsDoubleRows && !oneEntryAccepted)
+        //                    {
 
-                                amountRowsForFutureTable++;
-                                oneEntryAccepted = true;
-                            }
-                        }
-                    }
-                    if (!oneEntryAccepted && flagWriteNonMatchedAsRow)
-                        amountRowsForFutureTable++;
-                }
-            }
+        //                        amountRowsForFutureTable++;
+        //                        oneEntryAccepted = true;
+        //                    }
+        //                }
+        //            }
+        //            if (!oneEntryAccepted && flagWriteNonMatchedAsRow)
+        //                amountRowsForFutureTable++;
+        //        }
+        //    }
 
-            //create the rows
-            //dMerged = CreateColumnFromTwoTables(dA, dB, amountRowsForFutureTable);
+        //    //create the rows
+        //    //dMerged = CreateColumnFromTwoTables(dA, dB, amountRowsForFutureTable);
            
 
-            //TODO count several things
-            Dictionary<int, bool> rowIndexMemory = new Dictionary<int, bool>();
+        //    //TODO count several things
+        //    Dictionary<int, bool> rowIndexMemory = new Dictionary<int, bool>();
 
-            int rowCounter = 0;
-            //we do need to add all data 
-            foreach(var rsGroup in resultGroup.Data)
-            {
-                foreach(var rsMatch in rsGroup.CandidateList)
-                {
-                    if(rsMatch.AcceptanceLvl== MatchingScore.AcceptanceLevel.MatchAccepted)
-                    {
-                        //we do add it to our  
-                        int rowIndexOfA = (int)rsMatch.Pair.aIdx;
-                        DataRow rowA = dA.GetRow(rowIndexOfA);
-                        DataRow rowB = dB.GetRow((int)rsMatch.Pair.bIdx);
+        //    int rowCounter = 0;
+        //    //we do need to add all data 
+        //    foreach(var rsGroup in resultGroup.Data)
+        //    {
+        //        foreach(var rsMatch in rsGroup.CandidateList)
+        //        {
+        //            if(rsMatch.AcceptanceLvl== MatchingScore.AcceptanceLevel.MatchAccepted)
+        //            {
+        //                //we do add it to our  
+        //                int rowIndexOfA = (int)rsMatch.Pair.aIdx;
+        //                DataRow rowA = dA.GetRow(rowIndexOfA);
+        //                DataRow rowB = dB.GetRow((int)rsMatch.Pair.bIdx);
 
-                        //we translate a data
-                        DataRow rowATranslated = TranslateAllColumnNames(rowA, namesMapTabA);
+        //                //we translate a data
+        //                DataRow rowATranslated = TranslateAllColumnNames(rowA, namesMapTabA);
 
-                        DataRow mergedRow = MergeTwoRows(rowATranslated, rowB);
+        //                DataRow mergedRow = MergeTwoRows(rowATranslated, rowB);
 
-                        //we need to add the row
-                        if(rowIndexMemory.ContainsKey(rowIndexOfA))
-                        {
-                            if(flagWriteDoubleAcceptedAsDoubleRows)
-                                dMerged.AddRow(rowCounter, mergedRow); 
-                            //else 
-                            //    Trace.WriteLine("warning 2938982398 doubled matches for 1 row, will be ignore atm"); 
+        //                //we need to add the row
+        //                if(rowIndexMemory.ContainsKey(rowIndexOfA))
+        //                {
+        //                    if(flagWriteDoubleAcceptedAsDoubleRows)
+        //                        dMerged.AddRow(rowCounter, mergedRow); 
+        //                    //else 
+        //                    //    Trace.WriteLine("warning 2938982398 doubled matches for 1 row, will be ignore atm"); 
 
-                        }
-                        else //first entry we add
-                        {
-                            rowIndexMemory.Add(rowIndexOfA, true);  
+        //                }
+        //                else //first entry we add
+        //                {
+        //                    rowIndexMemory.Add(rowIndexOfA, true);  
 
-                            dMerged.AddRow(rowCounter, mergedRow);
-                        }
+        //                    dMerged.AddRow(rowCounter, mergedRow);
+        //                }
                       
-                    }
-                    rowCounter++;//count
-                }
-            }
+        //            }
+        //            rowCounter++;//count
+        //        }
+        //    }
 
-            //
-            if(flagWriteNonMatchedAsRow)
-            {
-                for (int i=0;i< amountDataA;i++)
-                {
-                    if(! rowIndexMemory.ContainsKey(i))
-                    {
-                        //we add a A row 
-                        DataRow rowA = dA.GetRow(i);
-                        DataRow rowATranslated = TranslateAllColumnNames(rowA, namesMapTabA);
+        //    //
+        //    if(flagWriteNonMatchedAsRow)
+        //    {
+        //        for (int i=0;i< amountDataA;i++)
+        //        {
+        //            if(! rowIndexMemory.ContainsKey(i))
+        //            {
+        //                //we add a A row 
+        //                DataRow rowA = dA.GetRow(i);
+        //                DataRow rowATranslated = TranslateAllColumnNames(rowA, namesMapTabA);
 
-                        dMerged.AddRow(rowCounter++, rowATranslated);
-                    }
-                }
-            }
+        //                dMerged.AddRow(rowCounter++, rowATranslated);
+        //            }
+        //        }
+        //    }
 
-            return dMerged; 
-        }
+        //    return dMerged; 
+        //}
 
         private DataRow TranslateAllColumnNames(DataRow d, Dictionary<string,string> namesMap)
         {

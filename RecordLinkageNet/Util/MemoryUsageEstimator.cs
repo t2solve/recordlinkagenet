@@ -53,14 +53,11 @@ namespace RecordLinkageNet.Util
                 Trace.WriteLine("warnig 203989839, not compiled as 64 Bit, disallowed to use gcAllowVeryLargeObjects");
                 return false;
             }
-            //TODO test ? 
 
-            return false;
         }
-        public static bool CheckCreateArrayPossible(long amountElement, int approxmiatedSizeOfElementInBytes)
+        public static bool CheckCreateArrayPossible(long amountElement, int approxmiatedSizeOfElementInBytes )
         {
             long memLimitMaxInMiB = 2000;
-
             //A) constraint a, limit elements in array
             if (amountElement>=magicNumberMaxElementsInArray)
             {

@@ -14,6 +14,7 @@ namespace RecordLinkageNet.Core
     [DataContract(Name = "MatchingScore", Namespace = "DataContracts")]
     public class MatchingScore : IEquatable<MatchingScore>, IComparable<MatchingScore>
     {
+        //TODO split into 2 classes, candidate and score 
         public enum AcceptanceLevel
         {
             Unknown,
@@ -28,6 +29,8 @@ namespace RecordLinkageNet.Core
         [DataMember(Name = "ScoreTotal")]
         public float ScoreTotal = -1.0f;
         [DataMember(Name = "MatchScoreColumnByName")]
+
+        //TODO why by name ? 
         public Dictionary<string, byte> MatchScoreColumnByName = new Dictionary<string, byte>();
 
         [DataMember(Name = "EvenMatchingScoreChilds")]
