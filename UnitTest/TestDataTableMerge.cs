@@ -36,7 +36,7 @@ namespace UnitTest
             for (uint i = 0; i < tabA.GetAmountRows(); i++)
                 indexList.Add(new IndexPair(i, i));
 
-            DataTableFeather tabMerged =  merger.MergeColumnsDataByIndexList(indexList, tabA, tabB,true);
+            DataTableFeather tabMerged =  merger.MergeColumnsDataByIndexList(indexList,  tabB, tabA,true);
             //DataTableWriter.WriteAsCSV("Z:dataMerged.csv", tabMerged);
             //DataTableWriter.WriteAsCSV("Z:dataA.csv", tabA);
             //DataTableWriter.WriteAsCSV("Z:dataB.csv", tabB);

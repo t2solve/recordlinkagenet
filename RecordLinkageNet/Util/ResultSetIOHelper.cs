@@ -65,38 +65,7 @@ namespace RecordLinkageNet.Util
             return success;
 
         }
-        public static DataTable ForkDataTable<T>(List<T> list, string tableName)
-        {
-            DataTable resultTable = new DataTable(tableName);
-
-            //create columns
-            PropertyInfo[] properties = typeof(T).GetProperties();
-            foreach (PropertyInfo property in properties)
-            {
-                DataColumn column = new DataColumn();
-                column.DataType = property.PropertyType;//String.Format("{0}",);
-                column.ColumnName = property.Name;
-                column.ReadOnly = true;
-                resultTable.Columns.Add(column);
-            }
-
-            //all rows
-            DataRow row;
-            foreach (T x in list)
-            {
-                row = resultTable.NewRow();
-                foreach (PropertyInfo property in properties)
-                {
-                    string name = property.Name;
-                    var value = property.GetValue(x);
-                    row[name] = value;
-                }
-
-                resultTable.Rows.Add(row);
-            }
-
-            return resultTable;
-        }
+      
 #if !OLDDOTNETCOMPMODE
 
         public static bool WriteResultSetToFolder(string path, ResultSet rs)

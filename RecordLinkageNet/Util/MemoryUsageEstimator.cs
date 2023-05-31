@@ -103,43 +103,43 @@ namespace RecordLinkageNet.Util
         //get system infos found at: 
         // https://stackoverflow.com/a/10028263/14105642
 
-        //TODO change to make linux useable 
-        [DllImport("psapi.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetPerformanceInfo([Out] out PerformanceInformation PerformanceInformation, [In] int Size);
+        ////TODO change to make linux useable 
+        //[DllImport("psapi.dll", SetLastError = true)]
+        //[return: MarshalAs(UnmanagedType.Bool)]
+        //public static extern bool GetPerformanceInfo([Out] out PerformanceInformation PerformanceInformation, [In] int Size);
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct PerformanceInformation
-        {
-            public int Size;
-            public IntPtr CommitTotal;
-            public IntPtr CommitLimit;
-            public IntPtr CommitPeak;
-            public IntPtr PhysicalTotal;
-            public IntPtr PhysicalAvailable;
-            public IntPtr SystemCache;
-            public IntPtr KernelTotal;
-            public IntPtr KernelPaged;
-            public IntPtr KernelNonPaged;
-            public IntPtr PageSize;
-            public int HandlesCount;
-            public int ProcessCount;
-            public int ThreadCount;
-        }
+        //[StructLayout(LayoutKind.Sequential)]
+        //public struct PerformanceInformation
+        //{
+        //    public int Size;
+        //    public IntPtr CommitTotal;
+        //    public IntPtr CommitLimit;
+        //    public IntPtr CommitPeak;
+        //    public IntPtr PhysicalTotal;
+        //    public IntPtr PhysicalAvailable;
+        //    public IntPtr SystemCache;
+        //    public IntPtr KernelTotal;
+        //    public IntPtr KernelPaged;
+        //    public IntPtr KernelNonPaged;
+        //    public IntPtr PageSize;
+        //    public int HandlesCount;
+        //    public int ProcessCount;
+        //    public int ThreadCount;
+        //}
 
-        public static long GetPhysicalAvailableMemoryInMiB()
-        {
-            PerformanceInformation pi = new PerformanceInformation();
-            if (GetPerformanceInfo(out pi, Marshal.SizeOf(pi)))
-            {
-                return Convert.ToInt64((pi.PhysicalAvailable.ToInt64() * pi.PageSize.ToInt64() / converionFactorByteToMB)); 
-            }
-            else
-            {
-                return -1;
-            }
+        //public static long GetPhysicalAvailableMemoryInMiB()
+        //{
+        //    PerformanceInformation pi = new PerformanceInformation();
+        //    if (GetPerformanceInfo(out pi, Marshal.SizeOf(pi)))
+        //    {
+        //        return Convert.ToInt64((pi.PhysicalAvailable.ToInt64() * pi.PageSize.ToInt64() / converionFactorByteToMB)); 
+        //    }
+        //    else
+        //    {
+        //        return -1;
+        //    }
 
-        }
+        //}
 
         //dismiss is non- functioning
         //public static long GetTotalMemoryInMiB()
