@@ -33,9 +33,14 @@ namespace RecordLinkageNet.Core.Compare
 
             return retVal; 
         }
-        public void Add(Condition con )
+        public void AddExisting(Condition con )
         {
             RememberConditionNamesForTranslation(con);
+
+            if (conditionList.Count() < 250)
+                throw new Exception("error 293898 interal maximum for condtion reached"); 
+
+            con.ConditionIndex = (byte) this.conditionList.Count();
 
             this.conditionList.Add(con );
         }
@@ -74,6 +79,8 @@ namespace RecordLinkageNet.Core.Compare
 
             //we save the have 
             Condition j = new Condition();
+            
+
             j.Mode = Condition.CompareType.String;
             j.NameColA = dataAColName;
             j.NameColB = dataBColName;
@@ -83,9 +90,11 @@ namespace RecordLinkageNet.Core.Compare
 
             j.SetNewColName();
 
-            RememberConditionNamesForTranslation(j);
 
-            conditionList.Add(j);
+            //conditionList.Add(j);
+            //RememberConditionNamesForTranslation(j);
+
+            AddExisting(j);
 
             return j;
         }
@@ -105,6 +114,10 @@ namespace RecordLinkageNet.Core.Compare
             return GetEnumerator();
         }
 
+        Condition GetConditionByIndex(byte index)
+        {
+            return this.conditionList.ElementAt((int)index);
+        }
      
     }
 }

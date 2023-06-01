@@ -1,5 +1,6 @@
 ﻿using RecordLinkage.Core;
 using RecordLinkageNet.Core.Compare;
+using RecordLinkageNet.Core.Score;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

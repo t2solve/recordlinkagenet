@@ -46,6 +46,8 @@ namespace RecordLinkageNet.Core.Compare
         [DataMember(Name = "NameColNewLabel")]
         public string NameColNewLabel { get; set; } = null;
 
+        public byte ConditionIndex { get; set; } = 0; 
+
         //an exlusive list we have implemted 
         public void SetNewColName()//TODO call during set NameColA 
         {
@@ -58,15 +60,17 @@ namespace RecordLinkageNet.Core.Compare
 
         public bool Equals(Condition other)
         {
-            //TODO fix, this doesnt make sense here
+            //TODO fix, this doesnt make sense here ??
+            //is because of SortByScoreWeight
+
             if (other == null) return false;
             return (this.ScoreWeight.Equals(other.ScoreWeight));
         }
 
         public int CompareTo(Condition other)
         {
-            //TODO fix, this doesnt make sense here
-
+            //TODO fix, this doesnt make sense here ??
+            //is because of SortByScoreWeight
             if (ScoreWeight == -1.0f)
                 return 1;
             else

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordLinkageNet.Core
+namespace RecordLinkageNet.Core.Score
 {
-    public class MatchGroup
+    public class ScoreBuilder
     {
-        private List<MatchCandidate> candidates = null; 
+
     }
 }

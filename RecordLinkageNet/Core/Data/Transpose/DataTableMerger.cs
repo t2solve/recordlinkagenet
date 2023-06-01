@@ -171,7 +171,7 @@ namespace RecordLinkageNet.Core.Transpose
                 Type oldType = dA.GetColumnByName(nameAOld).GetDataTypeOfCol();
                 if (oldType == null)
                 {
-                    Trace.WriteLine("foo");
+                    //Trace.WriteLine("foo");
                     throw new ArgumentOutOfRangeException("error 25636346 column " + nameAOld + " not found");
 
                 }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordLinkageNet.Core
+namespace RecordLinkageNet.Core.Score
 {
-    public class MatchGroup
+    public interface IScoreDistance
     {
-        private List<MatchCandidate> candidates = null; 
+        float CalculateDistance(IScore a, IScore b);
     }
 }

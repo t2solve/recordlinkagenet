@@ -11,6 +11,8 @@ This project is a c# port of the super useful python package [recordlinkage](htt
 Besides it tries to use the effective parts of the c# language (e.g. linq, ml-net).
 For example ML.net is used to load, preprocess, manipulate, process and store big data sets.
 
+This project works column orientiated for comparision to reduce costs.
+
 ## plattforms:
 all plattform which supports [.NET 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 so:

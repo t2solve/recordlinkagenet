@@ -4,10 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordLinkageNet.Core
+namespace RecordLinkageNet.Core.Score
 {
     public interface IScore : IEquatable<IScore>, IComparable<IScore>
     {
+        public enum AcceptanceLevel
+        {
+            Unknown,
+            MatchAccepted,
+            MatchRejected,
+        }
+
         float Calculate(MatchCandidate x);
+
     }
 }

@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 
 namespace RecordLinkageNet.Core
 {
+    //old
     [DataContract(Name = "MatchingScore", Namespace = "DataContracts")]
     public class MatchingScore : IEquatable<MatchingScore>, IComparable<MatchingScore>
     {
@@ -30,7 +31,7 @@ namespace RecordLinkageNet.Core
         public float ScoreTotal = -1.0f;
         [DataMember(Name = "MatchScoreColumnByName")]
 
-        //TODO why by name ? 
+        //TODO why by name ? , is ram inefficient
         public Dictionary<string, byte> MatchScoreColumnByName = new Dictionary<string, byte>();
 
         [DataMember(Name = "EvenMatchingScoreChilds")]

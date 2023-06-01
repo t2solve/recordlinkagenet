@@ -12,7 +12,7 @@ namespace RecordLinkageNet.Core.Data.Transpose
     public class TableConverter
     {
 
-        public static System.Data.DataTable ForkSystemDataTable<T>(List<T> list, string tableName)
+        public static System.Data.DataTable CreateSystemDataTableFromDataObjectList<T>(List<T> list, string tableName)
         {
             System.Data.DataTable resultTable = new System.Data.DataTable(tableName);
 

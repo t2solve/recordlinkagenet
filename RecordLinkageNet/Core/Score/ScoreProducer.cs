@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordLinkageNet.Core
+namespace RecordLinkageNet.Core.Score
 {
     //TODO make this to an inteface 
     public class ScoreProducer
@@ -23,10 +23,10 @@ namespace RecordLinkageNet.Core
             conditionList = config.ConditionList;
             //TransposeModus = transposeModus;
             this.config = config;
-            this.CalcAbsTotalMaxScore();
+            CalcAbsTotalMaxScore();
 
             //default percentag is 60 percent
-            this.SetMinimumAcceptanceThresholdInPerentage(0.6f);
+            SetMinimumAcceptanceThresholdInPerentage(0.6f);
         }
 
         public void SetMinimumAcceptanceThresholdInPerentage(float percentage)
@@ -59,7 +59,7 @@ namespace RecordLinkageNet.Core
                 }
                 else
                 {
-                    scoreMaxPossible += (ScaleWeightToByteRange(con.ScoreWeight) * maxByte);
+                    scoreMaxPossible += ScaleWeightToByteRange(con.ScoreWeight) * maxByte;
                 }
             }
             ScoreAbsTotalMax = scoreMaxPossible;
@@ -81,7 +81,7 @@ namespace RecordLinkageNet.Core
                     byte compareResult = 0;
                     if (m.MatchScoreColumnByName.TryGetValue(con.NameColNewLabel, out compareResult))
                     {
-                        scoreTotalReached += (ScaleWeightToByteRange(con.ScoreWeight) * compareResult);
+                        scoreTotalReached += ScaleWeightToByteRange(con.ScoreWeight) * compareResult;
                     }
                     //else //not added yes
                     //    Trace.WriteLine("warning 763455235235 result column name not found in result");
@@ -112,11 +112,11 @@ namespace RecordLinkageNet.Core
             {
                 if (!m.MatchScoreColumnByName.ContainsKey(data.Key))
                 {
-                    possibleRestScore += (ScaleWeightToByteRange(data.Value) * maxByte);
+                    possibleRestScore += ScaleWeightToByteRange(data.Value) * maxByte;
                 }
             }
 
-            if ((scoreReached + possibleRestScore) > ScoreAbsTotalMinAccepted)
+            if (scoreReached + possibleRestScore > ScoreAbsTotalMinAccepted)
                 success = true;
 
 
@@ -128,7 +128,7 @@ namespace RecordLinkageNet.Core
             float relativeValue = -1.0f;
             if (ScoreAbsTotalMax != -1.0f && m.ScoreTotal != -1.0f)
             {
-                relativeValue = (m.ScoreTotal * 100.0f) / ScoreAbsTotalMax;
+                relativeValue = m.ScoreTotal * 100.0f / ScoreAbsTotalMax;
             }
             else
             {

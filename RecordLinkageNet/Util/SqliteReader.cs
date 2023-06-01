@@ -31,7 +31,7 @@ namespace RecordLinkageNet.Util
             //return retVal; 
         }
 
-        public static List<string> GetColumnList(SqliteConnection conn, string tableName)
+        private static List<string> GetColumnList(SqliteConnection conn, string tableName)
         {
             List<string> columnNames = new List<string>(); 
             StringBuilder cmdText = new StringBuilder();
