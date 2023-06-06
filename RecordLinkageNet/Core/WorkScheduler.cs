@@ -229,7 +229,7 @@ namespace RecordLinkageNet.Core
                     return null;
                 }
 
-            }
+            }//end for each
 
             ////version 2 is slower than version 1
             ////update
@@ -244,6 +244,7 @@ namespace RecordLinkageNet.Core
 
         private static float IsStringSame(string a, string b)
         {
+            //TODO move to other class, is a short cut here 
             float result = 0;
             if (string.IsNullOrEmpty(a) || string.IsNullOrEmpty(b))
                 return 0.0f;
@@ -258,14 +259,10 @@ namespace RecordLinkageNet.Core
         {
             ResultSet ret = new ResultSet();
 
-            //TODO init
-            //ret.indexMap = new Dictionary<IndexPair, int>();
-
             ret.MatchingScoreCompareResultList = new List<MatchingScore>();
 
             uint jobIdCounter = 0;
-            //int amountConditions = jobSet.configuration.ConditionList.GetAmountConditions();
-            //DataTable datA = jobSet.configuration.Index.dataTabA;
+
             //DataTable datB = jobSet.configuration.Index.dataTabB;
 
             //TODO check here the strategy , full index or prelist
@@ -290,26 +287,7 @@ namespace RecordLinkageNet.Core
 
             return ret;
         }
-        //public static async Task<ResultSet> Consume(BufferBlock<JobSet> queue)
-        //{
-        //    ResultSet ret = new ResultSet();
-
-        //    //TODO init
-        //    ret.indexMap = new Dictionary<IndexPair, int>();
-
-        //    // init result set
-        //    int callCounter = 0; 
-        //    while (await queue.OutputAvailableAsync())
-        //    {
-        //        callCounter += 1; 
-        //        //var jobSet = await queue.ReceiveAsync();
-        //        //multi consumer 
-        //        queue.TryReceive(out JobSet jobSet);
-        //        ret = ProcessJob(jobSet);
-        //       //TODO fix
-        //    }
-        //    return ret;
-        //}
+ 
 
     }
 }

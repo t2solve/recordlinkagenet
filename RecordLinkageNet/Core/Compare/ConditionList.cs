@@ -37,7 +37,7 @@ namespace RecordLinkageNet.Core.Compare
         {
             RememberConditionNamesForTranslation(con);
 
-            if (conditionList.Count() < 250)
+            if (conditionList.Count() > 250)
                 throw new Exception("error 293898 interal maximum for condtion reached"); 
 
             con.ConditionIndex = (byte) this.conditionList.Count();

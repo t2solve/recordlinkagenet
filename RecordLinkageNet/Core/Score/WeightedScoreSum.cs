@@ -11,13 +11,13 @@ namespace RecordLinkageNet.Core.Score
         //                 index, value
         private Dictionary<byte, byte> matchScoreColumnByConditionIndex = new Dictionary<byte, byte>();
         private float scoreTotal = -1.0f;
-        private float scoreTempProgress = -1.0f; 
+        private float scoreTempProgress = -1.0f;
         private IScore.AcceptanceLevel acceptanceLvl = IScore.AcceptanceLevel.Unknown;
-        private MatchCandidate mCandidate = null; 
+        private MatchCandidate mCandidate = null;
 
         public WeightedScoreSum(MatchCandidate m)
         {
-            this.mCandidate = m; 
+            this.mCandidate = m;
         }
         public float Calculate(MatchCandidate x)
         {
@@ -51,3 +51,4 @@ namespace RecordLinkageNet.Core.Score
             //}
         }
     }
+}

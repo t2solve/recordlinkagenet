@@ -146,7 +146,9 @@ namespace RecordLinkageNet.Util
                         Trace.WriteLine("warning 238928398 no rows in table: "+ tablename);
                         return result;
                     }
-                }
+                    conn.Close();
+                    conn.Dispose();
+                }//end using
             }
             catch(Exception e)
             {
