@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
-    public class MatchGroup
+    public class MatchGroupOrderedList
     {
-        private List<MatchCandidate> candidates = null; 
+        private List<MatchGroupOrdered> data = null; 
+
     }
 }

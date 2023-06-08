@@ -8,6 +8,6 @@ namespace RecordLinkageNet.Core
 {
     public interface IResultFilter
     {
-        MatchGroup Apply(MatchGroup g);
+        MatchCandidateList Apply(MatchCandidateList g);
     }
 }
