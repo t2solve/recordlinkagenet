@@ -17,7 +17,8 @@ namespace RecordLinkageNet.Core.Score
 
         //! foobar
 
-        float Calculate(MatchCandidate x);
+        float GetScoreValue();
 
+        AcceptanceLevel GetAcceptanceLevel();
     }
 }

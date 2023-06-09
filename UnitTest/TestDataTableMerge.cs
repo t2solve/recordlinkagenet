@@ -16,19 +16,15 @@ namespace UnitTest
     public class TestDataTableMerge
     {
 
-        private DataTableFeather GenTestData(int amount = 10)
-        {
-            var testData = TestDataGenerator.CreateTestPersons(amount);
-            return TableConverter.CreateTableFeatherFromDataObjectList(testData);
-        }
+
 
         [TestMethod]
         public void TestMergeIntegration()
         {
 
             //we construct two tables
-            DataTableFeather tabA = GenTestData();
-            DataTableFeather tabB = GenTestData();
+            DataTableFeather tabA = TestDataGenerator.GenTestData();
+            DataTableFeather tabB = TestDataGenerator.GenTestData();
 
             DataTableMerger merger = new DataTableMerger();
             List<IndexPair> indexList = new List<IndexPair>();
@@ -60,7 +56,7 @@ namespace UnitTest
         public void TestCountDoubleRowsInIndexList()
         {
 
-            DataTableFeather tabA = GenTestData();
+            DataTableFeather tabA = TestDataGenerator.GenTestData();
 
             DataTableMerger merger = new DataTableMerger();
             List<IndexPair> indexList = new List<IndexPair>();
@@ -86,8 +82,8 @@ namespace UnitTest
         public void TestCheckDoubledColumnNames()
         {
             //we construct two tables
-            DataTableFeather tabA = GenTestData();
-            DataTableFeather tabB = GenTestData();
+            DataTableFeather tabA = TestDataGenerator.GenTestData();
+            DataTableFeather tabB = TestDataGenerator.GenTestData();
 
             DataTableMerger merger = new DataTableMerger();
             Assert.IsTrue(merger.CheckTableColumnNamesAreEqual(tabA, tabB),

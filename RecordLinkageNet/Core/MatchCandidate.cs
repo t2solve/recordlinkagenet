@@ -13,6 +13,12 @@ namespace RecordLinkageNet.Core
         private IndexPair idxPair = new IndexPair(); 
         private IScore score = null;
 
+        public MatchCandidate(IndexPair idxPair)
+        {
+            this.idxPair = idxPair;
+        }
+
+
         //TODO why by name ? , is ram inefficient
         //private Dictionary<string, byte> MatchScoreColumnByName = new Dictionary<string, byte>();
         //index 
@@ -21,6 +27,12 @@ namespace RecordLinkageNet.Core
         {
             return score; 
         }
+
+        public void SetScore(IScore score)
+        {
+            this.score = score;
+        }
+
 
         public IndexPair GetIndexPair()
         {

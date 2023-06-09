@@ -10,6 +10,8 @@ using Bogus;
 using Microsoft.Data.Sqlite;
 using Microsoft.ML;
 using Microsoft.ML.Data;
+using RecordLinkageNet.Core.Data;
+using RecordLinkageNet.Core.Data.Transpose;
 using RecordLinkageNet.Util;
 
 namespace UnitTest
@@ -26,6 +28,13 @@ namespace UnitTest
 
             }
             return list; 
+        }
+
+
+        public static DataTableFeather GenTestData(int amount = 10)
+        {
+            var testData = TestDataGenerator.CreateTestPersons(amount);
+            return TableConverter.CreateTableFeatherFromDataObjectList(testData);
         }
 
         public static List<TestDataPerson> CreateTestPersons(int x = 10)

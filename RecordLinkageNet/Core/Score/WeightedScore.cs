@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RecordLinkageNet.Core.Compare;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -11,15 +12,25 @@ namespace RecordLinkageNet.Core.Score
     {
         //                 index, value
         private Dictionary<byte, byte> matchScorePartByConditionIndex = new Dictionary<byte, byte>();
-        private float scoreTotal = -1.0f;
-        private bool scoreIsComplete = false;
+        private float scoreAbsTotal = -1.0f;
+        //private bool scoreIsComplete = false;
         private IScore.AcceptanceLevel acceptanceLvl = IScore.AcceptanceLevel.Unknown;
         private MatchCandidate mCandidate = null;
-
+        private List<byte> conIndexListWeNeedToAddScoreParts = new List<byte>();
         public WeightedScore(MatchCandidate m)
         {
+            //link each other
             this.mCandidate = m;
+            m.SetScore(this);
+
+            //we fill our todo list
+            foreach (Condition con in Configuration.Instance.ConditionList)
+            {
+                conIndexListWeNeedToAddScoreParts.Add(con.ConditionIndex);
+            }
+
         }
+
         public float Calculate(MatchCandidate x)
         {
             if (matchScorePartByConditionIndex.Count() == 0)
@@ -29,38 +40,42 @@ namespace RecordLinkageNet.Core.Score
             }
             throw new NotImplementedException();
         }
-        public float GetTotalScoreValue()
+ 
+        public bool IsScoreComplete()
         {
-            return scoreTotal;
+            return (matchScorePartByConditionIndex.Count() == Configuration.Instance.ConditionList.Count());
         }
-        public bool IsCompleteBuilded()
-        {
-            return scoreIsComplete;
-        }
-        public int GetAmountScoreParts()
+        public int GetAmountScorePartsWeAdded()
         {
             return matchScorePartByConditionIndex.Count(); 
         }
-        public float AddScorePart(byte index, float scorePart)
+
+        public List<byte> GetIndexListOfMissingParts()
+        { 
+            return conIndexListWeNeedToAddScoreParts; 
+        }
+
+        public float AddScorePart(byte index, float scorePartCompareWeigthed, byte scoreTransformed)
         {
             if(!matchScorePartByConditionIndex.ContainsKey(index))
             {
                 //TODO maybe change where to find 
-                byte scoreTransformed = Configuration.Instance.ScoreProducer.TransposeComparisonResult(scorePart);
-                //we calc 
-                if (matchScorePartByConditionIndex.Count() == 0)
+                
+                if (matchScorePartByConditionIndex.Count() == 0) //init 
                 {
-                    scoreTotal = 0.0f;
+                    scoreAbsTotal = 0.0f;
                 }
-                //we add
-                scoreTotal += scorePart;
+
+                scoreAbsTotal += scorePartCompareWeigthed;
 
                 //we remember it 
                 matchScorePartByConditionIndex.Add(index, scoreTransformed);
 
-                //we check if we are full
-                if (matchScorePartByConditionIndex.Count() == Configuration.Instance.ConditionList.Count())
-                    scoreIsComplete = true; 
+                conIndexListWeNeedToAddScoreParts.Remove(index);
+
+                ////we check if we are full
+                //if (matchScorePartByConditionIndex.Count() == Configuration.Instance.ConditionList.Count())
+                //    scoreIsComplete = true; 
 
             }
             else
@@ -69,7 +84,7 @@ namespace RecordLinkageNet.Core.Score
                 throw new ArgumentException("error 293829839"); 
             }
 
-            return scoreTotal; 
+            return scoreAbsTotal; 
         }
         public int CompareTo(IScore other)
         {
@@ -96,6 +111,20 @@ namespace RecordLinkageNet.Core.Score
 
             //    return (test1 && test2 && test3);
             //}
+        }
+
+        public IScore.AcceptanceLevel GetAcceptanceLevel()
+        {
+            return acceptanceLvl;
+        }
+
+        public float GetScoreValue()
+        {
+
+            if (IsScoreComplete())
+                return scoreAbsTotal;
+            else
+                return -1.0f;
         }
     }
 }
