@@ -29,7 +29,7 @@ namespace RecordLinkageNet.Core
         }
 
 
-        public List<string> ImportantIdList = new List<string>();
+        public List<string> ImportantIdList = new List<string>();//TODO remove 
 
         public ConditionList ConditionList { get; private set; } = null;
         public IndexFeather Index { get; private set; } = null; 

@@ -38,7 +38,7 @@ namespace RecordLinkageNet.Core.Compare
             RememberConditionNamesForTranslation(con);
 
             if (conditionList.Count() > 250)
-                throw new Exception("error 293898 interal maximum for condtion reached"); 
+                throw new Exception("error 293898 interal maximum for condition reached"); 
 
             con.ConditionIndex = (byte) this.conditionList.Count();
 
@@ -99,10 +99,10 @@ namespace RecordLinkageNet.Core.Compare
             return j;
         }
 
-        public void SortByScoreWeight()
-        {
-            conditionList.Sort(); //do default sort
-        }
+        //public void SortByScoreWeight()
+        //{
+        //    conditionList.Sort(); //do default sort
+        //}
 
         public IEnumerator<Condition> GetEnumerator()
         {
@@ -114,10 +114,22 @@ namespace RecordLinkageNet.Core.Compare
             return GetEnumerator();
         }
 
-        Condition GetConditionByIndex(byte index)
+        public Condition GetConditionByIndex(byte index)
         {
             return this.conditionList.ElementAt((int)index);
         }
      
+        public byte GetConditionIndexByName(string name)
+        {
+            byte index = byte.MaxValue;
+            byte counter = 0; 
+            foreach(Condition con in this)
+            {
+                if (string.Compare(con.NameColNewLabel,name)==0) return counter;
+                counter += 1;
+            }
+
+            return index; 
+        }
     }
 }

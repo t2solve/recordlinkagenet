@@ -62,7 +62,6 @@ namespace RecordLinkageNet.Core
         public void AddScore(string columnName, float score)
         {
             //we do a conversion
-
             MatchScoreColumnByName.Add(columnName, Configuration.Instance.ScoreProducer.TransposeComparisonResult(score));
         }
 

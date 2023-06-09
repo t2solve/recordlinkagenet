@@ -15,6 +15,8 @@ namespace RecordLinkageNet.Core.Score
             MatchRejected,
         }
 
+        //! foobar
+
         float Calculate(MatchCandidate x);
 
     }

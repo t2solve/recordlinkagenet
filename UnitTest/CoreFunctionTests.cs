@@ -70,7 +70,7 @@ namespace UnitTest
                 c.ScoreWeight = scoreTable[c.NameColNewLabel];
             }
             //we sort it for a small speed up
-            conList.SortByScoreWeight();
+            //conList.SortByScoreWeight();
 
             Configuration config = Configuration.Instance;
 

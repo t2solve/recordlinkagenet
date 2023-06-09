@@ -14,8 +14,6 @@ namespace RecordLinkageNet.Core.Data
         //TODO avoid public
         public DataTableFeather ParentTable = null; 
         public DataCell[] Rows= null; //TODO use init 
-        //public DataCell current = null;
-        //public DataCell last = null;
         public string Name = "";
         public Type DataType = null;
 
