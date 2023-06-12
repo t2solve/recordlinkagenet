@@ -27,7 +27,7 @@ namespace RecordLinkageNet.Core.Score
         }
         //**** end singelton code 
 
-        private float thresholdMinTresholdInPerentage = 0.7f;//default 70 percent
+        private float thresholdMinTresholdInPerentage = 0.7f;//default 70 percent //TODO 70 
         private float thresholdMinScoreAbsTotalAccepted = -1.0f;
         private float scoreAbsTotalMaxReachable = -1.0f;
         private int amountScoreParts = 0;
@@ -48,7 +48,7 @@ namespace RecordLinkageNet.Core.Score
             
             //calc
             float scorePartWeighted = GetWeightForConditionIndex(index) * scoreTransformed;
-
+            //add
             float scoreSummedParts =  scoreObj.AddScorePart(index, scorePartWeighted, scoreTransformed);
             
             
@@ -68,6 +68,13 @@ namespace RecordLinkageNet.Core.Score
 
             }
             return weight; 
+        }
+
+        public bool CheckScoreOverMinThreshold(WeightedScore scoreObj)
+        {
+            if (!scoreObj.IsScoreComplete())
+                return false;
+            return CheckWeCouldStillReachMinimum(scoreObj, scoreObj.GetScoreValue());
         }
         private bool CheckWeCouldStillReachMinimum(WeightedScore scoreObj,float scoreSummedParts)
         {
@@ -121,6 +128,18 @@ namespace RecordLinkageNet.Core.Score
             }
             
             
+        }
+
+        public float CalcRelativeScoreValueInPercentage(WeightedScore scoreObj)
+        {
+
+            if (!scoreObj.IsScoreComplete())
+                return -1.0f;
+            //TODO check range etc.
+
+            float percent = 0.0f;
+            percent = scoreObj.GetScoreValue() * 100.0f / this.scoreAbsTotalMaxReachable ;
+            return percent;
         }
 
         private float CalcAbsMinimumScoreWhichShouldBeReached()

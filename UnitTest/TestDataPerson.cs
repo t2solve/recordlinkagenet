@@ -79,6 +79,7 @@ namespace UnitTest
         }
     }
     //small test data class
+    [Serializable]
     public record TestDataPerson
     {
         [LoadColumn(0)]

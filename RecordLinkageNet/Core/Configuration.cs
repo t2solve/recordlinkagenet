@@ -28,6 +28,14 @@ namespace RecordLinkageNet.Core
         {
         }
 
+        public enum CalculationStrategy
+        {
+            Unknown,
+            WeightedConditionSum,
+            DecisionTree
+        }
+
+        public CalculationStrategy strategy = CalculationStrategy.Unknown; 
 
         public List<string> ImportantIdList = new List<string>();//TODO remove 
 

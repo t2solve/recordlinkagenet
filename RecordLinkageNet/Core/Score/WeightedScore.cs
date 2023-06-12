@@ -31,16 +31,21 @@ namespace RecordLinkageNet.Core.Score
 
         }
 
-        public float Calculate(MatchCandidate x)
+        public Dictionary<byte, byte> GetScoreParts()
         {
-            if (matchScorePartByConditionIndex.Count() == 0)
-            {
-                Trace.WriteLine("error 394898349 empty list");
-                return -1.0f;
-            }
-            throw new NotImplementedException();
+            return matchScorePartByConditionIndex;
         }
- 
+
+        //public float Calculate(MatchCandidate x)
+        //{
+        //    if (matchScorePartByConditionIndex.Count() == 0)
+        //    {
+        //        Trace.WriteLine("error 394898349 empty list");
+        //        return -1.0f;
+        //    }
+        //    throw new NotImplementedException();
+        //}
+
         public bool IsScoreComplete()
         {
             return (matchScorePartByConditionIndex.Count() == Configuration.Instance.ConditionList.Count());
@@ -88,29 +93,48 @@ namespace RecordLinkageNet.Core.Score
         }
         public int CompareTo(IScore other)
         {
-            //if (other is WeightedScoreSum)
+            if (other == null) return -1;
+            return (int) (other.GetScoreValue() - this.GetScoreValue());
+
+            //if (other is WeightedScore)
             //{
             //    if (scoreTotal == -1.0f)
             //        return 1;
             //    else
             //        return this.Equals(other);
             //}
-            //else throw new ArgumentException("error 237872837 must be same class type");
+            ////else throw new ArgumentException("error 237872837 must be same class type");
 
-            throw new NotImplementedException();
+
+            //throw new NotImplementedException();
         }
 
         public bool Equals(IScore other)
         {
-            throw new NotImplementedException();
+            if (other == null) return false;
 
-            //    if (other == null) return false;
-            //    bool test1 = this.scoreTotal == other.ScoreTotal);
-            //    bool test2 = this.Pair.aIdx == other.Pair.aIdx;
-            //    bool test3 = this.Pair.bIdx == other.Pair.bIdx;
+            if (other is WeightedScore)
+            {
+                WeightedScore wOther = (WeightedScore) other;
+                bool test1 = this.GetScoreValue() == other.GetScoreValue();
+                if (!test1)
+                    return false;
 
-            //    return (test1 && test2 && test3);
-            //}
+                foreach(var a in this.matchScorePartByConditionIndex)
+                {
+                    if (wOther.GetScoreParts().ContainsKey(a.Key))
+                    {
+                        if (wOther.GetScoreParts()[a.Key] != this.matchScorePartByConditionIndex[a.Key])
+                            return false;
+                    }
+                    else
+                    { 
+                        return false;
+                    }
+                }
+                return true; 
+            }
+            return false;
         }
 
         public IScore.AcceptanceLevel GetAcceptanceLevel()

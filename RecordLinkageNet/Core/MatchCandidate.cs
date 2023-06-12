@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
-    public class MatchCandidate
+    public class MatchCandidate : IEquatable<MatchCandidate>, IComparable<MatchCandidate>
     {
         private IndexPair idxPair = new IndexPair(); 
         private IScore score = null;
@@ -39,5 +39,20 @@ namespace RecordLinkageNet.Core
             return idxPair;
         }
 
+        public bool Equals(MatchCandidate other)
+        {
+            if (this.idxPair.Equals(other.idxPair))
+            {
+                if (this.score.Equals(other.score))
+                    return true; 
+            }
+            return false;
+        }
+
+        public int CompareTo(MatchCandidate other)
+        {
+            //more or less redirect
+            return this.score.CompareTo(other.score);
+        }
     }
 }

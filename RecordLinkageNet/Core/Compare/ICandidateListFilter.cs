@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordLinkageNet.Core
+namespace RecordLinkageNet.Core.Compare
 {
-    public interface IResultFilter
+    public interface ICandidateListFilter
     {
         MatchCandidateList Apply(MatchCandidateList g);
     }
