@@ -93,7 +93,7 @@ namespace UnitTest
             //filter
             FilterRelativMinScore filter = new FilterRelativMinScore(1f);
 
-            MatchCandidateList filteredList = filter.Apply(resultTask.Result); 
+            MatchCandidateList filteredList = filter.Apply(resultTask.Result) as MatchCandidateList; 
             //we do check we have the diagonal 1,1 2,2 etc
             for(uint i=0;i<amountData;i++)
             {
@@ -109,6 +109,15 @@ namespace UnitTest
             {
                 IndexPair testP = new IndexPair(i, i+offset);
                 Assert.IsTrue(fakedIndexListB.ContainsIndexPair(testP));
+                var foo = groupA.Data[(int)i];
+                //we scan per hand
+                bool success = false; 
+                foreach (MatchCandidate c in foo)
+                {
+                    if (c.GetIndexPair().Equals(testP))
+                        success = true; 
+                }
+                Assert.IsTrue(success);
             }
 
             MatchCandidateList fakedIndexListA = FakeIndexPairA(filteredList, offset);
@@ -117,6 +126,15 @@ namespace UnitTest
             {
                 IndexPair testP = new IndexPair(i +offset, i );
                 Assert.IsTrue(fakedIndexListA.ContainsIndexPair(testP));
+                var bar = groupB.Data[(int)i];
+                //we scan per hand
+                bool success = false;
+                foreach (MatchCandidate c in bar)
+                {
+                    if (c.GetIndexPair().Equals(testP))
+                        success = true;
+                }
+                Assert.IsTrue(success);
             }
         }
     }

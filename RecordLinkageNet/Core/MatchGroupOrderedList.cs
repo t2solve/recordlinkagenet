@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
-    //! a helper class for to serialzie a set 
+    //! a helper class for to serialzie a complete set 
     public class MatchGroupOrderedList
     {
         private List<MatchGroupOrdered> listElements = null;

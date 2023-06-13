@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Compare
 {
+
     public class FilterRelativMinScore : ICandidateListFilter
     {
         private float minThresholdInPercentage = 0.6f;
@@ -24,7 +25,7 @@ namespace RecordLinkageNet.Core.Compare
             this.minThresholdInPercentage = minThresholdInPercentage;
         }
 
-        public MatchCandidateList Apply(MatchCandidateList g)
+        public ICandidateSet Apply(ICandidateSet g)
         {
             MatchCandidateList newList = new MatchCandidateList();
             foreach (MatchCandidate mc in g)
@@ -42,5 +43,7 @@ namespace RecordLinkageNet.Core.Compare
 
             return newList;
         }
+
+      
     }
 }

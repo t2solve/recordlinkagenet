@@ -8,6 +8,6 @@ namespace RecordLinkageNet.Core.Compare
 {
     public interface ICandidateListFilter
     {
-        MatchCandidateList Apply(MatchCandidateList g);
+        ICandidateSet Apply(ICandidateSet g);
     }
 }

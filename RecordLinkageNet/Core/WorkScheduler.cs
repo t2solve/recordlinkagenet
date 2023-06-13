@@ -52,10 +52,9 @@ namespace RecordLinkageNet.Core
 
         public async Task<MatchCandidateList> Compare(CancellationToken stopToken, IProgress<int> progress = null)
         {
+            //TODO check config before compute
+            Configuration.Instance.EnterDoCompareCalculationModus();
 
-            ////TODO check config
-            //Task< ResultSet>  t = Task.Run(() =>
-            //{
             MatchCandidateList allResults = new MatchCandidateList();
             //using tpl to compute in consumer producer pattern 
             //    https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-implement-a-producer-consumer-dataflow-pattern
@@ -85,6 +84,8 @@ namespace RecordLinkageNet.Core
                 allResults.AddRange(rs);
 
             Trace.WriteLine("debug: amount of matches is: " + allResults.Count());
+
+            Configuration.Instance.ExitDoCompareCalculationModus();
 
             return allResults;
             //}
@@ -249,97 +250,6 @@ namespace RecordLinkageNet.Core
             return mCan;
         }
 
-
-        //private static MatchingScore DoMatching(IndexPair p)//, Configuration configuration)
-        //{
-        //    Configuration configuration = Configuration.Instance;
-        //    MatchingScore matchingScore = new MatchingScore( p);            
-
-        //    int conditionCounter = 0;
-        //    //int conditionAmount = configuration.ConditionList.GetAmountConditions(); 
-        //    //we do compare all
-        //    foreach (Condition cond in configuration.ConditionList)
-        //    {
-        //        DataColumn colA = configuration.Index.dataTabA.GetColumnByName(cond.NameColA);
-        //        DataColumn colB = configuration.Index.dataTabB.GetColumnByName(cond.NameColB);
-
-        //        if (colA== null || colB == null)
-        //        {
-        //            Trace.WriteLine("error 98392839 column in datatable not found will be irngored ");
-        //            continue;
-        //        }
-
-
-        //        //TODO fix fixed cast ??? how todo
-        //        DataCellString cellA = (DataCellString)colA.At((int)p.aIdx);
-        //        DataCellString cellB = (DataCellString)colB.At((int)p.bIdx);
-
-        //        float result = -1.0f;
-        //        //we do a short cut 
-        //        if (cellA == null || cellB == null)
-        //        {
-        //            result = 0.0f;
-        //            //Trace.WriteLine("warning 29398238 data cell is null at indexA:"+ p.aIdx + " and indexB:"+ p.bIdx);
-        //        }
-        //        else
-        //        {
-        //            //we compare
-        //            switch (cond.MyStringMethod)
-        //            {
-        //                case Condition.StringMethod.Exact:
-        //                    result = IsStringSame(cellA.Value, cellB.Value);
-        //                    break;
-        //                case Condition.StringMethod.JaroWinklerSimilarity:
-        //                    result = (float)JaroWinkler.JaroDistance(cellA.Value, cellB.Value);
-        //                    break;
-        //                case Condition.StringMethod.HammingDistance:
-        //                    result = (float)Hamming.HammingDistance(cellA.Value, cellB.Value);
-        //                    break;
-        //                case Condition.StringMethod.DamerauLevenshteinDistance:
-        //                    result = (float)DamerauLevenshtein.DamerauLevenshteinDistance(cellA.Value, cellB.Value);
-        //                    break;
-        //                case Condition.StringMethod.ShannonEntropyDistance:
-        //                    result = (float)ShannonEntropy.ShannonEntropyDistance(cellA.Value, cellB.Value);
-        //                    break;
-        //                case Condition.StringMethod.MyCustomizedDistance:
-        //                    result = (float)CustomizedDistance.MyCustomizedDistance(cellA.Value, cellB.Value);
-        //                    break;
-        //                default:
-        //                    Trace.WriteLine("error critical  20392093 try to use not implemented compare method");
-        //                    throw new NotImplementedException();
-        //                    break;
-        //            }
-        //        }//end comparable
-
-        //        conditionCounter += 1;
-
-        //        if (result != -1.0f)
-        //            matchingScore.AddScore(cond.NameColNewLabel, result);
-
-        //        //test if min Score is still reachable at all 
-
-        //        //version 1 //TODO optimize reprogramm fluent score calc,  
-        //        // is ~ 30 percent faster than version 2 , tested with 4 conditions
-        //        if (!configuration.ScoreProducer.CheckScoreReachedForMinimumReachable(matchingScore))
-        //        {
-        //            //Trace.WriteLine("debug: 9283928 skip try here con#: ", conditionCounter + "\tof\t" + conditionAmount);
-        //            //we abort here 
-        //            return null;
-        //        }
-
-        //    }//end for each
-
-        //    ////version 2 is slower than version 1
-        //    ////update
-        //    //configuration.ScoreProducer.CalcTotalReachedScore(matchingScore);
-        //    //if (matchingScore.ScoreTotal < configuration.ScoreProducer.ScoreTotalMinAccepted)
-        //    //{
-        //    //    matchingScore = null;
-        //    //}
-
-        //    return matchingScore;
-        //}
-
         private static float IsStringSame(string a, string b)
         {
             //TODO move to other class, is a short cut here 
@@ -356,13 +266,7 @@ namespace RecordLinkageNet.Core
         private static MatchCandidateList ProcessJobSet(JobSet jobSet, IProgress<int> progressInformer=null)
         {
             MatchCandidateList ret = new MatchCandidateList();
-
-            //ret.MatchingScoreCompareResultList = new List<MatchingScore>();
-
             uint jobIdCounter = 0;
-
-            //DataTable datB = jobSet.configuration.Index.dataTabB;
-
             //TODO check here the strategy , full index or prelist
 
             //we do the job 

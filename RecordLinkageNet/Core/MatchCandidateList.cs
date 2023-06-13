@@ -7,20 +7,9 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
-    public class MatchCandidateList : IEnumerable<MatchCandidate>
+    public class MatchCandidateList : ICandidateSet
     {
-        private List<MatchCandidate> listElements = null;
-
-        public MatchCandidateList()
-        {
-            listElements = new List<MatchCandidate>(); 
-        }
-
-        public MatchCandidateList Add(MatchCandidate c)
-        {
-            listElements.Add(c);
-            return this;
-        }
+        private List<MatchCandidate> listElements = new List<MatchCandidate>(); 
 
         public MatchCandidateList AddRange(MatchCandidateList list)
         {
@@ -42,10 +31,23 @@ namespace RecordLinkageNet.Core
         {
             return listElements.GetEnumerator();
         }
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }
+
+        public void SortByScoreTopDown()
+        {
+            listElements.Sort(delegate (MatchCandidate c1, MatchCandidate c2) 
+            { return c1.GetScore().CompareTo(c2.GetScore()); });
+
+        }
+
+        public void Add(MatchCandidate candidate)
+        {
+            listElements.Add(candidate);
+        }
+
+      
     }
 }

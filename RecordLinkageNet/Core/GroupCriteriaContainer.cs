@@ -18,7 +18,6 @@ namespace RecordLinkageNet.Core
             this.indexCell = indexCell;
         }
 
-
         public uint IndexKey { get => indexKey; set => indexKey = value; }
         public DataCell IndexCell { get => indexCell; set => indexCell = value; }
     }
