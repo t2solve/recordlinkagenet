@@ -64,8 +64,8 @@ namespace UnitTest
             Configuration config = Configuration.Instance;
             config.AddIndex(new IndexFeather().Create(tabB, tabA));
             config.AddConditionList(conList);
-            config.Strategy = Configuration.CalculationStrategy.WeightedConditionSum;
-            config.NumberTransposeModus = NumberTransposeHelper.TransposeModus.LOG10;
+            config.AddStrategy(Configuration.CalculationStrategy.WeightedConditionSum);
+            config.AddNumberTransposeModus(NumberTransposeHelper.TransposeModus.LOG10);;
 
             //we init a worker
             WorkScheduler workScheduler = new WorkScheduler();

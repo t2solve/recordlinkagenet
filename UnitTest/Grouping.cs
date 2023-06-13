@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 namespace UnitTest
 {
     [TestClass]
-
     public class Grouping
     {
         private MatchCandidateList FakeIndexPairB(MatchCandidateList list, uint offset)
@@ -75,8 +74,8 @@ namespace UnitTest
             Configuration config = Configuration.Instance;
             config.AddIndex(new IndexFeather().Create(tabA, tabA));
             config.AddConditionList(conList);
-            config.Strategy = Configuration.CalculationStrategy.WeightedConditionSum;
-            config.NumberTransposeModus = NumberTransposeHelper.TransposeModus.LOG10;
+            config.AddStrategy(Configuration.CalculationStrategy.WeightedConditionSum);
+            //config.Set = NumberTransposeHelper.TransposeModus.LOG10;
             //we do change some pre set things
 
             //we init a worker
