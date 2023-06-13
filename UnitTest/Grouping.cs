@@ -1,0 +1,123 @@
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RecordLinkage.Core;
+using RecordLinkageNet.Core;
+using RecordLinkageNet.Core.Compare;
+using RecordLinkageNet.Core.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace UnitTest
+{
+    [TestClass]
+
+    public class Grouping
+    {
+        private MatchCandidateList FakeIndexPairB(MatchCandidateList list, uint offset)
+        {
+            MatchCandidateList newList = new MatchCandidateList(); 
+            foreach (MatchCandidate c in list)
+            {
+                IndexPair newP = new IndexPair(c.GetIndexPair().aIdx,c.GetIndexPair().bIdx + offset);
+                MatchCandidate newC = new MatchCandidate(newP);
+                newC.SetScore(c.GetScore());
+
+                newList.Add(newC);
+            }
+            return newList; 
+        }
+
+        private MatchCandidateList FakeIndexPairA(MatchCandidateList list, uint offset)
+        {
+            MatchCandidateList newList = new MatchCandidateList();
+            foreach (MatchCandidate c in list)
+            {
+                IndexPair newP = new IndexPair(c.GetIndexPair().aIdx+ offset, c.GetIndexPair().bIdx);
+                MatchCandidate newC = new MatchCandidate(newP);
+                newC.SetScore(c.GetScore());
+
+                newList.Add(newC);
+            }
+            return newList;
+        }
+
+        [TestMethod]
+        public void TestGroupToIndexAorB()
+        {
+
+            int amountData = 10; 
+            DataTableFeather tabA = TestDataGenerator.GenTestData(amountData);
+
+            //build a simle configuration
+            ConditionList conList = new ConditionList();
+            Condition.StringMethod testMethod = Condition.StringMethod.JaroWinklerSimilarity;
+            conList.String("NameFirst", "NameFirst", testMethod);
+            conList.String("Street", "Street", testMethod);
+            conList.String("PostalCode", "PostalCode", testMethod);
+            conList.String("NameLast", "NameLast", testMethod);
+
+            //add weight
+            Dictionary<string, float> scoreTable = new Dictionary<string, float>();
+            scoreTable.Add("NameLast", 2.0f);
+            scoreTable.Add("NameFirst", 1.5f);
+            scoreTable.Add("Street", 0.9f);
+            scoreTable.Add("PostalCode", 0.7f);
+
+            //add weight
+            foreach (Condition c in conList)
+            {
+                c.ScoreWeight = scoreTable[c.NameColNewLabel];
+            }
+
+            Configuration config = Configuration.Instance;
+            config.AddIndex(new IndexFeather().Create(tabA, tabA));
+            config.AddConditionList(conList);
+            config.Strategy = Configuration.CalculationStrategy.WeightedConditionSum;
+            config.NumberTransposeModus = NumberTransposeHelper.TransposeModus.LOG10;
+            //we do change some pre set things
+
+            //we init a worker
+            WorkScheduler workScheduler = new WorkScheduler();
+            //workScheduler.EstimateWork();
+            var pipeLineCancellation = new CancellationTokenSource();
+            var resultTask = workScheduler.Compare(pipeLineCancellation.Token);
+
+            int amountResults = resultTask.Result.Count();
+
+            //we assume a diagonal shoudl exists at least
+            Assert.IsTrue(amountResults >= amountData);
+
+            //filter
+            FilterRelativMinScore filter = new FilterRelativMinScore(1f);
+
+            MatchCandidateList filteredList = filter.Apply(resultTask.Result); 
+            //we do check we have the diagonal 1,1 2,2 etc
+            for(uint i=0;i<amountData;i++)
+            {
+                IndexPair testP = new IndexPair(i, i);
+                Assert.IsTrue(filteredList.ContainsIndexPair(testP));
+            }
+
+            //we alter our index 
+            uint offset = 10; 
+            MatchCandidateList fakedIndexListB = FakeIndexPairB(filteredList,offset);
+            MatchGroupOrderedList groupA = GroupFactory.GroupResultAsMatchingBlocks(fakedIndexListB, GroupFactory.Type.IndexAIsKey);
+            for (uint i = 0; i < amountData; i++)
+            {
+                IndexPair testP = new IndexPair(i, i+offset);
+                Assert.IsTrue(fakedIndexListB.ContainsIndexPair(testP));
+            }
+
+            MatchCandidateList fakedIndexListA = FakeIndexPairA(filteredList, offset);
+            MatchGroupOrderedList groupB = GroupFactory.GroupResultAsMatchingBlocks(fakedIndexListA, GroupFactory.Type.IndexAIsKey);
+            for (uint i = 0; i < amountData; i++)
+            {
+                IndexPair testP = new IndexPair(i +offset, i );
+                Assert.IsTrue(fakedIndexListA.ContainsIndexPair(testP));
+            }
+        }
+    }
+}

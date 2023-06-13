@@ -138,7 +138,7 @@ namespace RecordLinkageNet.Core.Score
             //TODO check range etc.
 
             float percent = 0.0f;
-            percent = scoreObj.GetScoreValue() * 100.0f / this.scoreAbsTotalMaxReachable ;
+            percent = scoreObj.GetScoreValue() / this.scoreAbsTotalMaxReachable ;
             return percent;
         }
 

@@ -35,9 +35,9 @@ namespace RecordLinkageNet.Core
             DecisionTree
         }
 
-        public CalculationStrategy strategy = CalculationStrategy.Unknown; 
+        public CalculationStrategy Strategy { get; set; } = CalculationStrategy.Unknown; 
 
-        public List<string> ImportantIdList = new List<string>();//TODO remove 
+        //public List<string> ImportantIdList = new List<string>();//TODO remove 
 
         public ConditionList ConditionList { get; private set; } = null;
         public IndexFeather Index { get; private set; } = null; 
@@ -46,7 +46,7 @@ namespace RecordLinkageNet.Core
         //computational 
         public int AmountCPUtoUse { get; set; } = Environment.ProcessorCount;
 
-        public ScoreProducer ScoreProducer { get; private set; } = null;
+        //public ScoreProducer ScoreProducer { get; private set; } = null;
 
         public Configuration AddIndex( IndexFeather index)
         {
@@ -58,7 +58,8 @@ namespace RecordLinkageNet.Core
         {
             if (list == null)
             {
-                Trace.WriteLine("error 29389389 null ref list"); 
+                Trace.WriteLine("error 29389389 null ref list");
+                return null; 
             }
             //clear when existing
             if (ConditionList != null)
@@ -70,21 +71,10 @@ namespace RecordLinkageNet.Core
         
             this.ConditionList = list;
 
-            //TODO: remove here
-            //we crerate our default score producer
-            this.ScoreProducer = new ScoreProducer(this);
-
             return this; 
         }
 
-        //public Configuration SetScoreProducer( ScoreProducer scoreProducer)
-        //{
-        //    this.ScoreProducer = scoreProducer;
 
-        //    //we crerate our score producer
-
-        //    return this;
-        //}
 
 
     }

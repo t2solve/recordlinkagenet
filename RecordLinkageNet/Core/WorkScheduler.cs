@@ -11,6 +11,7 @@ using System.Threading.Tasks.Dataflow;
 using RecordLinkageNet.Core.Distance;
 using RecordLinkage.Core;
 using System.Threading;
+using RecordLinkageNet.Core.Score;
 
 namespace RecordLinkageNet.Core
 {
@@ -49,13 +50,13 @@ namespace RecordLinkageNet.Core
             }
         }
 
-        public async Task<ResultSet> Compare(CancellationToken stopToken, IProgress<int> progress = null)
+        public async Task<MatchCandidateList> Compare(CancellationToken stopToken, IProgress<int> progress = null)
         {
-           
+
             ////TODO check config
             //Task< ResultSet>  t = Task.Run(() =>
             //{
-            ResultSet allResults = new ResultSet();
+            MatchCandidateList allResults = new MatchCandidateList();
             //using tpl to compute in consumer producer pattern 
             //    https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-implement-a-producer-consumer-dataflow-pattern
 
@@ -72,7 +73,7 @@ namespace RecordLinkageNet.Core
                 CancellationToken = stopToken
             };
 
-            List<ResultSet> resultList = new List<ResultSet>();
+            List<MatchCandidateList> resultList = new List<MatchCandidateList>();
             var consumer = new ActionBlock<JobSet>(x => resultList.Add(WorkScheduler.ProcessJobSet(x,progress)), consumerOptions);
             queue.LinkTo(consumer, new DataflowLinkOptions { PropagateCompletion = true, });
 
@@ -80,10 +81,10 @@ namespace RecordLinkageNet.Core
             await Task.WhenAll(consumer.Completion, queue.Completion);
 
             //we sum up all results 
-            foreach (ResultSet rs in resultList)
-                allResults.MatchingScoreCompareResultList.AddRange(rs.MatchingScoreCompareResultList);
+            foreach (MatchCandidateList rs in resultList)
+                allResults.AddRange(rs);
 
-            Trace.WriteLine("debug: amount of matches is: " + allResults.MatchingScoreCompareResultList.Count);
+            Trace.WriteLine("debug: amount of matches is: " + allResults.Count());
 
             return allResults;
             //}
@@ -152,20 +153,34 @@ namespace RecordLinkageNet.Core
 
         }
 
-        private static MatchingScore DoMatching(IndexPair p)//, Configuration configuration)
-        {
-            Configuration configuration = Configuration.Instance;
-            MatchingScore matchingScore = new MatchingScore( p);            
 
+        private static MatchCandidate DoMatching2(IndexPair p)//, Configuration configuration)
+        {
+            Configuration conf = Configuration.Instance;
+            MatchCandidate mCan = new MatchCandidate(p);
+
+
+            //TODO differ all strats
+            switch(conf.Strategy)
+            {
+                case Configuration.CalculationStrategy.WeightedConditionSum:
+                    mCan.SetScore(new WeightedScore(mCan));
+                    break;
+                case Configuration.CalculationStrategy.Unknown:
+                    throw new Exception("error 238787 no strategy selected");
+                    return null;
+            }
+            
+            
             int conditionCounter = 0;
             //int conditionAmount = configuration.ConditionList.GetAmountConditions(); 
             //we do compare all
-            foreach (Condition cond in configuration.ConditionList)
+            foreach (Condition cond in conf.ConditionList)
             {
-                DataColumn colA = configuration.Index.dataTabA.GetColumnByName(cond.NameColA);
-                DataColumn colB = configuration.Index.dataTabB.GetColumnByName(cond.NameColB);
+                DataColumn colA = conf.Index.dataTabA.GetColumnByName(cond.NameColA);
+                DataColumn colB = conf.Index.dataTabB.GetColumnByName(cond.NameColB);
 
-                if (colA== null || colB == null)
+                if (colA == null || colB == null)
                 {
                     Trace.WriteLine("error 98392839 column in datatable not found will be irngored ");
                     continue;
@@ -215,32 +230,115 @@ namespace RecordLinkageNet.Core
 
                 conditionCounter += 1;
 
-                if (result != -1.0f)
-                    matchingScore.AddScore(cond.NameColNewLabel, result);
-
-                //test if min Score is still reachable at all 
-
-                //version 1 //TODO optimize reprogramm fluent score calc,  
-                // is ~ 30 percent faster than version 2 , tested with 4 conditions
-                if (!configuration.ScoreProducer.CheckScoreReachedForMinimumReachable(matchingScore))
+                if (result == -1.0f)
                 {
-                    //Trace.WriteLine("debug: 9283928 skip try here con#: ", conditionCounter + "\tof\t" + conditionAmount);
-                    //we abort here 
-                    return null;
+                    throw new Exception("error 29382938989 during calc distance");
+            
+                }
+                if (conf.Strategy == Configuration.CalculationStrategy.WeightedConditionSum)
+                {
+                    WeightedScore wScore = mCan.GetScore() as WeightedScore;
+                    bool mReachableFlag = WeightedScoreProducer.Instance.AddScorePartAndWeightIt(wScore, cond.NameColNewLabel, result);
+
+                    if (!mReachableFlag)
+                        return null;
                 }
 
+
             }//end for each
-
-            ////version 2 is slower than version 1
-            ////update
-            //configuration.ScoreProducer.CalcTotalReachedScore(matchingScore);
-            //if (matchingScore.ScoreTotal < configuration.ScoreProducer.ScoreTotalMinAccepted)
-            //{
-            //    matchingScore = null;
-            //}
-
-            return matchingScore;
+            return mCan;
         }
+
+
+        //private static MatchingScore DoMatching(IndexPair p)//, Configuration configuration)
+        //{
+        //    Configuration configuration = Configuration.Instance;
+        //    MatchingScore matchingScore = new MatchingScore( p);            
+
+        //    int conditionCounter = 0;
+        //    //int conditionAmount = configuration.ConditionList.GetAmountConditions(); 
+        //    //we do compare all
+        //    foreach (Condition cond in configuration.ConditionList)
+        //    {
+        //        DataColumn colA = configuration.Index.dataTabA.GetColumnByName(cond.NameColA);
+        //        DataColumn colB = configuration.Index.dataTabB.GetColumnByName(cond.NameColB);
+
+        //        if (colA== null || colB == null)
+        //        {
+        //            Trace.WriteLine("error 98392839 column in datatable not found will be irngored ");
+        //            continue;
+        //        }
+
+
+        //        //TODO fix fixed cast ??? how todo
+        //        DataCellString cellA = (DataCellString)colA.At((int)p.aIdx);
+        //        DataCellString cellB = (DataCellString)colB.At((int)p.bIdx);
+
+        //        float result = -1.0f;
+        //        //we do a short cut 
+        //        if (cellA == null || cellB == null)
+        //        {
+        //            result = 0.0f;
+        //            //Trace.WriteLine("warning 29398238 data cell is null at indexA:"+ p.aIdx + " and indexB:"+ p.bIdx);
+        //        }
+        //        else
+        //        {
+        //            //we compare
+        //            switch (cond.MyStringMethod)
+        //            {
+        //                case Condition.StringMethod.Exact:
+        //                    result = IsStringSame(cellA.Value, cellB.Value);
+        //                    break;
+        //                case Condition.StringMethod.JaroWinklerSimilarity:
+        //                    result = (float)JaroWinkler.JaroDistance(cellA.Value, cellB.Value);
+        //                    break;
+        //                case Condition.StringMethod.HammingDistance:
+        //                    result = (float)Hamming.HammingDistance(cellA.Value, cellB.Value);
+        //                    break;
+        //                case Condition.StringMethod.DamerauLevenshteinDistance:
+        //                    result = (float)DamerauLevenshtein.DamerauLevenshteinDistance(cellA.Value, cellB.Value);
+        //                    break;
+        //                case Condition.StringMethod.ShannonEntropyDistance:
+        //                    result = (float)ShannonEntropy.ShannonEntropyDistance(cellA.Value, cellB.Value);
+        //                    break;
+        //                case Condition.StringMethod.MyCustomizedDistance:
+        //                    result = (float)CustomizedDistance.MyCustomizedDistance(cellA.Value, cellB.Value);
+        //                    break;
+        //                default:
+        //                    Trace.WriteLine("error critical  20392093 try to use not implemented compare method");
+        //                    throw new NotImplementedException();
+        //                    break;
+        //            }
+        //        }//end comparable
+
+        //        conditionCounter += 1;
+
+        //        if (result != -1.0f)
+        //            matchingScore.AddScore(cond.NameColNewLabel, result);
+
+        //        //test if min Score is still reachable at all 
+
+        //        //version 1 //TODO optimize reprogramm fluent score calc,  
+        //        // is ~ 30 percent faster than version 2 , tested with 4 conditions
+        //        if (!configuration.ScoreProducer.CheckScoreReachedForMinimumReachable(matchingScore))
+        //        {
+        //            //Trace.WriteLine("debug: 9283928 skip try here con#: ", conditionCounter + "\tof\t" + conditionAmount);
+        //            //we abort here 
+        //            return null;
+        //        }
+
+        //    }//end for each
+
+        //    ////version 2 is slower than version 1
+        //    ////update
+        //    //configuration.ScoreProducer.CalcTotalReachedScore(matchingScore);
+        //    //if (matchingScore.ScoreTotal < configuration.ScoreProducer.ScoreTotalMinAccepted)
+        //    //{
+        //    //    matchingScore = null;
+        //    //}
+
+        //    return matchingScore;
+        //}
 
         private static float IsStringSame(string a, string b)
         {
@@ -255,11 +353,11 @@ namespace RecordLinkageNet.Core
                 return 0.0f;
         }
 
-        private static ResultSet ProcessJobSet(JobSet jobSet, IProgress<int> progressInformer=null)
+        private static MatchCandidateList ProcessJobSet(JobSet jobSet, IProgress<int> progressInformer=null)
         {
-            ResultSet ret = new ResultSet();
+            MatchCandidateList ret = new MatchCandidateList();
 
-            ret.MatchingScoreCompareResultList = new List<MatchingScore>();
+            //ret.MatchingScoreCompareResultList = new List<MatchingScore>();
 
             uint jobIdCounter = 0;
 
@@ -273,9 +371,9 @@ namespace RecordLinkageNet.Core
                 {
                     var indexPair = new IndexPair(a, b);
 
-                    var matchingResult = DoMatching(indexPair); //, jobSet.configuration);
+                    var matchingResult = DoMatching2(indexPair); //, jobSet.configuration);
                     if(matchingResult!=null)
-                        ret.MatchingScoreCompareResultList.Add(matchingResult);
+                        ret.Add(matchingResult);
 
                     jobIdCounter += 1;
                   

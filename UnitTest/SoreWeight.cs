@@ -157,7 +157,7 @@ namespace UnitTest
 
 
             //we add a filter test
-            ICandidateListFilter filter = new FilterRelativMinScore(80f);
+            ICandidateListFilter filter = new FilterRelativMinScore(0.8f);
             MatchCandidateList listFiltered = filter.Apply(candidateListFull);
 
             Assert.IsTrue(listFiltered.Count() == candidateList.Count());

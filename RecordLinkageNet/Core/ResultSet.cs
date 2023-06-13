@@ -129,7 +129,8 @@ namespace RecordLinkageNet.Core
             MatchingScore scoreFirst = firstGroup.CandidateList[0];
 
             //we do calc max 
-            float scoreMinValueAbs = config.ScoreProducer.CalcScoreAbsoluteValueFromPercentage(scoreMinValueRelative);
+            float scoreMinValueAbs = 0.4f;//TODO fix
+            //config.ScoreProducer.CalcScoreAbsoluteValueFromPercentage(scoreMinValueRelative);
 
             //we do a abs distance calc //TODO use function
             float distanceMinValueAbs = scoreFirst.MatchScoreColumnByName.Keys.Count * byte.MaxValue; 

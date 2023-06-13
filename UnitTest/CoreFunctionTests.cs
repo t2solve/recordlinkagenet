@@ -10,6 +10,7 @@ using System.Linq;
 using RecordLinkageNet.Core.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using RecordLinkageNet.Core.Data.Transpose;
 
 namespace UnitTest
 {
@@ -20,8 +21,8 @@ namespace UnitTest
         public async Task BasicSystemTest1()
         {
             Stopwatch sw = new Stopwatch();
-            int amountTestSet = 1000; 
-
+            sw.Start();
+            int amountTestSet = 1000;
 
             int amountTestValueUnion = (int)( (float) amountTestSet  * (0.1f)); // 10 percent
             var testDataA = TestDataGenerator.CreateTestPersons(amountTestSet);
@@ -36,20 +37,8 @@ namespace UnitTest
             testDataA.AddRange(testDataUnion);
 
             //TODO change to generic containter add
-            DataTableFeather tabA = new DataTableFeather();
-            // like tab.AddListAndCreate
-            tabA.AddDataClassAsColumns(new TestDataPerson(), testDataA.Count);
-            foreach (TestDataPerson p in testDataA)//we add all cells 
-            {
-                tabA.AddRow(p);
-            }
-
-            DataTableFeather tabB = new DataTableFeather();
-            tabB.AddDataClassAsColumns(new TestDataPerson(), testDataUnion.Count);
-            foreach (TestDataPerson p in testDataUnion) //we add all cells 
-            {
-                tabB.AddRow(p);
-            }
+            DataTableFeather tabA = TableConverter.CreateTableFeatherFromDataObjectList(testDataA);
+            DataTableFeather tabB = TableConverter.CreateTableFeatherFromDataObjectList(testDataUnion);
 
             ConditionList conList = new ConditionList();
             Condition.StringMethod testMethod = Condition.StringMethod.JaroWinklerSimilarity;
@@ -73,13 +62,10 @@ namespace UnitTest
             //conList.SortByScoreWeight();
 
             Configuration config = Configuration.Instance;
-
             config.AddIndex(new IndexFeather().Create(tabB, tabA));
             config.AddConditionList(conList);
-
+            config.Strategy = Configuration.CalculationStrategy.WeightedConditionSum;
             config.NumberTransposeModus = NumberTransposeHelper.TransposeModus.LOG10;
-            //we do change some pre set things
-            config.ScoreProducer.SetMinimumAcceptanceThresholdInPerentage(0.8f);
 
             //we init a worker
             WorkScheduler workScheduler = new WorkScheduler();
@@ -91,83 +77,13 @@ namespace UnitTest
 
             //ResultSet result = resultTask.Result;
 
-            //int amount = result.MatchingScoreCompareResulList.Count;
-            //Assert.IsTrue(amount >= amountTestValueUnion, "wrong amount of results");
+            int amount = resultTask.Result.Count();
+            Assert.IsTrue(amount >= amountTestValueUnion, "wrong amount of results");
 
-            //Trace.WriteLine("amount of pot: matches in result set :" + amount);
-            //var groupsComplete = result.GroupResultAsMatchingBlocks();
-
-            ////we do a filter selection 
-            //Trace.WriteLine("amount of groups: " + groupsComplete.Data.Count);
-
-            //var groupsFiltered = result.FilterByConditon(config, 0.8f, 0.2f);
-            //Trace.WriteLine("amount of groups: " + groupsFiltered.Data.Count);
-
-            //TimeSpan stopwatchElapsed = sw.Elapsed;
-            //Console.WriteLine("\tfinsihed used:\t" + Convert.ToInt32(stopwatchElapsed.TotalMilliseconds) + " ms");
+            TimeSpan stopwatchElapsed = sw.Elapsed;
+            Trace.WriteLine("\tfinsihed used:\t" + Convert.ToInt32(stopwatchElapsed.TotalMilliseconds) + " ms");
 
         }
 
-        //[TestMethod]
-        //public void ReadAndWriteResultSetTestFunction()
-        //{
-        //    TestDataPerson[] inMemoryCollection = GenTestData();
-
-        //    //we load the ml context for data parsing
-        //    MLContext mlContext = new MLContext();
-        //    IDataView dataA = mlContext.Data.LoadFromEnumerable<TestDataPerson>(inMemoryCollection);
-
-        //    RecordLinkageNet.Core.Compare.Index indexer = new RecordLinkageNet.Core.Index();
-        //    indexer.full();
-        //    CandidateList can = indexer.index(dataA, dataA);
-        //    ConditionList compare = new Compare(can);
-
-        //    compare.Exact("PostalCode", "PostalCode");
-        //    compare.String("NameFirst", "NameFirst", Condition.StringMethod.JaroWinklerSimilarity, 0.9f);
-        //    compare.String("NameLast", "NameLast", Condition.StringMethod.JaroWinklerSimilarity, -1.0f, "foo");
-        //    compare.Compute();
-        //    ResultSet resIn = compare.PackedResult;
-        //    string folderWeStoreIn = Path.Combine(Environment.CurrentDirectory, "testdir");
-
-        //    Console.WriteLine(folderWeStoreIn);
-        //    bool succes = ResultSetIOHelper.WriteResultSetToFolder(folderWeStoreIn, resIn);
-        //    Assert.IsTrue(succes, "error during write");
-
-        //    ResultSet resOut = ResultSetIOHelper.ReadResultSetToFolder(folderWeStoreIn);
-        //    Assert.IsNotNull(resOut);
-
-        //    //we compare the sets 
-        //    Assert.AreEqual(resIn.colNames[0], resOut.colNames[0]);
-
-        //    Assert.AreEqual(resIn.data[0, 1], resOut.data[0, 1], "wrong data");
-
-        //}
-
-        //private TestDataPerson[] GenTestData()
-        //{
-        //    //we do basic functional
-        //    TestDataPerson[] inMemoryCollection = new TestDataPerson[]
-        //    {
-        //            new TestDataPerson
-        //            {
-        //                NameFirst = "thomas",
-        //                NameLast = "mueller",
-        //                City = "moxee",
-        //                Street = "91st ave",
-        //                PostalCode =  "98944"
-        //            },
-        //            new TestDataPerson
-        //            {
-
-        //                NameFirst = "adalina",
-        //                NameLast = "nibbs",
-        //                City = "waterville",
-        //                Street = "jefferson",
-        //                PostalCode = "98944"
-        //            }
-        //    };
-
-        //    return inMemoryCollection;
-        //}
     }
 }

@@ -9,28 +9,38 @@ namespace RecordLinkageNet.Core
 {
     public class MatchCandidateList : IEnumerable<MatchCandidate>
     {
-        private List<MatchCandidate> data = null;
+        private List<MatchCandidate> listElements = null;
 
         public MatchCandidateList()
         {
-            data = new List<MatchCandidate>(); 
+            listElements = new List<MatchCandidate>(); 
         }
 
         public MatchCandidateList Add(MatchCandidate c)
         {
-            data.Add(c);
+            listElements.Add(c);
             return this;
         }
 
         public MatchCandidateList AddRange(MatchCandidateList list)
         {
-            data.AddRange(list);
+            listElements.AddRange(list);
             return this; 
+        }
+
+        public bool ContainsIndexPair(Compare.IndexPair p )
+        {
+            foreach(MatchCandidate c in listElements)
+            {
+                if (c.GetIndexPair().Equals(p))
+                    return true;
+            }
+            return false;
         }
 
         public IEnumerator<MatchCandidate> GetEnumerator()
         {
-            return data.GetEnumerator();
+            return listElements.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

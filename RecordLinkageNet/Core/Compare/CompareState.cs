@@ -20,7 +20,6 @@ namespace RecordLinkageNet.Core.Compare
         public void SetContext(CompareProcess process)
         {
             this.process = process;
-
         }
 
         public abstract void Save();

@@ -6,9 +6,25 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
+    //! a helper class for to serialzie a set 
     public class MatchGroupOrderedList
     {
-        private List<MatchGroupOrdered> data = null; 
+        private List<MatchGroupOrdered> listElements = null;
 
+        public MatchGroupOrderedList()
+        {
+            this.listElements = new List<MatchGroupOrdered>();
+        }   
+
+        public void Add(MatchGroupOrdered o)
+        {
+            this.listElements.Add(o);
+        }
+
+        public List<MatchGroupOrdered> Data
+        {
+            get { return this.listElements; }
+            set { this.listElements = value; }
+        }
     }
 }

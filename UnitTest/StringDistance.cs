@@ -8,7 +8,7 @@ using RecordLinkageNet.Core.Compare;
 namespace UnitTest
 {
     [TestClass]
-    public class DistanceFunctionTests
+    public class StringDistance
     {
         [TestMethod]
         public void TestHamming()
