@@ -13,7 +13,7 @@ namespace RecordLinkageNet.Core.Compare
     /// <summary>
     /// Class to create an index of two datasets
     /// </summary>
-    public class IndexFeather //TODO rename to avoid conflict
+    public class IndexFeather 
     {
         //public enum ConstructionState
         //{
@@ -31,18 +31,13 @@ namespace RecordLinkageNet.Core.Compare
 
         public IndexType type = IndexType.UNKNOWN;
         //public ConstructionState state = ConstructionState.UNKNOWN;
-        //bool flagFullMode = false;
-        //private List<IndexPair> indexList = new List<IndexPair>();
-        //private IndexPair[] indexArray = null;
+
         private uint idxAMax = uint.MaxValue;
         private uint idxBMax = uint.MaxValue;
         public DataTableFeather dataTabA = null; 
         public DataTableFeather dataTabB = null;
 
-        //public int GetAmountIndexPairs()
-        //{
-        //    return indexArray.Length; 
-        //}
+
         public uint GetMaxADim()
         {
             return idxAMax; 
@@ -51,17 +46,6 @@ namespace RecordLinkageNet.Core.Compare
         {
             return idxBMax;
         }
-
-        ////TODO: add block possibibilty
-        ////List<Tuple<string, string>> blockNames = null;
-
-        ///// <summary>
-        ///// function to configure class to use a fullindex
-        ///// </summary>
-        //public void full()
-        //{
-        //    flagFullMode = true;
-        //}
 
         /// <summary>
         /// function to create a index 

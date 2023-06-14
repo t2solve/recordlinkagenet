@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Compare.State
 {
-    public class StateLoadData : CompareState
+    public class StateConfiguration : CompareState
     {
-        public StateLoadData():base()
+
+        public StateConfiguration():base()
         {
             this.Name = "LoadData";
         }

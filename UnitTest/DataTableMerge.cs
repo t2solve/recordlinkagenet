@@ -13,7 +13,7 @@ namespace UnitTest
 {
     [TestClass]
 
-    public class TestDataTableMerge
+    public class DataTableMerge
     {
 
 

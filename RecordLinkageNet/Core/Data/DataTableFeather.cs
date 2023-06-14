@@ -11,7 +11,6 @@ namespace RecordLinkageNet.Core.Data
 {
     public class DataTableFeather
     {
-        //private List<DataColumn> columns = new List<DataColumn>();
         private Dictionary<string, DataColumn> namedColumnsMap = new Dictionary<string, DataColumn>();
         private Dictionary<int, DataColumn> indexedColumnsMap = new Dictionary<int, DataColumn>();
         private int columnIndexMax = 0;

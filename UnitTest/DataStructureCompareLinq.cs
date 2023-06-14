@@ -17,7 +17,7 @@ namespace UnitTest
 {
     [TestClass]
 
-    public class TestDataStructureCompareLinq
+    public class DataStructureCompareLinq
     {
        
         [TestMethod]

@@ -52,6 +52,12 @@ namespace RecordLinkageNet.Core
 
         public async Task<MatchCandidateList> Compare(CancellationToken stopToken, IProgress<int> progress = null)
         {
+            if(!config.IsValide())
+            {
+                Trace.WriteLine("warning 293898 abort Compare, configuration is not valide");
+                return null; 
+            }
+
             //TODO check config before compute
             Configuration.Instance.EnterDoCompareCalculationModus();
 
@@ -88,8 +94,7 @@ namespace RecordLinkageNet.Core
             Configuration.Instance.ExitDoCompareCalculationModus();
 
             return allResults;
-            //}
-            //return t; 
+
         }
 
         //public void EstimateWork()

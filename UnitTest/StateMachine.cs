@@ -72,12 +72,9 @@ namespace UnitTest
 
             int resultDateTimeCompare = DateTime.Compare(before, after);
             Assert.IsTrue(resultDateTimeCompare < 0);//we check order of time
-
-
             //we load
             Assert.IsTrue(stateWeLoad.Load());
             //compare 
-
             Assert.IsTrue(string.Compare(stateWeLoad.Name, "Init") == 0);
             //now its the same
             Assert.IsTrue(DateTime.Compare(before, stateWeLoad.Time)== 0);

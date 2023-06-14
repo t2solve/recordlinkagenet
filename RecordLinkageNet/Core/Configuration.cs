@@ -34,18 +34,80 @@ namespace RecordLinkageNet.Core
             DecisionTree
         }
 
-        public CalculationStrategy Strategy { get; private set; } = CalculationStrategy.Unknown; 
-
-        //public List<string> ImportantIdList = new List<string>();//TODO remove 
-
+        //data parts 
+        public CalculationStrategy Strategy { get; private set; } = CalculationStrategy.WeightedConditionSum; 
         public ConditionList ConditionList { get; private set; } = null;
         public IndexFeather Index { get; private set; } = null; 
         public NumberTransposeHelper.TransposeModus NumberTransposeModus { get; private set;  } = NumberTransposeHelper.TransposeModus.LINEAR;
 
-        private bool modusDoCompareCalculation = false; 
+        //filter parameter 
+        public float FilterParameterThresholdRelativMinScore { get; private set; } = 0.7f;//use by FilterRelativMinScore
 
         //computational 
         public int AmountCPUtoUse { get; private set; } = Environment.ProcessorCount;
+
+        //functional 
+        private bool modusDoCompareCalculation = false;
+
+        public bool IsValide()
+        {
+            bool success = false;
+            if (NumberTransposeModus == NumberTransposeHelper.TransposeModus.UNKNOWN)
+            {
+                Trace.WriteLine("warning 235235 non valide configuration please AddNumberTransposeModus");
+                return false;
+            }
+            if (Strategy == CalculationStrategy.Unknown)
+            {
+                Trace.WriteLine("warning 298398 non valide configuration please AddStrategy");
+                return false; 
+            }
+            if(ConditionList == null)
+            {
+                Trace.WriteLine("warning 234235 non valide configuration please AddConditionList");
+                return false;
+            }
+            if (ConditionList.Count() == 0)
+            {
+                Trace.WriteLine("warning 236 non valide configuration please add a condition to the list");
+                return false;
+            }
+            if (Index == null)
+            {
+                Trace.WriteLine("warning 2455 non valide configuration please AddIndex");
+                return false;
+            }
+
+            if (Index.dataTabA == null)
+            {
+                Trace.WriteLine("warning 5635 non valide configuration please add DatTable as dataTabA to Index");
+                return false;
+            }
+            if (Index.dataTabB == null)
+            {
+                Trace.WriteLine("warning 5635 non valide configuration please add DatTable as dataTabB to Index");
+                return false;
+            }
+            if (Index.dataTabA.GetAmountColumns() == 0|| Index.dataTabA.GetAmountColumns()==0)
+            {
+                Trace.WriteLine("warning 6436 non valide configuration please add Columns to DataTable in Index");
+                return false;
+            }
+            if (Index.dataTabA.GetAmountRows() == 0 || Index.dataTabA.GetAmountRows() == 0)
+            {
+                Trace.WriteLine("warning 6436 non valide configuration please add Rows to DataTable in Index");
+                return false;
+            }
+
+            success = true;
+            return success; 
+        }
+
+        public void Reset()
+        {
+            Index = null; 
+            ConditionList = null;
+        }
 
         public Configuration AddStrategy(CalculationStrategy strategy)
         {
@@ -58,6 +120,7 @@ namespace RecordLinkageNet.Core
             return this; 
         }
 
+
         public Configuration AddNumberTransposeModus(NumberTransposeHelper.TransposeModus modus)
         {
             if (modusDoCompareCalculation)
@@ -68,6 +131,20 @@ namespace RecordLinkageNet.Core
             this.NumberTransposeModus = modus;
             return this;
         }
+
+        public Configuration SetFilterParameterThresholdRelativMinScore(float minScore)
+        {
+            if (modusDoCompareCalculation)
+            {
+                Trace.WriteLine("warning 2353646 change will be ignored, computation is ongoin");
+                return null;
+            }
+          
+            this.FilterParameterThresholdRelativMinScore = minScore;
+
+            return this;
+        }
+
 
         public Configuration SetAmountCPUtoUse(int amount)
         {
@@ -129,10 +206,6 @@ namespace RecordLinkageNet.Core
         {
             modusDoCompareCalculation= false;
         }
-
-
-
-
 
     }
 }

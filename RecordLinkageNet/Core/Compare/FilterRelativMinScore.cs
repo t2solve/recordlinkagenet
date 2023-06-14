@@ -11,7 +11,7 @@ namespace RecordLinkageNet.Core.Compare
 
     public class FilterRelativMinScore : ICandidateListFilter
     {
-        private float minThresholdInPercentage = 0.6f;
+        //private float minThresholdInPercentage = Configuration.Instance.FilterParameterThresholdRelativMinScore;
 
         public FilterRelativMinScore(float minThresholdInPercentage)
         {
@@ -19,10 +19,10 @@ namespace RecordLinkageNet.Core.Compare
             {
                 Trace.WriteLine("error 29382983 parameter minTresholdInPerentage out of range [0.0f,1.0f]");
 
-                throw new ArgumentException("error 29382983 parameter out of range"); 
-
+                throw new ArgumentException("error 29382983 parameter out of range");
             }
-            this.minThresholdInPercentage = minThresholdInPercentage;
+            Configuration.Instance.SetFilterParameterThresholdRelativMinScore( minThresholdInPercentage);
+            //this.minThresholdInPercentage = minThresholdInPercentage;
         }
 
         public ICandidateSet Apply(ICandidateSet g)
@@ -36,7 +36,7 @@ namespace RecordLinkageNet.Core.Compare
                 {
                     float scorePercentage = WeightedScoreProducer.Instance.CalcRelativeScoreValueInPercentage((WeightedScore) score);
 
-                    if (scorePercentage >= minThresholdInPercentage)
+                    if (scorePercentage >= Configuration.Instance.FilterParameterThresholdRelativMinScore)
                         newList.Add(mc);
                 }
             }

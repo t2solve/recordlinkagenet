@@ -15,7 +15,7 @@ using RecordLinkageNet.Core.Data.Transpose;
 namespace UnitTest
 {
     [TestClass]
-    public class CoreFunctionTests
+    public class CoreFunction
     {
         [TestMethod]
         public async Task BasicSystemTest1()

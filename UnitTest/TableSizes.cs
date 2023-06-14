@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace UnitTest
 {
     [TestClass]
-    public class TestTableSizes
+    public class TableSizes
     {
         private bool CheckEstimate(long valuePresent, long valueMax)
         {
