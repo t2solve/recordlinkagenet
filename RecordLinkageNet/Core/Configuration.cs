@@ -5,13 +5,16 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using IndexFeather = RecordLinkageNet.Core.Compare.IndexFeather;
 
 namespace RecordLinkageNet.Core
 {
     //singelon class for config
+    [DataContract(Name = "Configuration", Namespace = "RecordLinkageNet")]
     public sealed class Configuration
     {
         //TODO implement a computation modus, to not change config while calc
@@ -35,13 +38,20 @@ namespace RecordLinkageNet.Core
         }
 
         //data parts 
-        public CalculationStrategy Strategy { get; private set; } = CalculationStrategy.WeightedConditionSum; 
+        [DataMember(Name = "Strategy")]
+        public CalculationStrategy Strategy { get; private set; } = CalculationStrategy.WeightedConditionSum;
+        [DataMember(Name = "ConditionList")]
         public ConditionList ConditionList { get; private set; } = null;
-        public IndexFeather Index { get; private set; } = null; 
+        [IgnoreDataMember]
+        public IndexFeather Index { get; private set; } = null;
+        [DataMember(Name = "NumberTransposeModus")]
         public NumberTransposeHelper.TransposeModus NumberTransposeModus { get; private set;  } = NumberTransposeHelper.TransposeModus.LINEAR;
 
         //filter parameter 
-        public float FilterParameterThresholdRelativMinScore { get; private set; } = 0.7f;//use by FilterRelativMinScore
+        [DataMember(Name = "FilterParameterThresholdRelativMinScore")]
+        public float FilterParameterThresholdRelativMinScore { get; private set; } = 0.7f;//used by FilterRelativMinScore
+
+        public float FilterParameterThresholdRelativMinDistance { get; private set; } = 0.2f;//used by FilterRelativMinScore
 
         //computational 
         public int AmountCPUtoUse { get; private set; } = Environment.ProcessorCount;
@@ -113,7 +123,7 @@ namespace RecordLinkageNet.Core
         {
             if(modusDoCompareCalculation)
             {
-                Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoin"); 
+                Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoing"); 
                 return null; 
             }
             this.Strategy = strategy;
@@ -125,7 +135,7 @@ namespace RecordLinkageNet.Core
         {
             if (modusDoCompareCalculation)
             {
-                Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoin");
+                Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoing");
                 return null;
             }
             this.NumberTransposeModus = modus;
@@ -136,7 +146,7 @@ namespace RecordLinkageNet.Core
         {
             if (modusDoCompareCalculation)
             {
-                Trace.WriteLine("warning 2353646 change will be ignored, computation is ongoin");
+                Trace.WriteLine("warning 2353646 change will be ignored, computation is ongoing");
                 return null;
             }
           
@@ -145,12 +155,25 @@ namespace RecordLinkageNet.Core
             return this;
         }
 
+        public Configuration SetFilterParameterThresholdRelativMinDistance(float minDistance)
+        {
+            if (modusDoCompareCalculation)
+            {
+                Trace.WriteLine("warning 234253 change will be ignored, computation is ongoing");
+                return null;
+            }
+
+            this.FilterParameterThresholdRelativMinDistance = minDistance;
+
+            return this;
+        }
+        
 
         public Configuration SetAmountCPUtoUse(int amount)
         {
             if (modusDoCompareCalculation)
             {
-                Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoin");
+                Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoing");
                 return null;
             }
             if (amount<0 || amount > Environment.ProcessorCount )
@@ -166,7 +189,7 @@ namespace RecordLinkageNet.Core
         {
             if (modusDoCompareCalculation)
             {
-                Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoin");
+                Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoing");
                 return null;
             }
             this.Index = index;
@@ -177,7 +200,7 @@ namespace RecordLinkageNet.Core
         {
             if (modusDoCompareCalculation)
             {
-                Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoin");
+                Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoing");
                 return null;
             }
 

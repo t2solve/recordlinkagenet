@@ -157,6 +157,7 @@ namespace UnitTest
 
 
             //we add a filter test
+            //TODO move to own filter test class
             ICandidateListFilter filter = new FilterRelativMinScore(0.8f);
             MatchCandidateList listFiltered = filter.Apply(candidateListFull) as MatchCandidateList;
 
@@ -176,6 +177,8 @@ namespace UnitTest
                 MatchCandidate mcB = mapList[mcA.GetIndexPair()];
                 Assert.IsTrue(mcA.Equals(mcB));    
             }
+
+
         }
         [TestMethod]
         public void TestScoringAbortPossibility()

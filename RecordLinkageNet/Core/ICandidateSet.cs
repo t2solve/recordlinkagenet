@@ -11,5 +11,7 @@ namespace RecordLinkageNet.Core
         public void Add(MatchCandidate candidate);
 
         public void SortByScoreTopDown();
+
+        public MatchCandidate GetTopScoreCandidate();
     }
 }

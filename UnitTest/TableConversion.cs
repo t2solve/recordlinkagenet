@@ -62,16 +62,11 @@ namespace UnitTest
         [TestMethod]
         public void TestSqliteWriterFreedAfterWritePart2()
         {
+            // problem: https://stackoverflow.com/a/8513453
             string fileName = "foo.db"; 
             var testDataA = TestDataGenerator.GenTestData();
 
             Assert.IsTrue(SqliteWriter.WriteDataFeatherToSqlite(testDataA, "foo", fileName, false));
-
-
-            ////we need to call the garbage collector because of a bug
-            ////https://stackoverflow.com/a/8513453
-            //GC.Collect();
-            //GC.WaitForPendingFinalizers();
 
             File.Delete(fileName);
 

@@ -11,7 +11,7 @@ namespace RecordLinkageNet.Core.Compare
     /// Class for index tuple 
     /// 
     /// </summary>
-    [Serializable]
+    //[Serializable]
     public struct IndexPair : IEqualityComparer<IndexPair>
     {
         public uint aIdx = uint.MaxValue;

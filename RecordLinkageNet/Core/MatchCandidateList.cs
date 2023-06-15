@@ -9,6 +9,8 @@ namespace RecordLinkageNet.Core
 {
     public class MatchCandidateList : ICandidateSet
     {
+        //TODO use a base class to share double code MatchGroupOrdered  
+
         private List<MatchCandidate> listElements = new List<MatchCandidate>(); 
 
         public MatchCandidateList AddRange(MatchCandidateList list)
@@ -48,6 +50,12 @@ namespace RecordLinkageNet.Core
             listElements.Add(candidate);
         }
 
-      
+        public MatchCandidate GetTopScoreCandidate()
+        {
+            this.SortByScoreTopDown();
+            if (listElements.Count > 0)
+                return listElements.First();
+            return null;
+        }
     }
 }

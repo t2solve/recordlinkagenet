@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.ML.Data;
 
 namespace RecordLinkageNet.Core.Data
 {

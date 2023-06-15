@@ -1,6 +1,4 @@
-﻿using Microsoft.ML;
-using Microsoft.ML.Data;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,13 +11,14 @@ namespace RecordLinkageNet.Core.Compare
     /// <summary>
     /// Class which does the comparision, internal iterating over DataSet A and B 
     /// </summary>
-    [DataContract(Name = "ConditionList", Namespace = "DataContracts")]
+    [DataContract(Name = "ConditionList", Namespace = "RecordLinkageNet")]
     public class ConditionList : IEnumerable<Condition>
     {
         //jobId, result
         //private Queue<Task<Tuple<long, float>>> myTaskList = new Queue<Task<Tuple<long, float>>>(); //really ?? 
         [DataMember(Name = "ConditionListData")]
         private List<Condition> conditionList = new List<Condition>();//condition list 
+        [IgnoreDataMember]
         private Dictionary<string,Tuple<string,string>> colNamesMappingNewToCond = new Dictionary<string, Tuple<string, string>> ();
      
         public Tuple<string, string> GetOldNamesOfColumn(string name)

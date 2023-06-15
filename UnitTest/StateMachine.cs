@@ -115,7 +115,14 @@ namespace UnitTest
             conState.DoLogDataTabA = true; 
             conState.DoLogDataTabB = true;
 
-            Assert.IsTrue( conState.Save()); 
+            Assert.IsTrue( conState.Save());
+
+            //clear old values 
+            config.Reset();
+            //Assert.IsFalse(config.IsValide());
+
+            Assert.IsTrue(conState.Load());
+            Assert.IsTrue(config.IsValide());
 
         }
     }

@@ -10,7 +10,7 @@ namespace RecordLinkageNet.Core.Compare
     /// <summary>
     /// Class which defines what and how to compare datacolumns
     /// </summary>
-    [DataContract(Name = "Condition", Namespace = "DataContracts")]
+    [DataContract(Name = "Condition", Namespace = "RecordLinkageNet")]
     public class Condition : IEquatable<Condition> , IComparable<Condition>
     {
         public enum StringMethod
@@ -45,7 +45,7 @@ namespace RecordLinkageNet.Core.Compare
         public StringMethod MyStringMethod { get; set; } = StringMethod.Unknown;
         [DataMember(Name = "NameColNewLabel")]
         public string NameColNewLabel { get; set; } = null;
-
+        [DataMember(Name = "ConditionIndex")]
         public byte ConditionIndex { get; set; } = 0; 
 
         //an exlusive list we have implemted 

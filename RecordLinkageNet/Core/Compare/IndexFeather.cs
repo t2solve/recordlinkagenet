@@ -1,5 +1,4 @@
-﻿using Microsoft.ML;
-using RecordLinkageNet.Core.Data;
+﻿using RecordLinkageNet.Core.Data;
 using RecordLinkageNet.Util;
 using System;
 using System.Collections.Generic;
@@ -54,6 +53,14 @@ namespace RecordLinkageNet.Core.Compare
         /// <param name="dataB">DataTable of DataSet B</param>
         public IndexFeather Create(DataTableFeather dataA, DataTableFeather dataB = null, Condition prefilter = null)
         {
+            if (dataA == null)
+            {
+                Trace.WriteLine("error 29838998 IndexFeather  DataTableFeather dataA is null");
+                throw new ArgumentException("error 29838998");
+            }
+
+            if (dataB == null)//set as copy 
+                dataB = dataA; 
             idxAMax = (uint) dataA.GetAmountRows();
             dataTabA = dataA;
             dataTabB = dataB;
