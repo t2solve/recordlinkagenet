@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RecordLinkageNet.Util;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -29,17 +30,18 @@ namespace RecordLinkageNet.Core.Compare.State
             }
             try
             {
-                DataContractSerializer serializer = new DataContractSerializer(typeof(StateInit));
-                FileStream fs = new FileStream(file, FileMode.Open);
-                StateInit si = (StateInit)serializer.ReadObject(fs);
-                fs.Close();
-                //success = true;
-                //
-                //we copy all member 
-                //TODO use reflection
-                this.name = si.name;
-                this.time = si.time;
-                success = true; 
+
+                StateInit si = null;
+                success = ClassReaderFromXML.ReadClassInstanceFromXml(out si, file);
+
+                if (si != null && success)
+                {
+                    //CopyAllMyProperties<StateInit>();//TODO 
+                    //TODO use reflection
+                    this.name = si.name;
+                    this.time = si.time;
+                    success = true;
+                }
             }
             catch (Exception e)
             {
@@ -55,19 +57,12 @@ namespace RecordLinkageNet.Core.Compare.State
             string file = GetSpecificFileName();
             try
             {
-                var ds = new DataContractSerializer(typeof(StateInit));
-                var settings = new XmlWriterSettings { Indent = true, Encoding = Encoding.UTF8 };
-                using (var w = XmlWriter.Create(file, settings))
-                {
-                    ds.WriteObject(w, this);
-                }
-                success = true;
+                success =  ClassWriterToXML.WriteClassInstanceToXml<StateInit>(this, file);
             }
             catch (Exception e)
             {
-                Trace.WriteLine("error e324234 during write:  " + e.ToString());
+                Trace.WriteLine("error 234623 during write:  " + e.ToString());
             }
-
             return success;
         }
     }

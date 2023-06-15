@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RecordLinkageNet.Core;
 using RecordLinkageNet.Core.Compare;
 using RecordLinkageNet.Core.Compare.State;
+using RecordLinkageNet.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -78,6 +80,43 @@ namespace UnitTest
             Assert.IsTrue(string.Compare(stateWeLoad.Name, "Init") == 0);
             //now its the same
             Assert.IsTrue(DateTime.Compare(before, stateWeLoad.Time)== 0);
+
+
+        }
+
+        [TestMethod]
+        public void TestConfState()
+        {
+            int amountData = 10;
+            DataTableFeather tabA = TestDataGenerator.GenTestData(amountData);
+
+            //build a simle configuration
+            ConditionList conList = new ConditionList();
+            Condition.StringMethod testMethod = Condition.StringMethod.JaroWinklerSimilarity;
+            conList.String("NameFirst", "NameFirst", testMethod);
+            conList.String("Street", "Street", testMethod);
+            conList.String("PostalCode", "PostalCode", testMethod);
+            conList.String("NameLast", "NameLast", testMethod);
+
+            //add weight
+            foreach (Condition c in conList)
+            {
+                c.ScoreWeight = 1.0f;
+            }
+
+            Configuration config = Configuration.Instance;
+            config.AddIndex(new IndexFeather().Create(tabA, tabA));
+            config.AddConditionList(conList);
+            config.AddStrategy(Configuration.CalculationStrategy.WeightedConditionSum);
+
+            CompareProcess process = new CompareProcess();
+            StateConfiguration conState = new StateConfiguration();
+            conState.SetContext(process);
+            conState.DoLogDataTabA = true; 
+            conState.DoLogDataTabB = true;
+
+            Assert.IsTrue( conState.Save()); 
+
         }
     }
 }

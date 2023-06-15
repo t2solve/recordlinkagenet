@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Data.Sqlite;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RecordLinkageNet.Core.Data.Transpose;
 using RecordLinkageNet.Util;
 using System;
@@ -41,6 +42,41 @@ namespace UnitTest
             }
 
        }
+
+
+        [TestMethod]
+        public void TestSqliteWriterFreedAfterWrite()
+        {
+            string fileName = TestDataGenerator.WriteTestSqliteTableIfNotExists();
+            //we need to call the garbage collector because of a bug
+            //https://stackoverflow.com/a/8513453
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            File.Delete(fileName);
+
+            Assert.IsFalse(File.Exists(fileName));
+        }
+
+
+        [TestMethod]
+        public void TestSqliteWriterFreedAfterWritePart2()
+        {
+            string fileName = "foo.db"; 
+            var testDataA = TestDataGenerator.GenTestData();
+
+            Assert.IsTrue(SqliteWriter.WriteDataFeatherToSqlite(testDataA, "foo", fileName, false));
+
+
+            ////we need to call the garbage collector because of a bug
+            ////https://stackoverflow.com/a/8513453
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
+
+            File.Delete(fileName);
+
+            Assert.IsFalse(File.Exists(fileName));
+        }
         [TestMethod]
         public void TestSqliteWriter()
         {

@@ -12,8 +12,20 @@ namespace RecordLinkageNet.Util
 {
     public class SqliteWriter
     {
+        private static bool CheckNameDontContainsSpecialChars(string name)
+        {
+                return name.Any(ch => !char.IsLetterOrDigit(ch));
+        }
         public static bool WriteDataFeatherToSqlite(DataTableFeather tab, string tablename, string fileName, bool removeIfExists = false)
         {
+            //TODO check column Names for - , # etc.
+            if (tablename == null)
+                throw new ArgumentNullException("error 2398938"); 
+            if(CheckNameDontContainsSpecialChars(tablename))
+            {
+                Trace.WriteLine("error 239898 table name should only contain chars or digits");
+                return false; 
+            }
             if (removeIfExists)
             {
                 if (File.Exists(fileName))
@@ -59,6 +71,7 @@ namespace RecordLinkageNet.Util
                     using (var cmd = new SqliteCommand(createString, conn))
                     {
                         cmd.ExecuteNonQuery();
+                        cmd.Dispose();
                     }
                     //do bulk insert 
                     //  https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/bulk-insert
@@ -109,12 +122,21 @@ namespace RecordLinkageNet.Util
                                 para.Value = datRow.Data[colName].Value.ToString();
                             }
                             command.ExecuteNonQuery();
+                            command.Dispose();
                         }
+                        //we close explicit
                         transaction.Commit();
+                        transaction.Dispose();
+
                     }//end transaction
                     conn.Close();
                     conn.Dispose();
                 }
+
+                //we need to call clear because of a bug ? 
+                //force free  see: 
+                //https://stackoverflow.com/a/24570408
+                SqliteConnection.ClearAllPools();
             }
             catch (Exception e)
             {
@@ -122,6 +144,12 @@ namespace RecordLinkageNet.Util
                 Trace.WriteLine("error 989898989898  " + e.ToString());
                 return false;
             }
+
+            ////we need to call the garbage collector because of a bug
+            ////https://stackoverflow.com/a/8513453
+            //GC.Collect();
+            //GC.WaitForPendingFinalizers();
+
             return true;
         }
 
@@ -172,6 +200,7 @@ namespace RecordLinkageNet.Util
                     using (var cmd = new SqliteCommand(createString, conn))
                     {
                         cmd.ExecuteNonQuery();
+                        cmd.Dispose();
                     }
                     //do bulk insert 
                     //  https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/bulk-insert

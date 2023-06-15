@@ -70,5 +70,18 @@ namespace RecordLinkageNet.Core.Compare.State
 
             return true;
         }
+
+        //protected void CopyAllMyProperties<T>()
+        //{
+        //    //TODOhttps://stackoverflow.com/questions/8181484/copy-object-properties-reflection-or-serialization-which-is-faster
+        //    //var newPerson = Activator.CreateInstance<Person>();
+        //    //var fields = newPerson.GetType().GetFields(BindingFlags.Public
+        //    //    | BindingFlags.Instance);
+        //    //foreach (var field in fields)
+        //    //{
+        //    //    var value = field.GetValue(person);
+        //    //    field.SetValue(newPerson, value);
+        //    //}
+        //}
     }
 }
