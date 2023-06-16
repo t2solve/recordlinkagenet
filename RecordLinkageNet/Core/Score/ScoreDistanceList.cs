@@ -20,10 +20,11 @@ namespace RecordLinkageNet.Core.Score
             this.parent = parent;
         }
 
-        public bool AddScores(IScore a, IScore b)
+        public float AddScores(IScore a, IScore b)
         {
-            bool success = false; 
-            //TODO  change this via intefaces
+            //TODO change this via intefaces
+
+            float absDistance = -1.0f; 
             if(a is WeightedScore && b is WeightedScore)
             {
                 ////we produce a score
@@ -32,16 +33,30 @@ namespace RecordLinkageNet.Core.Score
                 //TODO maybe differ here in distance metric ? 
                 WeightedScoreEuclidianDistance distanceObj = new WeightedScoreEuclidianDistance();
 
-                if(distanceObj.CalculateDistance(a, b)>=0.0f)
+                absDistance = distanceObj.CalculateDistance(a, b);
+                if (absDistance >= 0.0f)
                 {
                     //we add it 
                     Tuple<IScore, IScore> newPair = new Tuple<IScore, IScore>(a,b);
-                    distDictio.Add(newPair,distanceObj);
-                    success = true;
+
+                    if(distDictio.ContainsKey(newPair))//check double add 
+
+                    {
+                        //replace
+                        distDictio[newPair] = distanceObj; 
+                    }
+                    else
+                    {
+                        distDictio.Add(newPair, distanceObj);
+
+                    }
+
+
                 }
                 else
                 {
                     Trace.WriteLine("error 2938989 during calc distance"); 
+                    absDistance = -1.0f;
                 }
             }
             else
@@ -49,7 +64,7 @@ namespace RecordLinkageNet.Core.Score
                 Trace.WriteLine("error 23523523 type of score : " + a.GetType().Name + 
                     " not known, will be ignored");
             }
-            return success;
+            return absDistance;
         }
 
         public void AddSetToCandidateSet(ICandidateSet group)

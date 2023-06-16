@@ -22,7 +22,7 @@ namespace RecordLinkageNet.Core
 
         public MatchGroupOrdered()
         {
-            scoreDistances = new ScoreDistanceList(this);
+            ScoreDistances = new ScoreDistanceList(this);
         }
 
         public void Add(MatchCandidate c)
@@ -59,24 +59,25 @@ namespace RecordLinkageNet.Core
             set { this.listElements = value; }
         }
 
-        public void CalculateAllDistances()
-        {
-            //TODO maybe to in another class ?? 
-            //we get the top score
-            MatchCandidate topCand = GetTopScoreCandidate();
-            if (topCand != null)
-            {
-                scoreDistances.AddSetToCandidateSet(this);
-                //we do calc distance for all 
-                foreach (MatchCandidate c in listElements)
-                {
-                    scoreDistances.AddScores(topCand.GetScore(),c.GetScore());
-                }
-            }
-            else Trace.WriteLine("error 23534544656");
-        }
+        //public void CalculateAllDistances()
+        //{
+        //    //TODO maybe to in another class ?? 
+        //    //we get the top score
+        //    MatchCandidate topCand = GetTopScoreCandidate();
+        //    if (topCand != null)
+        //    {
+        //        ScoreDistances.AddSetToCandidateSet(this);
+        //        //we do calc distance for all 
+        //        foreach (MatchCandidate c in listElements)
+        //        {
+        //            ScoreDistances.AddScores(topCand.GetScore(),c.GetScore());
+        //        }
+        //    }
+        //    else Trace.WriteLine("error 23534544656");
+        //}
 
         public GroupFactory.Type Type { get => type; set => type = value; }
         public GroupCriteriaContainer Criteria { get => criteria; set => criteria = value; }
+        public IDistanceSet ScoreDistances { get => scoreDistances; set => scoreDistances = value; }
     }
 }

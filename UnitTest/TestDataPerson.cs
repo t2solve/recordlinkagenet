@@ -82,6 +82,18 @@ namespace UnitTest
     [Serializable]
     public record TestDataPerson
     {
+        public TestDataPerson()
+        {
+        }
+        public TestDataPerson(string nameFirst, string nameLast, string street, string city, string postalCode)
+        {
+            NameFirst = nameFirst;
+            NameLast = nameLast;
+            Street = street;
+            City = city;
+            PostalCode = postalCode;
+        }
+
         [LoadColumn(0)]
         public string NameFirst { get; set; } = "";
         [LoadColumn(1)]

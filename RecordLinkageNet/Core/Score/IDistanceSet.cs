@@ -10,7 +10,7 @@ namespace RecordLinkageNet.Core.Score
     {
         void AddSetToCandidateSet(ICandidateSet group);
 
-        bool AddScores(IScore a, IScore b);
+        float AddScores(IScore a, IScore b);
 
         IScoreDistance GetDistance(IScore a, IScore b);
 

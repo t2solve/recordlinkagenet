@@ -51,7 +51,7 @@ namespace RecordLinkageNet.Core
         [DataMember(Name = "FilterParameterThresholdRelativMinScore")]
         public float FilterParameterThresholdRelativMinScore { get; private set; } = 0.7f;//used by FilterRelativMinScore
 
-        public float FilterParameterThresholdRelativMinDistance { get; private set; } = 0.2f;//used by FilterRelativMinScore
+        public float FilterParameterThresholdRelativMinAllowedDistanceToTopScore { get; private set; } = 0.2f;//used by FilterRelativMinScore
 
         //computational 
         public int AmountCPUtoUse { get; private set; } = Environment.ProcessorCount;
@@ -155,7 +155,7 @@ namespace RecordLinkageNet.Core
             return this;
         }
 
-        public Configuration SetFilterParameterThresholdRelativMinDistance(float minDistance)
+        public Configuration SetFilterParameterThresholdRelativMinAllowedDistanceToTopScoree(float minimumDistance)
         {
             if (modusDoCompareCalculation)
             {
@@ -163,7 +163,7 @@ namespace RecordLinkageNet.Core
                 return null;
             }
 
-            this.FilterParameterThresholdRelativMinDistance = minDistance;
+            this.FilterParameterThresholdRelativMinAllowedDistanceToTopScore = minimumDistance;
 
             return this;
         }
