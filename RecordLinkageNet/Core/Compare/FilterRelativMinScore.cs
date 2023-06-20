@@ -44,6 +44,15 @@ namespace RecordLinkageNet.Core.Compare
             return newList;
         }
 
-      
+        public MatchCandidateList Apply(MatchCandidateList g)
+        {
+            //a small wrapper
+            var gAsI = g as ICandidateSet;
+            if (gAsI != null)
+                return this.Apply(gAsI) as MatchCandidateList;
+            return null; 
+        }
+
+
     }
 }

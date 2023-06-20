@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Data
 {
-    public class DataRow
+    public class DataRow : IEnumerable<DataCell>
     {
         private DataTableFeather parent = null;
         public Dictionary<string, DataCell> Data = new Dictionary<string, DataCell>();
@@ -51,6 +52,16 @@ namespace RecordLinkageNet.Core.Data
 
                 return hash;
             }
+        }
+
+        public IEnumerator<DataCell> GetEnumerator()
+        {
+            return Data.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

@@ -4,19 +4,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core
 {
     //! a candidate set which is oredered, e.g. all candidate in B for index A = 1 
+    [DataContract(Name = "MatchGroupOrdered", Namespace = "RecordLinkageNet")]
     public class MatchGroupOrdered : ICandidateSet
     {
         //TODO use a base class to share double code MatchCandidateList  
         //TODO maybe melt with MachtCandidateList ?? 
-
+        [DataMember(Name = "ListElements")]
         protected List<MatchCandidate> listElements = new List<MatchCandidate>();
+        [DataMember(Name = "Criteria")]
         protected GroupCriteriaContainer criteria = null;
+        [DataMember(Name = "Type")]
         protected GroupFactory.Type type = GroupFactory.Type.Unknown;
         protected IDistanceSet scoreDistances = null;
 

@@ -3,15 +3,31 @@ using RecordLinkageNet.Core.Score;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core
 {
+    [DataContract(Name = "MatchCandidate", Namespace = "RecordLinkageNet")]
+    [KnownType(typeof(WeightedScore))]//need to declare all implementation https://stackoverflow.com/a/11800139
     public class MatchCandidate : IEquatable<MatchCandidate>, IComparable<MatchCandidate>
     {
-        private IndexPair idxPair = new IndexPair(); 
+        public enum AcceptanceLevel
+        {
+            Unknown,
+            MatchAccepted,
+            MatchRejected,
+        }
+
+        [DataMember(Name = "IndexPair")]
+        private IndexPair idxPair = new IndexPair();
+        [DataMember(Name = "Score")]
         private IScore score = null;
+        [DataMember(Name = "AcceptanceLevel")]
+        private AcceptanceLevel acceptanceLvl = AcceptanceLevel.Unknown;
+
 
         public MatchCandidate(IndexPair idxPair)
         {
@@ -54,5 +70,8 @@ namespace RecordLinkageNet.Core
             //more or less redirect
             return this.score.CompareTo(other.score);
         }
+
+        public AcceptanceLevel AcceptanceLvL { get => acceptanceLvl; set => acceptanceLvl = value; }
+
     }
 }

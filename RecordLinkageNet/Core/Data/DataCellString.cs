@@ -2,24 +2,28 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core.Data
 {
+    [DataContract(Name = "DataCellString", Namespace = "RecordLinkageNet")]
     public class DataCellString : DataCell, IEqualityComparer<DataCellString>
     {
         //TODO refactor eveything is a string here
-        private string myvalue = "";
+        [DataMember(Name = "MyValue")]
+        private string myValue = "";
         public override string Value 
         { 
             get
             {
-                return myvalue;
+                return myValue;
             }
             set 
             {
-                myvalue = value;
+                myValue = value;
             } 
         } 
 
@@ -38,7 +42,7 @@ namespace RecordLinkageNet.Core.Data
 
         public int GetHashCode( DataCellString obj)
         {
-           return obj.myvalue.GetHashCode();
+           return obj.myValue.GetHashCode();
         }
     }
 }

@@ -47,5 +47,10 @@ namespace RecordLinkageNet.Core.Score
             //only focus on distance 
             return (otherCast.Distance == this.Distance);
         }
+
+        public float GetValue()
+        {
+            return distance; 
+        }
     }
 }

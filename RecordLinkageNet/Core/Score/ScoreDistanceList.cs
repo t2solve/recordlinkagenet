@@ -42,7 +42,7 @@ namespace RecordLinkageNet.Core.Score
                     if(distDictio.ContainsKey(newPair))//check double add 
 
                     {
-                        //replace
+                        //replace //TODO check is same ?? 
                         distDictio[newPair] = distanceObj; 
                     }
                     else
@@ -81,8 +81,15 @@ namespace RecordLinkageNet.Core.Score
             {
                 retObj = distDictio[tup];
             }
-            else Trace.WriteLine("warning 298398 key not found in distance set, please AddScores before use");
-
+            else
+            {
+                //we add the distance 
+                float d = this.AddScores(a, b);   
+                if(d==-1.0f)
+                    Trace.WriteLine("warning 23453412 GetDistance error during calc distance, will return null");
+                else
+                    retObj = distDictio[tup];
+            }
             return retObj; 
         }
 

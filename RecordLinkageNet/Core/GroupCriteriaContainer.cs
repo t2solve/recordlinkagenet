@@ -1,12 +1,17 @@
 ﻿using RecordLinkageNet.Core.Data;
+using System.Runtime.Serialization;
+using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core
 {
+    [DataContract(Name = "GroupCriteriaContainer", Namespace = "RecordLinkageNet")]
     public class GroupCriteriaContainer
     {
 
-       
+        [DataMember(Name = "IndexKey")]
+
         private uint indexKey = uint.MaxValue;
+        [DataMember(Name = "IndexCell")]
         private DataCell indexCell = null;
 
         public GroupCriteriaContainer(uint indexKey )

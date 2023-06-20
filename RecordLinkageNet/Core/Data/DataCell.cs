@@ -1,15 +1,21 @@
-﻿using System;
+﻿using RecordLinkageNet.Core.Score;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core.Data
 {
+    [DataContract(Name = "DataCell", Namespace = "RecordLinkageNet")]
+    [KnownType(typeof(DataCellString))]
     public abstract class DataCell : IEqualityComparer<DataCell> //, IComparable<DataCell>
     {
-        public uint Id { get; set; } = uint.MaxValue;
+        [DataMember(Name = "Id")]
+        public uint Id { get; set; } = uint.MaxValue; //aka index id 
 
         //public virtual string Value { get; set; } = "";
 

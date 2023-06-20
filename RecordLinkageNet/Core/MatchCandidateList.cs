@@ -2,15 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core
 {
+    [DataContract(Name = "MatchCandidateList", Namespace = "RecordLinkageNet")]
+
     public class MatchCandidateList : ICandidateSet
     {
         //TODO use a base class to share double code MatchGroupOrdered  
-
+        [DataMember(Name = "ListElements") ]
         private List<MatchCandidate> listElements = new List<MatchCandidate>(); 
 
         public MatchCandidateList AddRange(MatchCandidateList list)

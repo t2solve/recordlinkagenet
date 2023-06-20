@@ -3,19 +3,25 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core.Score
 {
+    [DataContract(Name = "WeightedScore", Namespace = "RecordLinkageNet")]
     public class WeightedScore : IScore
     {
+        [DataMember(Name = "MatchScorePartByConditionIndex")]
         //                 index, value
         private Dictionary<byte, byte> matchScorePartByConditionIndex = new Dictionary<byte, byte>();
+        [DataMember(Name = "ScoreAbsTotal")]
         private float scoreAbsTotal = -1.0f;
         //private bool scoreIsComplete = false;
-        private IScore.AcceptanceLevel acceptanceLvl = IScore.AcceptanceLevel.Unknown;
+        [IgnoreDataMember]
         private MatchCandidate mCandidate = null;
+        [DataMember(Name = "ConIndexListWeNeedToAddScoreParts")]
         private List<byte> conIndexListWeNeedToAddScoreParts = new List<byte>();
         public WeightedScore(MatchCandidate m)
         {
@@ -137,10 +143,10 @@ namespace RecordLinkageNet.Core.Score
             return false;
         }
 
-        public IScore.AcceptanceLevel GetAcceptanceLevel()
-        {
-            return acceptanceLvl;
-        }
+        //public IScore.AcceptanceLevel GetAcceptanceLevel()
+        //{
+        //    return acceptanceLvl;
+        //}
 
         public float GetScoreValue()
         {
