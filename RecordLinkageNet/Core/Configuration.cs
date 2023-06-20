@@ -50,13 +50,15 @@ namespace RecordLinkageNet.Core
         //filter parameter 
         [DataMember(Name = "FilterParameterThresholdRelativMinScore")]
         public float FilterParameterThresholdRelativMinScore { get; private set; } = 0.7f;//used by FilterRelativMinScore
-
-        public float FilterParameterThresholdRelativMinAllowedDistanceToTopScore { get; private set; } = 0.2f;//used by FilterRelativMinScore
+        [DataMember(Name = "FilterParameterThresholdRelativMinAllowedDistanceToTopScore")]
+        public float FilterParameterThresholdRelativMinAllowedDistanceToTopScore { get; private set; } = 0.2f;
 
         //computational 
+        [DataMember(Name = "AmountCPUtoUse")]
         public int AmountCPUtoUse { get; private set; } = Environment.ProcessorCount;
 
         //functional 
+        [IgnoreDataMember]
         private bool modusDoCompareCalculation = false;
 
         public bool IsValide()
@@ -119,7 +121,7 @@ namespace RecordLinkageNet.Core
             ConditionList = null;
         }
 
-        public Configuration AddStrategy(CalculationStrategy strategy)
+        public Configuration SetStrategy(CalculationStrategy strategy)
         {
             if(modusDoCompareCalculation)
             {
@@ -131,7 +133,7 @@ namespace RecordLinkageNet.Core
         }
 
 
-        public Configuration AddNumberTransposeModus(NumberTransposeHelper.TransposeModus modus)
+        public Configuration SetNumberTransposeModus(NumberTransposeHelper.TransposeModus modus)
         {
             if (modusDoCompareCalculation)
             {
@@ -228,6 +230,10 @@ namespace RecordLinkageNet.Core
         public void ExitDoCompareCalculationModus()
         {
             modusDoCompareCalculation= false;
+        }
+        public bool IsDoingCompareCalculation()
+        {
+            return modusDoCompareCalculation;
         }
 
     }

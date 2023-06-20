@@ -9,23 +9,41 @@ using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Compare.State
 {
-    [DataContract(Name = "CompareState", Namespace = "RecordLinkageNet")]
     public abstract class CompareState
     {
+        public enum Type //TODO should i use this ?
+        {
+            Uknown,
+            Init,
+            Configuration,
+            Process,
+            Evaluate,
+            Export,
+            End
+        }
+
         [IgnoreDataMember]
         protected CompareProcess process;
         [DataMember(Name = "Time")]
         protected DateTime time;
         [DataMember(Name = "Name")]
         protected string name;
+        [DataMember(Name = "Type")]
+        protected Type type;
 
         public string Name { get => name; set => name = value; }
         public DateTime Time { get => time; set => time = value; }
+        public Type StateType { get => type; set => type = value; }
 
         public CompareState()
         {
             time = DateTime.UtcNow;
-            name = "foo";
+            name = "BaseClass";
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(this.Name);
         }
 
         public void SetContext(CompareProcess process)

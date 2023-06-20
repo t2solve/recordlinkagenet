@@ -36,7 +36,6 @@ namespace RecordLinkageNet.Core.Compare
         public DataTableFeather dataTabA = null; 
         public DataTableFeather dataTabB = null;
 
-
         public uint GetMaxADim()
         {
             return idxAMax; 

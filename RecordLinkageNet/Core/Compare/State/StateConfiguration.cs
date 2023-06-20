@@ -1,4 +1,5 @@
-﻿using RecordLinkageNet.Core.Data;
+﻿using RecordLinkage.Core;
+using RecordLinkageNet.Core.Data;
 using RecordLinkageNet.Util;
 using Simsala.Tool;
 using System;
@@ -6,10 +7,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using static RecordLinkageNet.Core.Configuration;
 
 namespace RecordLinkageNet.Core.Compare.State
 {
@@ -17,11 +20,11 @@ namespace RecordLinkageNet.Core.Compare.State
     //but data is stored as sqlite file
     public class StateConfiguration : CompareState
     {
-        private bool doLogDataTabA = false;
+        private bool doLogDataTabA = true;
         private bool doLogDataTabB = false;
         private string defaultNameA = "tabAartefactSpec.xml";
         private string defaultNameB = "tabBartefactSpec.xml";
-        private string defaultNameConditionList = "conditionList.xml";
+        private string defaultNameConfig = "config.xml";
 
         //TODO implement a container or helper for all of this 
         //TODO config  FilterParameterThresholdRelativMinScore
@@ -30,6 +33,8 @@ namespace RecordLinkageNet.Core.Compare.State
         public StateConfiguration():base()
         {
             this.Name = "Configuration";
+            this.type = Type.Configuration;
+
         }
 
         public bool DoLogDataTabA { get => doLogDataTabA; set => doLogDataTabA = value; }
@@ -39,6 +44,8 @@ namespace RecordLinkageNet.Core.Compare.State
         public override bool Load()
         {
             bool success = false;
+            //clear before load
+            Configuration.Instance.Reset();
 
             //we load tabA 
             string fileASpec = GetFileNameWithPath(defaultNameA);
@@ -48,19 +55,39 @@ namespace RecordLinkageNet.Core.Compare.State
             string fileBSpec = GetFileNameWithPath(defaultNameB);
             DataTableFeather tabB = ReadDataTab(fileBSpec);
 
-            if (tabA != null && tabB != null)
+            if (tabA == null)
             {
-                success = true;
-            }
-            bool sucConListLoad = false;
-            string fileConfigConditionList = GetFileNameWithPath(defaultNameConditionList);
-            ConditionList list = null; 
-            sucConListLoad = ClassReaderFromXML.ReadClassInstanceFromXml(out list, fileConfigConditionList);
-            if (sucConListLoad)
-                Configuration.Instance.AddConditionList(list);
+                Trace.WriteLine("error 343489898 during tabA");
 
-            //we set it in any way
-            Configuration.Instance.AddIndex(new IndexFeather().Create(tabA, tabB)); 
+            }
+            if (tabB == null)
+            {
+                Trace.WriteLine("warning 23948938498 might no tabB loaded");
+            }
+           //create index
+            Configuration.Instance.AddIndex(new IndexFeather().Create(tabA, tabB));
+            //load parameter via wrapper
+            ConfigSingeltonWrapper confWrap = new ConfigSingeltonWrapper();
+            string fileNameConfigFileAndPath = GetFileNameWithPath(defaultNameConfig);
+            if (ClassReaderFromXML.ReadClassInstanceFromXml(out confWrap, fileNameConfigFileAndPath))
+            {
+                //copy by hand 
+                Configuration.Instance.AddConditionList( confWrap.ConditionList);
+
+                Configuration.Instance.SetNumberTransposeModus(confWrap.NumberTransposeModus);
+                Configuration.Instance.SetStrategy(confWrap.Strategy);
+                Configuration.Instance.SetAmountCPUtoUse(confWrap.AmountCPUtoUse);
+                Configuration.Instance.SetFilterParameterThresholdRelativMinAllowedDistanceToTopScoree(
+                    confWrap.FilterParameterThresholdRelativMinAllowedDistanceToTopScore);
+                Configuration.Instance.SetFilterParameterThresholdRelativMinScore(confWrap.FilterParameterThresholdRelativMinScore);
+
+                //is here to much, what if we want to store a half ready config ?? 
+                //if (Configuration.Instance.IsValide())
+                //    success = true; 
+
+                success = true; 
+            }
+            else Trace.WriteLine("error 9384948 during read conifg wrapper"); 
 
             return success;
         }
@@ -119,13 +146,44 @@ namespace RecordLinkageNet.Core.Compare.State
                 {
                     successB = true; 
                 }
-                //string fileConfig = GetSpecificFileName();
+                string fileConfig = GetSpecificFileName();
 
-                //TODO write all parameter of class
-                string fileConfigConditionList = GetFileNameWithPath(defaultNameConditionList);
-                sucConList = ClassWriterToXML.WriteClassInstanceToXml(Configuration.Instance.ConditionList, fileConfigConditionList);
+
+                ConfigSingeltonWrapper confWrap = new ConfigSingeltonWrapper();
+                try
+                { 
+                //we copy all with same field name
+                //https://stackoverflow.com/questions/8181484/copy-object-properties-reflection-or-serialization-which-is-faster
+                var fields = Configuration.Instance.GetType().GetFields(BindingFlags.Public| BindingFlags.Instance);
+                foreach (var field in fields)
+                {
+                    var value = field.GetValue(Configuration.Instance);
+                    field.SetValue(confWrap, value);
+                }
+                }catch(Exception e)
+                {
+                    Trace.WriteLine("error 2938989 during copy all of the config properties to class " + e.ToString());
+                    return false; 
+                }
+                //hand copy 
+                confWrap.ConditionList = Configuration.Instance.ConditionList;
+
+                string fileConfigConditionList = GetFileNameWithPath(defaultNameConfig);
+                sucConList = ClassWriterToXML.WriteClassInstanceToXml(confWrap, fileConfigConditionList);
+
+
+                //string fileConfigConditionList = GetFileNameWithPath(defaultNameConditionList);
+                //sucConList = ClassWriterToXML.WriteClassInstanceToXml(Configuration.Instance.ConditionList, fileConfigConditionList);
+
 
             }
+
+            //tr 
+            //ClassWriterToXML.WriteClassInstanceToXml(Configuration.Instance, GetFileNameWithPath("foo.xml"));
+
+            //TODO write all parameter of class
+
+
             return successA && successB && sucConList; 
         }
 
@@ -137,7 +195,7 @@ namespace RecordLinkageNet.Core.Compare.State
             tabArtefact.TableName = tableName;
             //we write the table 
             string file = GetFileNameWithPath(tabArtefact.RelativFilename);
-            if (SqliteWriter.WriteDataFeatherToSqlite(tab,tabArtefact.TableName, file))
+            if (SqliteWriter.WriteDataFeatherToSqlite(tab,tabArtefact.TableName, file,true))
             {
                 tabArtefact.Sha512HashValue = HashValueFactory.GetSha512Value(file);
                 if (tabArtefact.Sha512HashValue != null)
@@ -210,6 +268,33 @@ namespace RecordLinkageNet.Core.Compare.State
             [DataMember(Name = "Sha512HashValue")]
             public string Sha512HashValue { get; set; } = "";
         }
+
+
+        [DataContract(Name = "ConfigSingeltonWrapper", Namespace = "RecordLinkageNet")]
+        private class ConfigSingeltonWrapper
+        {
+            //TODO overthink this !! is doubled code atm, see configuration class
+            //data parts 
+            [DataMember(Name = "Strategy")]
+            public CalculationStrategy Strategy { get;  set; } = CalculationStrategy.WeightedConditionSum;
+            [DataMember(Name = "ConditionList")]
+            public ConditionList ConditionList { get; set; } = null;
+            [DataMember(Name = "NumberTransposeModus")]
+            public NumberTransposeHelper.TransposeModus NumberTransposeModus { get; set; } = NumberTransposeHelper.TransposeModus.LINEAR;
+            //computational 
+            [DataMember(Name = "AmountCPUtoUse")]
+            public int AmountCPUtoUse { get; set; } = Environment.ProcessorCount;
+
+            //filter parameter 
+            [DataMember(Name = "FilterParameterThresholdRelativMinScore")]
+            public float FilterParameterThresholdRelativMinScore { get;  set; } = 0.7f;//used by FilterRelativMinScore
+            [DataMember(Name = "FilterParameterThresholdRelativMinAllowedDistanceToTopScore")]
+            public float FilterParameterThresholdRelativMinAllowedDistanceToTopScore { get;  set; } = 0.2f;
+
+            //[DataMember(Name = "FilterParameter")]
+            //public Dictionary<string, float> FilterParameter = new Dictionary<string, float>();
+        }
+
 
 
     }

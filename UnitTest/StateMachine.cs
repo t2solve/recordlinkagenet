@@ -107,7 +107,7 @@ namespace UnitTest
             Configuration config = Configuration.Instance;
             config.AddIndex(new IndexFeather().Create(tabA, tabA));
             config.AddConditionList(conList);
-            config.AddStrategy(Configuration.CalculationStrategy.WeightedConditionSum);
+            config.SetStrategy(Configuration.CalculationStrategy.WeightedConditionSum);
 
             CompareProcess process = new CompareProcess();
             StateConfiguration conState = new StateConfiguration();

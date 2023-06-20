@@ -2,44 +2,41 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace RecordLinkageNet.Core.Compare.State
 {
-    [DataContract(Name = "StateInit", Namespace = "RecordLinkageNet")]
-    public class StateInit : CompareState
+    public class StateEvalute : CompareState
     {
-        public StateInit() : base()
+        private MatchGroupOrderedList matchGroupOrderedList = null; 
+        public StateEvalute() : base()
         {
-            this.name = "Init";
-            this.type = Type.Init;
+            this.Name = "Evaluate";
+            this.type = Type.Evaluate;
         }
+
+        public MatchGroupOrderedList MatchGroupOrderedList { get => matchGroupOrderedList; set => matchGroupOrderedList = value; }
+
         public override bool Load()
         {
-            bool success = false; 
+            bool success = false;
             string file = GetSpecificFileName();
             if (!CheckFileIsPresent(file))
             {
                 Trace.WriteLine("error 92384938498 during read file");
-                return success ;
+                return success;
             }
             try
             {
 
-                StateInit si = null;
+                MatchGroupOrderedList si = null;
                 success = ClassReaderFromXML.ReadClassInstanceFromXml(out si, file);
 
                 if (si != null && success)
                 {
-                    //CopyAllMyProperties<StateInit>();//TODO 
-                    //TODO use reflection
-                    this.name = si.name;
-                    this.time = si.time;
+                    this.matchGroupOrderedList = si;
                     success = true;
                 }
             }
@@ -47,7 +44,7 @@ namespace RecordLinkageNet.Core.Compare.State
             {
                 Trace.WriteLine("error 25675452354 during read xml:  " + e.ToString());
             }
-            return success; 
+            return success;
 
         }
 
@@ -57,7 +54,7 @@ namespace RecordLinkageNet.Core.Compare.State
             string file = GetSpecificFileName();
             try
             {
-                success =  ClassWriterToXML.WriteClassInstanceToXml<StateInit>(this, file);
+                success = ClassWriterToXML.WriteClassInstanceToXml(matchGroupOrderedList, file);
             }
             catch (Exception e)
             {

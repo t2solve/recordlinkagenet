@@ -66,7 +66,7 @@ namespace UnitTest
             Configuration config = Configuration.Instance;
             config.AddIndex(new IndexFeather().Create(tabA, tabB));
             config.AddConditionList(conList);
-            config.AddStrategy(Configuration.CalculationStrategy.WeightedConditionSum);
+            config.SetStrategy(Configuration.CalculationStrategy.WeightedConditionSum);
 
 
             //we init a worker
