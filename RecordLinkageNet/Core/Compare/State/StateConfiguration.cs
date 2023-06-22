@@ -20,11 +20,13 @@ namespace RecordLinkageNet.Core.Compare.State
     //but data is stored as sqlite file
     public class StateConfiguration : CompareState
     {
+        private DataTableFeather tabA = null;
+        private DataTableFeather tabB = null;
+
         private bool doLogDataTabA = true;
         private bool doLogDataTabB = false;
         private string defaultNameA = "tabAartefactSpec.xml";
         private string defaultNameB = "tabBartefactSpec.xml";
-        private string defaultNameConfig = "config.xml";
 
         //TODO implement a container or helper for all of this 
         //TODO config  FilterParameterThresholdRelativMinScore
@@ -34,57 +36,68 @@ namespace RecordLinkageNet.Core.Compare.State
         {
             this.Name = "Configuration";
             this.type = Type.Configuration;
-
         }
 
         public bool DoLogDataTabA { get => doLogDataTabA; set => doLogDataTabA = value; }
         public bool DoLogDataTabB { get => doLogDataTabB; set => doLogDataTabB = value; }
-
+        public DataTableFeather TabA { get => tabA; set => tabA = value; }
+        public DataTableFeather TabB { get => tabB; set => tabB = value; }
 
         public override bool Load()
         {
             bool success = false;
             //clear before load
             Configuration.Instance.Reset();
+            //DataTableFeather tabA = null;
+            //DataTableFeather tabB= null;
 
             //we load tabA 
-            string fileASpec = GetFileNameWithPath(defaultNameA);
-            DataTableFeather tabA = ReadDataTab(fileASpec);
-            
+            if (doLogDataTabA)
+            {
+                string fileASpec = GetFileNameWithPath(defaultNameA);
+                this.tabA = ReadDataTab(fileASpec);
+                if (tabA == null)
+                {
+                    Trace.WriteLine("error 343489898 during tabA");
+                    
+                    //return success; 
+                }
+            }
             //we load tabB
-            string fileBSpec = GetFileNameWithPath(defaultNameB);
-            DataTableFeather tabB = ReadDataTab(fileBSpec);
-
-            if (tabA == null)
+            if (doLogDataTabB)
             {
-                Trace.WriteLine("error 343489898 during tabA");
+                string fileBSpec = GetFileNameWithPath(defaultNameB);
+                tabB = ReadDataTab(fileBSpec);
+                if (tabB == null)
+                {
+                    Trace.WriteLine("warning 23948938498 might no tabB loaded");
+                }
+            }
 
-            }
-            if (tabB == null)
-            {
-                Trace.WriteLine("warning 23948938498 might no tabB loaded");
-            }
-           //create index
-            Configuration.Instance.AddIndex(new IndexFeather().Create(tabA, tabB));
+            //create index
+            if (tabA != null&&tabB!=null)
+                Configuration.Instance.AddIndex(new IndexFeather().Create(tabA, tabB));
+            else
+                Trace.WriteLine("warning 989898 27874 index in config not created");
+
             //load parameter via wrapper
             ConfigSingeltonWrapper confWrap = new ConfigSingeltonWrapper();
-            string fileNameConfigFileAndPath = GetFileNameWithPath(defaultNameConfig);
+            string fileNameConfigFileAndPath = GetSpecificFileName();
             if (ClassReaderFromXML.ReadClassInstanceFromXml(out confWrap, fileNameConfigFileAndPath))
             {
                 //copy by hand 
-                Configuration.Instance.AddConditionList( confWrap.ConditionList);
-
-                Configuration.Instance.SetNumberTransposeModus(confWrap.NumberTransposeModus);
-                Configuration.Instance.SetStrategy(confWrap.Strategy);
-                Configuration.Instance.SetAmountCPUtoUse(confWrap.AmountCPUtoUse);
-                Configuration.Instance.SetFilterParameterThresholdRelativMinAllowedDistanceToTopScoree(
-                    confWrap.FilterParameterThresholdRelativMinAllowedDistanceToTopScore);
-                Configuration.Instance.SetFilterParameterThresholdRelativMinScore(confWrap.FilterParameterThresholdRelativMinScore);
+                Configuration.Instance.AddConditionList(confWrap.ConditionList)
+                    .SetNumberTransposeModus(confWrap.NumberTransposeModus)
+                    .SetStrategy(confWrap.Strategy)
+                    .SetAmountCPUtoUse(confWrap.AmountCPUtoUse)
+                    .SetFilterParameterThresholdRelativMinAllowedDistanceToTopScoree(
+                   confWrap.FilterParameterThresholdRelativMinAllowedDistanceToTopScore)
+                    .SetFilterParameterThresholdRelativMinScore(confWrap.FilterParameterThresholdRelativMinScore);
 
                 //is here to much, what if we want to store a half ready config ?? 
                 //if (Configuration.Instance.IsValide())
                 //    success = true; 
-
+                //var foobar = Configuration.Instance.IsValide();
                 success = true; 
             }
             else Trace.WriteLine("error 9384948 during read conifg wrapper"); 
@@ -168,7 +181,7 @@ namespace RecordLinkageNet.Core.Compare.State
                 //hand copy 
                 confWrap.ConditionList = Configuration.Instance.ConditionList;
 
-                string fileConfigConditionList = GetFileNameWithPath(defaultNameConfig);
+                string fileConfigConditionList = GetSpecificFileName();
                 sucConList = ClassWriterToXML.WriteClassInstanceToXml(confWrap, fileConfigConditionList);
 
 
@@ -217,10 +230,6 @@ namespace RecordLinkageNet.Core.Compare.State
             return success; 
         }
 
-        private string GetFileNameWithPath(string f)
-        {
-            return Path.Combine(this.process.ProcessStorageFolder,f);
-        }
 
         private bool WriteArtefact(string name , DataTableArtefactHelper a )
         {

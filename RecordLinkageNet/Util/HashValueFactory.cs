@@ -39,7 +39,12 @@ namespace Simsala.Tool
             {
                 using (FileStream stream = File.OpenRead(filename))
                 {
-                    return algoHash.ComputeHash(stream);
+                    foo = new byte[stream.Length];
+                    foo  = algoHash.ComputeHash(stream);
+                    stream.Close();
+                    stream.Dispose();
+
+                    return foo;
                 }
             }
             catch (Exception e)

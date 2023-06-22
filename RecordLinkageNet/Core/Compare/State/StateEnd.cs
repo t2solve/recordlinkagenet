@@ -8,6 +8,7 @@ namespace RecordLinkageNet.Core.Compare.State
 {
     public class StateEnd : CompareState
     {
+        private object thinWeStore = null;
 
         public StateEnd() : base()
         {
@@ -17,12 +18,14 @@ namespace RecordLinkageNet.Core.Compare.State
 
         public override bool Load()
         {
-            throw new NotImplementedException();
+            //return LoadDefaultDataMemeber(out thinWeStore);
+            return true; 
         }
 
         public override bool Save()
         {
-            throw new NotImplementedException();
+            //return SaveDefaultDataMemeber(thinWeStore);
+            return true; 
         }
     }
 

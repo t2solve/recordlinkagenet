@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RecordLinkageNet.Util;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -22,7 +23,6 @@ namespace RecordLinkageNet.Core.Compare.State
             End
         }
 
-        [IgnoreDataMember]
         protected CompareProcess process;
         [DataMember(Name = "Time")]
         protected DateTime time;
@@ -55,12 +55,12 @@ namespace RecordLinkageNet.Core.Compare.State
 
         public abstract bool Load();
 
-        public string GetSpecificFileName()
+        protected string GetSpecificFileName()
         {
             string fileName = string.Empty;
 
             fileName = Path.Combine(process.ProcessStorageFolder,
-                "state-" + name + ".xml");
+                "State-" + name + ".xml");
 
             //if (File.Exists(fileName))
             //{
@@ -70,6 +70,10 @@ namespace RecordLinkageNet.Core.Compare.State
             return fileName;
         }
 
+        protected string GetFileNameWithPath(string f)
+        {
+            return Path.Combine(this.process.ProcessStorageFolder, f);
+        }
         public bool CheckFileIsPresent(string file)
         {
 
@@ -87,6 +91,55 @@ namespace RecordLinkageNet.Core.Compare.State
             }
 
             return true;
+        }
+        protected bool LoadDefaultDataMemeber<T> ( out T data)
+        {
+            bool success = false;
+            string file = GetSpecificFileName();
+            data = default(T);
+            
+            if (!CheckFileIsPresent(file))
+            {
+                Trace.WriteLine("error 2523522132 during read file");
+                return success;
+            }
+            try
+            {
+
+                success = ClassReaderFromXML.ReadClassInstanceFromXml(out data, file);
+
+                if (data != null && success)
+                {
+                    success = true;
+                }
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine("error 5672154574 during read xml:  " + e.ToString());
+            }
+            return success;
+        }
+
+        public  bool SaveDefaultDataMemeber<T>(T member)
+        {
+            if (member == null)//shortcut nothing to save so we dont do it
+                return true;
+
+            bool success = false;
+            if (member != null)
+            {
+                try
+                {
+                    string file = GetSpecificFileName();
+                    success = ClassWriterToXML.WriteClassInstanceToXml(member, file);
+                }
+                catch (Exception e)
+                {
+                    Trace.WriteLine("error 3453463436674 during write:  " + e.ToString());
+                }
+            }
+
+            return success;
         }
 
         //protected void CopyAllMyProperties<T>()

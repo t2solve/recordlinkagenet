@@ -30,7 +30,15 @@ namespace RecordLinkageNet.Util
             {
                 if (File.Exists(fileName))
                 {
-                    File.Delete(fileName);
+                    try
+                    {
+                        File.Delete(fileName);
+
+                    }
+                    catch(Exception e)
+                    {
+                        Trace.WriteLine("error 23532522345 during delete file  " + e.ToString());
+                    }
                 }
             }
 

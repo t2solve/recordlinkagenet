@@ -82,9 +82,29 @@ namespace RecordLinkageNet.Core.Compare
                     if (!partSuccess)
                     {
                         Trace.WriteLine("warning 394898 error during save state: " + pair.Key.Name);
-                        return false; 
+                        return success; 
                     }
                 }
+            }
+            success = true;
+
+            return success;
+        }
+
+        public bool Load()
+        {
+            bool success = false;
+
+            foreach (var pair in this.compareStatesHistory)
+            {
+
+                bool partSuccess = pair.Key.Load();
+                if (!partSuccess)
+                {
+                    Trace.WriteLine("warning 325235 error during load state: " + pair.Key.Name);
+                    //return success;
+                }
+
             }
             success = true;
 

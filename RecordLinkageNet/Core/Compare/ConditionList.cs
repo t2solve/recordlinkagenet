@@ -18,13 +18,18 @@ namespace RecordLinkageNet.Core.Compare
         //private Queue<Task<Tuple<long, float>>> myTaskList = new Queue<Task<Tuple<long, float>>>(); //really ?? 
         [DataMember(Name = "ConditionListData")]
         private List<Condition> conditionList = new List<Condition>();//condition list 
-        [IgnoreDataMember]
+        [DataMember(Name = "ColNamesMappingNewToCond")]
         private Dictionary<string,Tuple<string,string>> colNamesMappingNewToCond = new Dictionary<string, Tuple<string, string>> ();
      
         public Tuple<string, string> GetOldNamesOfColumn(string name)
         {
             Tuple<string, string> retVal = null;
 
+            if (colNamesMappingNewToCond == null)
+            {
+                Trace.WriteLine("error 2837878787 GetOldNamesOfColumn");
+                return retVal;
+            }
             if(colNamesMappingNewToCond.ContainsKey(name))
             {
                 retVal = colNamesMappingNewToCond[name];    
@@ -58,6 +63,22 @@ namespace RecordLinkageNet.Core.Compare
       
         private void RememberConditionNamesForTranslation(Condition j)
         {
+            if (j == null)
+            {
+                Trace.WriteLine("error 239898  Condition is null");
+                throw new ArgumentException("error 239898");
+   
+            }
+            if (string.IsNullOrEmpty(j.NameColNewLabel))
+            {
+                Trace.WriteLine("warning 3984989 no NameColNewLabel set"); 
+                return; 
+            }
+            if(colNamesMappingNewToCond == null)
+            {
+                Trace.WriteLine("warning 26745345 no colNamesMappingNewToCond ");
+                return;
+            }
             //we remember what we renames 
             if (colNamesMappingNewToCond.ContainsKey(j.NameColNewLabel))
             {

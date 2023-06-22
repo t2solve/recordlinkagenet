@@ -11,59 +11,42 @@ using System.Xml;
 
 namespace RecordLinkageNet.Core.Compare.State
 {
-    [DataContract(Name = "StateInit", Namespace = "RecordLinkageNet")]
     public class StateInit : CompareState
     {
+        //TODO check why we have this stupid class ???
+        private InitArtefact artefact = null; 
         public StateInit() : base()
         {
             this.name = "Init";
             this.type = Type.Init;
+            artefact = new InitArtefact();
         }
         public override bool Load()
         {
-            bool success = false; 
-            string file = GetSpecificFileName();
-            if (!CheckFileIsPresent(file))
+            bool success = LoadDefaultDataMemeber(out artefact); 
+            if(success)
             {
-                Trace.WriteLine("error 92384938498 during read file");
-                return success ;
+                this.Name = artefact.Name;
+                this.Time = artefact.Time;
             }
-            try
-            {
-
-                StateInit si = null;
-                success = ClassReaderFromXML.ReadClassInstanceFromXml(out si, file);
-
-                if (si != null && success)
-                {
-                    //CopyAllMyProperties<StateInit>();//TODO 
-                    //TODO use reflection
-                    this.name = si.name;
-                    this.time = si.time;
-                    success = true;
-                }
-            }
-            catch (Exception e)
-            {
-                Trace.WriteLine("error 25675452354 during read xml:  " + e.ToString());
-            }
-            return success; 
-
+            return success;
         }
 
         public override bool Save()
         {
-            bool success = false;
-            string file = GetSpecificFileName();
-            try
-            {
-                success =  ClassWriterToXML.WriteClassInstanceToXml<StateInit>(this, file);
-            }
-            catch (Exception e)
-            {
-                Trace.WriteLine("error 234623 during write:  " + e.ToString());
-            }
-            return success;
+            artefact.Name = this.name;
+            artefact.Time = this.Time;
+            return SaveDefaultDataMemeber(artefact) ;
         }
+
+        [DataContract(Name = "InitArtefact", Namespace = "RecordLinkageNet")]
+        private class InitArtefact
+        {
+            [DataMember(Name = "Time")]
+            public DateTime Time { get; set; }
+            [DataMember(Name = "Name")]
+            public string Name{ get; set; }
+        }
+
     }
 }
