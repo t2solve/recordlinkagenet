@@ -39,6 +39,7 @@ namespace RecordLinkageNet.Core.Compare
         }
         public void AddExisting(Condition con )
         {
+            //TODO chekc if con name New already exists !! 
             RememberConditionNamesForTranslation(con);
 
             if (conditionList.Count() > 250)

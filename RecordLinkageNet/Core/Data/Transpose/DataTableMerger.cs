@@ -160,7 +160,7 @@ namespace RecordLinkageNet.Core.Transpose
             namesMapTabA = new Dictionary<string, string>();
             foreach (string nameA in colNamesA)
             {
-                string newNameA = UnifyColumName(nameA, colNamesB);
+                string newNameA = UnifyColumName(nameA, colNamesB, "tabA");
                 namesMapTabA[nameA] = newNameA;
             }
 

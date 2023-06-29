@@ -121,8 +121,6 @@ namespace RecordLinkageNet.Core
         //    queue.Complete();
         //}
 
-
-
         private static async void ProduceCompareJobs(BufferBlock<JobSet> queue)
         {
             Configuration config = Configuration.Instance;
@@ -132,7 +130,7 @@ namespace RecordLinkageNet.Core
             //found here: 
             //https://blog.stephencleary.com/2012/11/async-producerconsumer-queue-using.html
             //int limitComparison = 100000;
-            uint stepSize = 10;
+            uint stepSize = 5;
             //TODO calc stepSize
 
             uint aMaxTest = config.Index.GetMaxADim(); //100

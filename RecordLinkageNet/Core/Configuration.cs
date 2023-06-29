@@ -111,8 +111,48 @@ namespace RecordLinkageNet.Core
                 return false;
             }
 
+            if(!DoCheckAllConditionlNamesExistsInDataTables())
+            {
+                Trace.WriteLine("error 2908928948 non valide configuration");
+                return false;
+            }
+
             success = true;
             return success; 
+        }
+
+        private bool DoCheckAllConditionlNamesExistsInDataTables()
+        {
+            bool success = false;
+
+            List<string> colNamesTabA = new List<string>();
+            List<string> colNamesTabB = new List<string>();
+
+            foreach (Condition con in ConditionList) 
+            {
+                colNamesTabA.Add(con.NameColA);
+                colNamesTabB.Add(con.NameColB);
+            }
+            //we check that the exists in tables 
+            foreach(string name in colNamesTabA)
+            {
+                if(!Index.dataTabA.GetColumnNames().Contains(name))
+                {
+                    Trace.WriteLine("error 29392898 name : " + name + " not found in DataTable A");
+                    return success;
+                }
+            }
+            foreach (string name in colNamesTabB)
+            {
+                if (!Index.dataTabB.GetColumnNames().Contains(name))
+                {
+                    Trace.WriteLine("error 3132433 name : " + name + " not found in DataTable B");
+                    return success;
+                }
+            }
+            success = true; 
+
+            return success;
         }
 
         public void Reset()
