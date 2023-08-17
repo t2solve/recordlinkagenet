@@ -11,6 +11,36 @@ namespace RecordLinkageNet.Core.Data.Transpose
 {
     public class TableConverter
     {
+        public static System.Data.DataTable CreateDataTableFromFeather(DataTableFeather dataFeather)
+        {
+            if (dataFeather == null)
+                throw new ArgumentNullException("dataFeather"); 
+
+            System.Data.DataTable dataTable = new System.Data.DataTable();
+            foreach (string name in dataFeather.GetColumnNames())
+            {
+                DataColumn colFeather = dataFeather.GetColumnByName(name);
+                System.Data.DataColumn colData = new System.Data.DataColumn();
+                colData.ColumnName = name;
+                colData.DataType = colFeather.GetDataTypeOfCol();
+                dataTable.Columns.Add(colData);
+            }
+
+            //add all rows
+            for (int i = 0; i < dataFeather.GetAmountRows(); i++)
+            {
+                DataRow rowFeather = dataFeather.GetRow(i);
+                System.Data.DataRow dataRow = dataTable.NewRow();
+                foreach (string name in dataFeather.GetColumnNames())
+                {
+                    DataColumn colFeather = dataFeather.GetColumnByName(name);
+                    dataRow[name] = rowFeather.Data[name].Value;
+                }
+                dataTable.Rows.Add(dataRow);
+            }
+
+            return dataTable;
+        }
 
         public static System.Data.DataTable CreateSystemDataTableFromDataObjectList<T>(List<T> list, string tableName)
         {
