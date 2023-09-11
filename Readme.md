@@ -1,5 +1,5 @@
-https://github.com/t2solve/recordlinkagenet/actions/workflows/dotnet/badge.svg
-https://github.com/t2solve/recordlinkagenet/actions/workflows/codeql/badge.svg
+![dotnet 6.0 build](https://github.com/t2solve/recordlinkagenet/actions/workflows/dotnet/badge.svg)
+![code quality check](https://github.com/t2solve/recordlinkagenet/actions/workflows/codeql/badge.svg)
 
 # Overview
 
