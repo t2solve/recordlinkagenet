@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using Microsoft.ML.Data;
 using RecordLinkageNet.Core.Data;
 using RecordLinkageNet.Core.Data.Transpose;
 using RecordLinkageNet.Util;
@@ -88,15 +87,10 @@ namespace UnitTest
             PostalCode = postalCode;
         }
 
-        [LoadColumn(0)]
         public string NameFirst { get; set; } = "";
-        [LoadColumn(1)]
         public string NameLast { get; set; } = "";
-        [LoadColumn(2)]
         public string Street { get; set; } = "";
-        [LoadColumn(3)]
         public string City { get; set; } = "";
-        [LoadColumn(4)]
         public string PostalCode { get; set; } = "";
 
     }

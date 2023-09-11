@@ -26,7 +26,7 @@ so:
 ## minimal examples
 This project should look and feel like using the pyhton equivalent:
 ```c#       
-//we create some testdata
+//we create some testdata //see UnitTest.TestDataPerson
 List<TestDataPerson> testDataPeopleA = new List<TestDataPerson>
 {
     new TestDataPerson("Thomas", "Mueller", "Lindetrasse", "Testhausen", "12345"),

@@ -37,9 +37,4 @@
 		<PackageReference Include="System.Threading.Tasks.Dataflow" Version="7.0.0" />
 	</ItemGroup>
 
-
-	<ItemGroup>
-		<Reference Include="System.ServiceModel" />
-	</ItemGroup>
-
 </Project>

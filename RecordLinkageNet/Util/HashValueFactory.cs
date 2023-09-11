@@ -7,7 +7,7 @@ namespace RecordLinkageNet.Util
 {
     public class HashValueFactory
     {
-        private static HashAlgorithm algoHash = new SHA512Managed(); //TODO check use 1 ? 
+        private static readonly HashAlgorithm algoHash = new SHA512Managed(); //TODO check use 1 ? 
 
         public static bool CheckFileHasSha512Value(string shaToCheck, string filename)
         {

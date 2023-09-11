@@ -2,7 +2,6 @@
 {
     public class StateEnd : CompareState
     {
-        private object thinWeStore = null;
 
         public StateEnd() : base()
         {

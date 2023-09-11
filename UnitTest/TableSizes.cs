@@ -1,11 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RecordLinkageNet.Core.Data;
-using RecordLinkageNet.Core.Data.Transpose;
-using RecordLinkageNet.Util;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTest
 {
