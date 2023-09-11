@@ -8,14 +8,11 @@ using System.Threading;
 
 namespace UnitTest
 {
-    [TestClass]
     public class Filter
     {
 
-
-
         [TestMethod]
-        public void TestMinDistanceFilter()
+        public async void TestMinDistanceFilter()
         {
             List<TestDataPerson> testDataPeopleA = new List<TestDataPerson>
             {
@@ -68,6 +65,8 @@ namespace UnitTest
             WorkScheduler workScheduler = new WorkScheduler();
             var pipeLineCancellation = new CancellationTokenSource();
             var resultTask = workScheduler.Compare(pipeLineCancellation.Token);
+
+            await resultTask;
 
             int amountResults = resultTask.Result.Count();
 

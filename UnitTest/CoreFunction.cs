@@ -60,6 +60,7 @@ namespace UnitTest
             //we sort it for a small speed up
             //conList.SortByScoreWeight();
 
+            Configuration.Instance.Reset();
             Configuration config = Configuration.Instance;
             config.AddIndex(new IndexFeather().Create(tabB, tabA));
             config.AddConditionList(conList);

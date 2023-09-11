@@ -49,7 +49,13 @@ namespace UnitTest
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
+            //do a wait for free
+            System.Threading.Thread.Sleep(1000);
+
             File.Delete(fileName);
+
+            //do a wait for free
+            System.Threading.Thread.Sleep(1000);
 
             Assert.IsFalse(File.Exists(fileName));
         }

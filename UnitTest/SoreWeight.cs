@@ -63,6 +63,8 @@ namespace UnitTest
                 c.ScoreWeight = scoreTable[c.NameColNewLabel];
             }
 
+
+            Configuration.Instance.Reset();
             Configuration config = Configuration.Instance;
             config.AddIndex(new IndexFeather().Create(tabA, tabB));
             config.AddConditionList(conList);

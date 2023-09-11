@@ -5,6 +5,7 @@ using RecordLinkageNet.Core.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace UnitTest
 {
@@ -40,7 +41,7 @@ namespace UnitTest
         }
 
         [TestMethod]
-        public void TestGroupToIndexAorB()
+        public async Task TestGroupToIndexAorB()
         {
 
             int amountData = 10;
@@ -67,7 +68,9 @@ namespace UnitTest
                 c.ScoreWeight = scoreTable[c.NameColNewLabel];
             }
 
+            Configuration.Instance.Reset();
             Configuration config = Configuration.Instance;
+
             config.AddIndex(new IndexFeather().Create(tabA, tabA));
             config.AddConditionList(conList);
             config.SetStrategy(Configuration.CalculationStrategy.WeightedConditionSum);
@@ -79,6 +82,8 @@ namespace UnitTest
             //workScheduler.EstimateWork();
             var pipeLineCancellation = new CancellationTokenSource();
             var resultTask = workScheduler.Compare(pipeLineCancellation.Token);
+
+            await resultTask;
 
             int amountResults = resultTask.Result.Count();
 
@@ -131,6 +136,7 @@ namespace UnitTest
                 }
                 Assert.IsTrue(success);
             }
+
         }
     }
 }
