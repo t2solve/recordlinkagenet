@@ -1,6 +1,5 @@
-![dotnet 6.0 build](https://github.com/t2solve/recordlinkagenet/actions/workflows/dotnet.yaml/badge.svg)
-![code quality check](https://github.com/t2solve/recordlinkagenet/actions/workflows/codeql.yaml/badge.svg)
-
+![dotnet 6.0 build](https://github.com/t2solve/recordlinkagenet/actions/workflows/dotnet.yml/badge.svg)
+![code quality check](https://github.com/t2solve/recordlinkagenet/actions/workflows/codeql.yml/badge.svg)
 # Overview
 
 **aim:** opensource library which offers help to compare datasets (csv, database tables,classes) in a memory-limited environment  
