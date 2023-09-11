@@ -1,5 +1,7 @@
-# Overview
+https://github.com/t2solve/recordlinkagenet/actions/workflows/dotnet/badge.svg
+https://github.com/t2solve/recordlinkagenet/actions/workflows/codeql/badge.svg
 
+# Overview
 
 **aim:** opensource library which offers help to compare datasets (csv, database tables,classes) in a memory-limited environment  
 
