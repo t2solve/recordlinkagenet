@@ -26,40 +26,42 @@ so:
 ## minimal examples
 This project should look and feel like using the pyhton equivalent:
 ```c#       
-            //we create some testdata
-            List<TestDataPerson> testDataPeopleA = new List<TestDataPerson>
-                        {
-                            new TestDataPerson("Thomas", "Mueller", "Lindetrasse", "Testhausen", "12345"),
-                            new TestDataPerson("Thomas", "Mueller", "Lindenstrasse", "Testcity", "012345"),
-                            new TestDataPerson("Thomas", "Müller", "Lindenstrasse", "Testcity", "012345"),
-                            new TestDataPerson("Tomas", "Müller", "Lindenstroad", "Testhausen", "012342"),
-                            new TestDataPerson("Tomas", "Müller", "Lindenstroad", "Dorf", "012342")
-                        };
-            DataTableFeather tabA = TableConverter.CreateTableFeatherFromDataObjectList(testDataPeopleA);
-            DataTableFeather tabB = RecordLinkageNet.Util.SqliteReader.ReadTableFromSqliteFile("filenameof.sqlite","testtablename");
+//we create some testdata
+List<TestDataPerson> testDataPeopleA = new List<TestDataPerson>
+{
+    new TestDataPerson("Thomas", "Mueller", "Lindetrasse", "Testhausen", "12345"),
+    new TestDataPerson("Thomas", "Mueller", "Lindenstrasse", "Testcity", "012345"),
+    new TestDataPerson("Thomas", "MÃ¼ller", "Lindenstrasse", "Testcity", "012345"),
+    new TestDataPerson("Tomas", "MÃ¼ller", "Lindenstroad", "Testhausen", "012342"),
+    new TestDataPerson("Tomas", "MÃ¼ller", "Lindenstroad", "Dorf", "012342")
+};
+DataTableFeather tabA = TableConverter.CreateTableFeatherFromDataObjectList(testDataPeopleA);
 
-            ConditionList conList = new ConditionList();
-            Condition.StringMethod testMethod = Condition.StringMethod.JaroWinklerSimilarity;
-            conList.String("NameFirst", "NameFirst", testMethod);
-            conList.String("Street", "Street", testMethod);
-            conList.String("PostalCode", "PostalCode", Condition.StringMethod.Exact);
-            conList.String("NameLast", "NameLast", testMethod);
+//we load some data from sqlite file
+DataTableFeather tabB = RecordLinkageNet.Util.SqliteReader.ReadTableFromSqliteFile("filenameof.sqlite","testtablename");
 
-            //configure comparison
-            Configuration config = Configuration.Instance;
-            config.AddIndex(new IndexFeather().Create(tabB, tabA));
-            config.AddConditionList(conList);
-            config.SetStrategy(Configuration.CalculationStrategy.WeightedConditionSum);
-            config.SetNumberTransposeModus(NumberTransposeHelper.TransposeModus.LOG10); ;
+ConditionList conList = new ConditionList();
+Condition.StringMethod testMethod = Condition.StringMethod.JaroWinklerSimilarity;
+conList.String("NameFirst", "NameFirst", testMethod);
+conList.String("Street", "Street", testMethod);
+conList.String("PostalCode", "PostalCode", Condition.StringMethod.Exact);
+conList.String("NameLast", "NameLast", testMethod);
 
-            //we init a worker
-            WorkScheduler workScheduler = new WorkScheduler();
-            var pipeLineCancellation = new CancellationTokenSource();//for optional cancellation
-            var resultTask = workScheduler.Compare(pipeLineCancellation.Token);
+//configure comparison
+Configuration config = Configuration.Instance;
+config.AddIndex(new IndexFeather().Create(tabB, tabA));
+config.AddConditionList(conList);
+config.SetStrategy(Configuration.CalculationStrategy.WeightedConditionSum);
+config.SetNumberTransposeModus(NumberTransposeHelper.TransposeModus.LOG10); ;
 
-            await resultTask;
+//we init a worker
+WorkScheduler workScheduler = new WorkScheduler();
+var pipeLineCancellation = new CancellationTokenSource();//for optional cancellation
+var resultTask = workScheduler.Compare(pipeLineCancellation.Token);
 
-            int amount = resultTask.Result.Count();
+await resultTask;
+
+int amount = resultTask.Result.Count();
 ```
 
 The project implements mutliple metrics for string comparision as extensions:
