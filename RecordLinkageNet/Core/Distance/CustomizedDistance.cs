@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Distance
 {
@@ -16,12 +12,12 @@ namespace RecordLinkageNet.Core.Distance
         /// <returns>distance as double</returns>
         public static double MyCustomizedDistance(this ReadOnlyMemory<Char> s1, ReadOnlyMemory<Char> s2)
         {
-            double distance = 42;
+            //double distance = 42;
 
             //TODO implement here
             throw new NotImplementedException();
 
-            return distance;
+            //return distance;
         }
 
         public static double MyCustomizedDistance(this string s1, string s2)

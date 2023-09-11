@@ -3,13 +3,17 @@
 
 **aim:** opensource library which offers help to compare datasets (csv, database tables,classes) in a memory-limited environment  
 
-**status:** non-stable but useable , ( no nuget package yet)
-
 **license** BSD 2-Clause
 
-This project is a c# port of the super useful python package [recordlinkage](https://recordlinkage.readthedocs.io/en/latest/about.html).
-Besides it tries to use the effective parts of the c# language (e.g. linq, ml-net).
-For example ML.net is used to load, preprocess, manipulate, process and store big data sets.
+This project is a pure c# port of the super useful python package [recordlinkage](https://recordlinkage.readthedocs.io/en/latest/about.html).
+Besides it tries to use the effective parts of the c# language (e.g. linq, dataflow).
+
+## features
+- string comparision with multiple string metrics
+- uses own datatable struture to reduce memory footprint (in comparsison to system.data.datatable)
+- uses dataflow to reduce memory footprint
+- uses parallelism to reduce runtime
+- limits: right now every datacell is string
 
 ## plattforms:
 all plattform which supports [.NET 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
@@ -21,68 +25,41 @@ so:
 
 ## minimal examples
 This project should look and feel like using the pyhton equivalent:
-```c# 
-//we load the ml context for data parsing
-MLContext mlContext = new MLContext();
+```c#       
+            //we create some testdata
+            List<TestDataPerson> testDataPeopleA = new List<TestDataPerson>
+                        {
+                            new TestDataPerson("Thomas", "Mueller", "Lindetrasse", "Testhausen", "12345"),
+                            new TestDataPerson("Thomas", "Mueller", "Lindenstrasse", "Testcity", "012345"),
+                            new TestDataPerson("Thomas", "Müller", "Lindenstrasse", "Testcity", "012345"),
+                            new TestDataPerson("Tomas", "Müller", "Lindenstroad", "Testhausen", "012342"),
+                            new TestDataPerson("Tomas", "Müller", "Lindenstroad", "Dorf", "012342")
+                        };
+            DataTableFeather tabA = TableConverter.CreateTableFeatherFromDataObjectList(testDataPeopleA);
+            DataTableFeather tabB = RecordLinkageNet.Util.SqliteReader.ReadTableFromSqliteFile("filenameof.sqlite","testtablename");
 
-//load data howToDo wit ml.net
-//https://docs.microsoft.com/en-us/dotnet/machine-learning/how-to-guides/load-data-ml-net
-IDataView dataA = mlContext.Data.LoadFromEnumerable<TestDataPerson>(inMemoryCollection);
-IDataView dataB = mlContext.Data.LoadFromTextFile<TestDataPerson>("file.csv", separatorChar: ';', hasHeader: true);
+            ConditionList conList = new ConditionList();
+            Condition.StringMethod testMethod = Condition.StringMethod.JaroWinklerSimilarity;
+            conList.String("NameFirst", "NameFirst", testMethod);
+            conList.String("Street", "Street", testMethod);
+            conList.String("PostalCode", "PostalCode", Condition.StringMethod.Exact);
+            conList.String("NameLast", "NameLast", testMethod);
 
-//create index
-RecordLinkageNet.Core.Index indexer = new RecordLinkageNet.Core.Index();
-indexer.full();
+            //configure comparison
+            Configuration config = Configuration.Instance;
+            config.AddIndex(new IndexFeather().Create(tabB, tabA));
+            config.AddConditionList(conList);
+            config.SetStrategy(Configuration.CalculationStrategy.WeightedConditionSum);
+            config.SetNumberTransposeModus(NumberTransposeHelper.TransposeModus.LOG10); ;
 
-//create candidate list
-CandidateList can = indexer.index(dataA, dataB);
-Compare compare = new Compare(can);
+            //we init a worker
+            WorkScheduler workScheduler = new WorkScheduler();
+            var pipeLineCancellation = new CancellationTokenSource();//for optional cancellation
+            var resultTask = workScheduler.Compare(pipeLineCancellation.Token);
 
-//          name in dataA , name in dataB
-compare.Exact("PostalCode", "PostalCode");
-compare.String("NameFirst", "NameFirst", CompareCondition.StringMethod.JaroWinklerSimilarity, 0.9f);
-compare.String("NameLast", "NameLast", CompareCondition.StringMethod.JaroWinklerSimilarity);
-bool success = compare.Compute();
-if (success)
-{
-    ResultSet res = compare.PackedResult;
-    res.PrintReadableDebug(5);//print debug output
-   
-    //we do something with the results
-    //A we build a score -> sum all condition results with functional programming
-    Func<float, float, float, float> sumUpScore = (con1, con2, con3) => con1 + con2 + con3;
+            await resultTask;
 
-    int amountDataValues = res.indexList.Count;
-    float[] scoreValue = new float[amountDataValues];
-    //we dot it in parrallel for speedup
-    Parallel.For(0, amountDataValues, i => scoreValue[i]=sumUpScore(res.data[i, 0], res.data[i, 1], res.data[i, 2]));
-    
-    Console.WriteLine("A) filtered by score value:");
-    float scoreMinThreshold = 2.5f; //amountCondition * 0.9 ==>  ? 
-    for(int i = 0; i < amountDataValues; i++) //TODO make this Parallel ? 
-    {
-        if(scoreValue[i] > scoreMinThreshold)
-        {
-            Tuple<int,int> indexTup = res.indexList[i];
-            Console.WriteLine("<indexA,indexB>:"+ indexTup.Item1 + "," + indexTup.Item2);
-        }
-    }
-
-    //B we select some results of 1 condition by upper and lower with using linq
-    float lBound = 3.0f;
-    float uBound = 4.0f;
-    //e.g. we want to use 
-    float[] resultColumnValues = res.GetResultByConditonName("CityHamming");
-    //we get index list 
-    int[] filteredIndexArray = resultColumnValues.Select((x, i) => x >= lBound && x <= uBound ? i : -1).Where(i => i != -1).ToArray();
-    Console.WriteLine("B) filtered by condition CityHamming result:");
-    foreach ( int i in filteredIndexArray)
-    {
-        Tuple<int, int> indexTup = res.indexList[i];
-        Console.WriteLine("<indexA,indexB>:"+ indexTup.Item1  + ","+ indexTup.Item2 + "> value:" + resultColumnValues[i]); 
-    }
-
-}
+            int amount = resultTask.Result.Count();
 ```
 
 The project implements mutliple metrics for string comparision as extensions:
@@ -101,10 +78,6 @@ var result2 = "foo".DamerauLevenshteinDistance("bar");//3
 var result3 = "foo".JaroWinklerSimilarity("bar");//0
 ```
 The distances metrics are well tested with results from python lib [jellyfish](https://github.com/jamesturk/jellyfish).
-
-For further reading or an executable example, please take a look into the 
-other project RecordLinkageNetExamples
-
 
 ## structure:
 

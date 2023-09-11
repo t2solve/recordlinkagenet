@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using RecordLinkageNet.Util;
+using System;
 using System.Linq;
 
 namespace RecordLinkageNet.Core.Distance
@@ -7,6 +7,19 @@ namespace RecordLinkageNet.Core.Distance
     // TODO need an extem speedup, is supler slow so far
     public static class Hamming
     {
+        public static double HammingDistanceNormalizedToRange0To1(this string s1, string s2)
+        {
+            double value = HammingDistance(s1.AsMemory(), s2.AsMemory());
+            if (value == 0.0f) //short cut for speed up
+                return 1.0f; //flip, because 0 changed are 100% equal
+            
+            double max = Math.Max(s1.Length, s2.Length);
+
+            if( value == max)
+                return 0.0f ; //flip, because max changes are 100% unequal
+
+            return (1.0f - NumberNormalizeHelper.NormalizeNumberToRange0to1(value, max, 0));
+        }
 
         public static double HammingDistance(this string s1, string s2)
         {
@@ -16,14 +29,14 @@ namespace RecordLinkageNet.Core.Distance
         public static double HammingDistance(this ReadOnlyMemory<Char> s1, ReadOnlyMemory<Char> s2)
         {
             //port of https://github.com/jamesturk/cjellyfish/blob/66c48ae2998af3364b0653f74634b507fa5be823/hamming.c
-            double distance = 0; 
+            double distance = 0;
             int s1Len = s1.Length;
             int s2Len = s2.Length;
             int i1 = 0;
             int i2 = 0;
             for (; i1 < s1Len && i2 < s2Len; i1++, i2++)
             {
-                if(!(s1.Slice(i1, 1).Span.SequenceEqual(s2.Slice(i2, 1).Span)))
+                if (!(s1.Slice(i1, 1).Span.SequenceEqual(s2.Slice(i2, 1).Span)))
                 //if (*s1 != *s2)
                 {
                     distance++;
@@ -45,7 +58,7 @@ namespace RecordLinkageNet.Core.Distance
         //    return s1.Zip(s2, (x, y) => AreEqual(x, y) ? 0 : 1).Sum();
         //}
 
-      
+
         //private static bool AreEqual(char one, char other)
         //{
         //    IEqualityComparer<char> equalityComparer = EqualityComparer<char>.Default; //get the default

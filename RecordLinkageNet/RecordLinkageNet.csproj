@@ -1,15 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <IsPublishable>False</IsPublishable>
-  </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoBogus" Version="2.13.1" />
-    <PackageReference Include="Microsoft.ML" Version="2.0.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<!--<TargetFramework>net472</TargetFramework>-->
+		<TargetFramework>net6.0</TargetFramework>
+		<Platforms>AnyCPU;x64</Platforms>
+		<LangVersion>10.0</LangVersion>
+		<Configurations>Debug;Release;Test</Configurations>
+		<Title>RecordLinkageNet</Title>
+		<PackageReadmeFile>Readme.md</PackageReadmeFile>
+		<PackageProjectUrl>https://github.com/t2solve/recordlinkagenet</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/t2solve/recordlinkagenet</RepositoryUrl>
+		<Copyright>BSD 2-Clause License</Copyright>
+		<Description>c# opensource library which helps to compare datasets (csv, database tables,classes) in a memory-limited environment</Description>
+		<PackageTags>record-linkage:string distances; string metrics;</PackageTags>
+		<Company />
+		<Authors />
+		<PackageIcon>logo.png</PackageIcon>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Include="..\Readme.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\logo.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.10" />
+		<PackageReference Include="System.Threading.Tasks.Dataflow" Version="7.0.0" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<Reference Include="System.ServiceModel" />
+	</ItemGroup>
 
 </Project>

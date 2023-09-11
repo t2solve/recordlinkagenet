@@ -1,13 +1,19 @@
-﻿using System;
+﻿using RecordLinkageNet.Util;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Distance
 {
     public static class ShannonEntropy
-    { 
+    {
+        public static double ShannonEntropyDistanceNormalizedToRange0To1(this string s1, string s2)
+        {
+            double a = Calc(s1.AsMemory());
+            double b = Calc(s2.AsMemory());
+           
+            return (1f - NumberNormalizeHelper.NormalizeNumberToRange0to1(Math.Abs(a - b), Math.Max(a, b)));
+        }
+
         public static double ShannonEntropyDistance(this ReadOnlyMemory<Char> s1, ReadOnlyMemory<Char> s2)
         {
             double a = Calc(s1);
@@ -29,7 +35,7 @@ namespace RecordLinkageNet.Core.Distance
         public static double Calc(ReadOnlyMemory<Char> s)
         {
             var map = new Dictionary<char, int>();
-            for(int i=0;i<s.Length; i++)
+            for (int i = 0; i < s.Length; i++)
             {
                 char c = s.Slice(i, 1).ToArray()[0]; //what ?? the normal way of to char ??
                 //see disscuision why not iterable direct https://github.com/dotnet/runtime/issues/23950

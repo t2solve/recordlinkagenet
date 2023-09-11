@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RecordLinkageNet.Util;
+using System;
 
 namespace RecordLinkageNet.Core.Distance
 {
@@ -8,6 +7,7 @@ namespace RecordLinkageNet.Core.Distance
     {
         public static double JaroDistance(this ReadOnlyMemory<Char> s1, ReadOnlyMemory<Char> s2)
         {
+
             //see best explanation https://www.geeksforgeeks.org/jaro-and-jaro-winkler-similarity/
 
             int s1Len = s1.Length;
@@ -22,7 +22,7 @@ namespace RecordLinkageNet.Core.Distance
                     return 0;
 
                 if (s1.Span.SequenceEqual(s2.Span))
-                    return 1.0; 
+                    return 1.0;
             }
             //else no event
             if (s1Len == 0 || s2Len == 0)
@@ -45,7 +45,7 @@ namespace RecordLinkageNet.Core.Distance
                     j < Math.Min(s2Len, i + maxDist + 1); j++)
 
                     // if match we mark it
-                    if (s1.Slice(i,1 ).Span.SequenceEqual(s2.Slice(j, 1).Span) &&
+                    if (s1.Slice(i, 1).Span.SequenceEqual(s2.Slice(j, 1).Span) &&
                         hashS2[j] == 0)
                     {
                         hashS1[i] = 1;
@@ -71,7 +71,7 @@ namespace RecordLinkageNet.Core.Distance
                     while (hashS2[point] == 0)
                         point++;
 
-                    if(s1.Slice(i, 1).Span.SequenceCompareTo(s2.Slice(point++,1).Span)!=0)
+                    if (s1.Slice(i, 1).Span.SequenceCompareTo(s2.Slice(point++, 1).Span) != 0)
                         t++;
                 }
             t /= 2;
@@ -85,9 +85,10 @@ namespace RecordLinkageNet.Core.Distance
 
         public static double JaroDistance(this string s1, string s2)
         {
-            return JaroDistance(s1.AsMemory(),s2.AsMemory());
-         
+            return JaroDistance(s1.AsMemory(), s2.AsMemory());
+
         }
+
 
         public static double JaroWinklerSimilarity(this ReadOnlyMemory<Char> s1, ReadOnlyMemory<Char> s2)
         {
@@ -102,7 +103,7 @@ namespace RecordLinkageNet.Core.Distance
                                             s2.Length); i++)
                 {
                     //match
-                    if (s1.Slice(i,1).Span.SequenceEqual(s2.Slice(i,1).Span))
+                    if (s1.Slice(i, 1).Span.SequenceEqual(s2.Slice(i, 1).Span))
                         prefix++;
 
                     else
@@ -120,7 +121,7 @@ namespace RecordLinkageNet.Core.Distance
 
         public static double JaroWinklerSimilarity(this string s1, string s2)
         {
-            return JaroWinklerSimilarity(s1.AsMemory(),s2.AsMemory());  
+            return JaroWinklerSimilarity(s1.AsMemory(), s2.AsMemory());
 
         }
     }
