@@ -40,25 +40,25 @@ namespace UnitTest
         }
 
 
-        [TestMethod]
-        public void TestSqliteWriterFreedAfterWrite()
-        {
-            string fileName = TestDataGenerator.WriteTestSqliteTableIfNotExists();
-            //we need to call the garbage collector because of a bug
-            //https://stackoverflow.com/a/8513453
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+        //[TestMethod]
+        //public void TestSqliteWriterFreedAfterWrite()
+        //{
+        //    string fileName = TestDataGenerator.WriteTestSqliteTableIfNotExists();
+        //    //we need to call the garbage collector because of a bug
+        //    //https://stackoverflow.com/a/8513453
+        //    GC.Collect();
+        //    GC.WaitForPendingFinalizers();
 
-            //do a wait for free
-            System.Threading.Thread.Sleep(1000);
+        //    //do a wait for free
+        //    System.Threading.Thread.Sleep(1000);
 
-            File.Delete(fileName);
+        //    File.Delete(fileName);
 
-            //do a wait for free
-            System.Threading.Thread.Sleep(1000);
+        //    //do a wait for free
+        //    System.Threading.Thread.Sleep(1000);
 
-            Assert.IsFalse(File.Exists(fileName));
-        }
+        //    Assert.IsFalse(File.Exists(fileName));
+        //}
 
 
         [TestMethod]

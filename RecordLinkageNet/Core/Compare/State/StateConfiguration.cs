@@ -16,7 +16,7 @@ namespace RecordLinkageNet.Core.Compare.State
         private DataTableFeather tabA = null;
         private DataTableFeather tabB = null;
 
-        private bool doLogDataTabA = true;
+        private bool doLogDataTabA = false;
         private bool doLogDataTabB = false;
         private string defaultNameA = "tabAartefactSpec.xml";
         private string defaultNameB = "tabBartefactSpec.xml";

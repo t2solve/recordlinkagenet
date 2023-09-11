@@ -56,11 +56,13 @@ namespace UnitTest
             conList.String("NameLast", "NameLast", testMethod);
 
             //add weight
-            Dictionary<string, float> scoreTable = new Dictionary<string, float>();
-            scoreTable.Add("NameLast", 2.0f);
-            scoreTable.Add("NameFirst", 1.5f);
-            scoreTable.Add("Street", 0.9f);
-            scoreTable.Add("PostalCode", 0.7f);
+            Dictionary<string, float> scoreTable = new Dictionary<string, float>
+            {
+                { "NameLast", 2.0f },
+                { "NameFirst", 1.5f },
+                { "Street", 0.9f },
+                { "PostalCode", 0.7f }
+            };
 
             //add weight
             foreach (Condition c in conList)

@@ -47,11 +47,13 @@ namespace UnitTest
             conList.String("NameLast", "NameLast", testMethod);
 
             //add scores
-            Dictionary<string, float> scoreTable = new Dictionary<string, float>();
-            scoreTable.Add("NameLast", 2.0f);
-            scoreTable.Add("NameFirst", 1.5f);
-            scoreTable.Add("Street", 0.9f);
-            scoreTable.Add("PostalCode", 0.7f);
+            Dictionary<string, float> scoreTable = new Dictionary<string, float>
+            {
+                { "NameLast", 2.0f },
+                { "NameFirst", 1.5f },
+                { "Street", 0.9f },
+                { "PostalCode", 0.7f }
+            };
 
             foreach (Condition c in conList)
             {
@@ -74,8 +76,6 @@ namespace UnitTest
             var resultTask = workScheduler.Compare(pipeLineCancellation.Token);
 
             await resultTask;
-
-            //ResultSet result = resultTask.Result;
 
             int amount = resultTask.Result.Count();
             Assert.IsTrue(amount >= amountTestValueUnion, "wrong amount of results");
