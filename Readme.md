@@ -1,6 +1,7 @@
 ![dotnet 6.0 build](https://github.com/t2solve/recordlinkagenet/actions/workflows/dotnet.yml/badge.svg)
 ![code quality check](https://github.com/t2solve/recordlinkagenet/actions/workflows/codeql.yml/badge.svg)
 ![code coverage](https://github.com/t2solve/recordlinkagenet/actions/workflows/codecoverage.yml/badge.svg)
+![Code Coverage](https://img.shields.io/badge/Code%20Coverage-60%25-yellow?style=flat)
 
 # Overview
 
