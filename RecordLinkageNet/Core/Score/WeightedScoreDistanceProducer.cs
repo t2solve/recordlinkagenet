@@ -2,23 +2,21 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Score
 {
     public class WeightedScoreDistanceProducer
     {
-        public static float CalcEuclidianDistance(WeightedScore sa , WeightedScore sb)
+        public static float CalcEuclidianDistance(WeightedScore sa, WeightedScore sb)
         {
             float result = -1;
             //we do check parameter
-            if (sa==null|| sb ==null)
+            if (sa == null || sb == null)
             {
                 Trace.WriteLine("error 28932983 null parameter");
                 throw new ArgumentException("error 28932983");
             }
-            if(!sa.IsScoreComplete()||!sb.IsScoreComplete())
+            if (!sa.IsScoreComplete() || !sb.IsScoreComplete())
             {
                 Trace.WriteLine("error 2345634463123 please build the score before use ist ");
                 throw new ArgumentException("error 2345634463123");

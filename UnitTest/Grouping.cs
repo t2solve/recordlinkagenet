@@ -1,14 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RecordLinkage.Core;
 using RecordLinkageNet.Core;
 using RecordLinkageNet.Core.Compare;
 using RecordLinkageNet.Core.Data;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace UnitTest
 {
@@ -17,16 +13,16 @@ namespace UnitTest
     {
         private MatchCandidateList FakeIndexPairB(MatchCandidateList list, uint offset)
         {
-            MatchCandidateList newList = new MatchCandidateList(); 
+            MatchCandidateList newList = new MatchCandidateList();
             foreach (MatchCandidate c in list)
             {
-                IndexPair newP = new IndexPair(c.GetIndexPair().aIdx,c.GetIndexPair().bIdx + offset);
+                IndexPair newP = new IndexPair(c.GetIndexPair().aIdx, c.GetIndexPair().bIdx + offset);
                 MatchCandidate newC = new MatchCandidate(newP);
                 newC.SetScore(c.GetScore());
 
                 newList.Add(newC);
             }
-            return newList; 
+            return newList;
         }
 
         private MatchCandidateList FakeIndexPairA(MatchCandidateList list, uint offset)
@@ -34,7 +30,7 @@ namespace UnitTest
             MatchCandidateList newList = new MatchCandidateList();
             foreach (MatchCandidate c in list)
             {
-                IndexPair newP = new IndexPair(c.GetIndexPair().aIdx+ offset, c.GetIndexPair().bIdx);
+                IndexPair newP = new IndexPair(c.GetIndexPair().aIdx + offset, c.GetIndexPair().bIdx);
                 MatchCandidate newC = new MatchCandidate(newP);
                 newC.SetScore(c.GetScore());
 
@@ -47,7 +43,7 @@ namespace UnitTest
         public void TestGroupToIndexAorB()
         {
 
-            int amountData = 10; 
+            int amountData = 10;
             DataTableFeather tabA = TestDataGenerator.GenTestData(amountData);
 
             //build a simle configuration
@@ -92,29 +88,29 @@ namespace UnitTest
             //filter
             FilterRelativMinScore filter = new FilterRelativMinScore(1f);
 
-            MatchCandidateList filteredList = filter.Apply(resultTask.Result) as MatchCandidateList; 
+            MatchCandidateList filteredList = filter.Apply(resultTask.Result) as MatchCandidateList;
             //we do check we have the diagonal 1,1 2,2 etc
-            for(uint i=0;i<amountData;i++)
+            for (uint i = 0; i < amountData; i++)
             {
                 IndexPair testP = new IndexPair(i, i);
                 Assert.IsTrue(filteredList.ContainsIndexPair(testP));
             }
 
             //we alter our index 
-            uint offset = 10; 
-            MatchCandidateList fakedIndexListB = FakeIndexPairB(filteredList,offset);
+            uint offset = 10;
+            MatchCandidateList fakedIndexListB = FakeIndexPairB(filteredList, offset);
             MatchGroupOrderedList groupA = GroupFactory.GroupResultAsMatchingBlocks(fakedIndexListB, GroupFactory.Type.IndexAIsKey);
             for (uint i = 0; i < amountData; i++)
             {
-                IndexPair testP = new IndexPair(i, i+offset);
+                IndexPair testP = new IndexPair(i, i + offset);
                 Assert.IsTrue(fakedIndexListB.ContainsIndexPair(testP));
                 var foo = groupA.Data[(int)i];
                 //we scan per hand
-                bool success = false; 
+                bool success = false;
                 foreach (MatchCandidate c in foo)
                 {
                     if (c.GetIndexPair().Equals(testP))
-                        success = true; 
+                        success = true;
                 }
                 Assert.IsTrue(success);
             }
@@ -123,7 +119,7 @@ namespace UnitTest
             MatchGroupOrderedList groupB = GroupFactory.GroupResultAsMatchingBlocks(fakedIndexListA, GroupFactory.Type.IndexAIsKey);
             for (uint i = 0; i < amountData; i++)
             {
-                IndexPair testP = new IndexPair(i +offset, i );
+                IndexPair testP = new IndexPair(i + offset, i);
                 Assert.IsTrue(fakedIndexListA.ContainsIndexPair(testP));
                 var bar = groupB.Data[(int)i];
                 //we scan per hand

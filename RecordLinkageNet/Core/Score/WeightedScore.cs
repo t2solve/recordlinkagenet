@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core.Score
 {
@@ -58,20 +55,20 @@ namespace RecordLinkageNet.Core.Score
         }
         public int GetAmountScorePartsWeAdded()
         {
-            return matchScorePartByConditionIndex.Count(); 
+            return matchScorePartByConditionIndex.Count();
         }
 
         public List<byte> GetIndexListOfMissingParts()
-        { 
-            return conIndexListWeNeedToAddScoreParts; 
+        {
+            return conIndexListWeNeedToAddScoreParts;
         }
 
         public float AddScorePart(byte index, float scorePartCompareWeigthed, byte scoreTransformed)
         {
-            if(!matchScorePartByConditionIndex.ContainsKey(index))
+            if (!matchScorePartByConditionIndex.ContainsKey(index))
             {
                 //TODO maybe change where to find 
-                
+
                 if (matchScorePartByConditionIndex.Count() == 0) //init 
                 {
                     scoreAbsTotal = 0.0f;
@@ -92,15 +89,15 @@ namespace RecordLinkageNet.Core.Score
             else
             {
                 Trace.WriteLine("warning 293829839 double added key");
-                throw new ArgumentException("error 293829839"); 
+                throw new ArgumentException("error 293829839");
             }
 
-            return scoreAbsTotal; 
+            return scoreAbsTotal;
         }
         public int CompareTo(IScore other)
         {
             if (other == null) return -1;
-            return (int) (other.GetScoreValue() - this.GetScoreValue());
+            return (int)(other.GetScoreValue() - this.GetScoreValue());
 
             //if (other is WeightedScore)
             //{
@@ -121,12 +118,12 @@ namespace RecordLinkageNet.Core.Score
 
             if (other is WeightedScore)
             {
-                WeightedScore wOther = (WeightedScore) other;
+                WeightedScore wOther = (WeightedScore)other;
                 bool test1 = this.GetScoreValue() == other.GetScoreValue();
                 if (!test1)
                     return false;
 
-                foreach(var a in this.matchScorePartByConditionIndex)
+                foreach (var a in this.matchScorePartByConditionIndex)
                 {
                     if (wOther.GetScoreParts().ContainsKey(a.Key))
                     {
@@ -134,11 +131,11 @@ namespace RecordLinkageNet.Core.Score
                             return false;
                     }
                     else
-                    { 
+                    {
                         return false;
                     }
                 }
-                return true; 
+                return true;
             }
             return false;
         }

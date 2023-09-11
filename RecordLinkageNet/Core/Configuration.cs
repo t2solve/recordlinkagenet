@@ -1,14 +1,10 @@
 ﻿using RecordLinkage.Core;
 using RecordLinkageNet.Core.Compare;
-using RecordLinkageNet.Core.Score;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using IndexFeather = RecordLinkageNet.Core.Compare.IndexFeather;
 
 namespace RecordLinkageNet.Core
@@ -18,7 +14,7 @@ namespace RecordLinkageNet.Core
     public sealed class Configuration
     {
         //TODO implement a computation modus, to not change config while calc
-        
+
         //singeleton pattern
         //accoring to https://csharpindepth.com/Articles/Singleton
         private static readonly Lazy<Configuration> lazy =
@@ -45,7 +41,7 @@ namespace RecordLinkageNet.Core
         [IgnoreDataMember]
         public IndexFeather Index { get; private set; } = null;
         [DataMember(Name = "NumberTransposeModus")]
-        public NumberTransposeHelper.TransposeModus NumberTransposeModus { get; private set;  } = NumberTransposeHelper.TransposeModus.LINEAR;
+        public NumberTransposeHelper.TransposeModus NumberTransposeModus { get; private set; } = NumberTransposeHelper.TransposeModus.LINEAR;
 
         //filter parameter 
         [DataMember(Name = "FilterParameterThresholdRelativMinScore")]
@@ -63,7 +59,6 @@ namespace RecordLinkageNet.Core
 
         public bool IsValide()
         {
-            bool success = false;
             if (NumberTransposeModus == NumberTransposeHelper.TransposeModus.UNKNOWN)
             {
                 Trace.WriteLine("warning 235235 non valide configuration please AddNumberTransposeModus");
@@ -72,9 +67,9 @@ namespace RecordLinkageNet.Core
             if (Strategy == CalculationStrategy.Unknown)
             {
                 Trace.WriteLine("warning 298398 non valide configuration please AddStrategy");
-                return false; 
+                return false;
             }
-            if(ConditionList == null)
+            if (ConditionList == null)
             {
                 Trace.WriteLine("warning 234235 non valide configuration please AddConditionList");
                 return false;
@@ -100,7 +95,7 @@ namespace RecordLinkageNet.Core
                 Trace.WriteLine("warning 5635 non valide configuration please add DatTable as dataTabB to Index");
                 return false;
             }
-            if (Index.dataTabA.GetAmountColumns() == 0|| Index.dataTabA.GetAmountColumns()==0)
+            if (Index.dataTabA.GetAmountColumns() == 0 || Index.dataTabA.GetAmountColumns() == 0)
             {
                 Trace.WriteLine("warning 6436 non valide configuration please add Columns to DataTable in Index");
                 return false;
@@ -111,14 +106,13 @@ namespace RecordLinkageNet.Core
                 return false;
             }
 
-            if(!DoCheckAllConditionlNamesExistsInDataTables())
+            if (!DoCheckAllConditionlNamesExistsInDataTables())
             {
                 Trace.WriteLine("error 2908928948 non valide configuration");
                 return false;
             }
 
-            success = true;
-            return success; 
+            return true;
         }
 
         private bool DoCheckAllConditionlNamesExistsInDataTables()
@@ -128,15 +122,15 @@ namespace RecordLinkageNet.Core
             List<string> colNamesTabA = new List<string>();
             List<string> colNamesTabB = new List<string>();
 
-            foreach (Condition con in ConditionList) 
+            foreach (Condition con in ConditionList)
             {
                 colNamesTabA.Add(con.NameColA);
                 colNamesTabB.Add(con.NameColB);
             }
             //we check that the exists in tables 
-            foreach(string name in colNamesTabA)
+            foreach (string name in colNamesTabA)
             {
-                if(!Index.dataTabA.GetColumnNames().Contains(name))
+                if (!Index.dataTabA.GetColumnNames().Contains(name))
                 {
                     Trace.WriteLine("error 29392898 name : " + name + " not found in DataTable A");
                     return success;
@@ -150,26 +144,26 @@ namespace RecordLinkageNet.Core
                     return success;
                 }
             }
-            success = true; 
+            success = true;
 
             return success;
         }
 
         public void Reset()
         {
-            Index = null; 
+            Index = null;
             ConditionList = null;
         }
 
         public Configuration SetStrategy(CalculationStrategy strategy)
         {
-            if(modusDoCompareCalculation)
+            if (modusDoCompareCalculation)
             {
-                Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoing"); 
-                return null; 
+                Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoing");
+                return null;
             }
             this.Strategy = strategy;
-            return this; 
+            return this;
         }
 
 
@@ -191,7 +185,7 @@ namespace RecordLinkageNet.Core
                 Trace.WriteLine("warning 2353646 change will be ignored, computation is ongoing");
                 return null;
             }
-          
+
             this.FilterParameterThresholdRelativMinScore = minScore;
 
             return this;
@@ -209,7 +203,7 @@ namespace RecordLinkageNet.Core
 
             return this;
         }
-        
+
 
         public Configuration SetAmountCPUtoUse(int amount)
         {
@@ -218,16 +212,16 @@ namespace RecordLinkageNet.Core
                 Trace.WriteLine("warning 2938938 change will be ignored, computation is ongoing");
                 return null;
             }
-            if (amount<0 || amount > Environment.ProcessorCount )
+            if (amount < 0 || amount > Environment.ProcessorCount)
             {
-                throw new ArgumentException("error 203923090 wrong cpu amount selected"); 
+                throw new ArgumentException("error 203923090 wrong cpu amount selected");
             }
             AmountCPUtoUse = amount;
 
-            return this; 
+            return this;
         }
 
-        public Configuration AddIndex( IndexFeather index)
+        public Configuration AddIndex(IndexFeather index)
         {
             if (modusDoCompareCalculation)
             {
@@ -235,7 +229,7 @@ namespace RecordLinkageNet.Core
                 return null;
             }
             this.Index = index;
-            return this; 
+            return this;
         }
 
         public Configuration AddConditionList(ConditionList list)
@@ -249,7 +243,7 @@ namespace RecordLinkageNet.Core
             if (list == null)
             {
                 Trace.WriteLine("error 29389389 null ref list");
-                return null; 
+                return null;
             }
             //clear when existing
             if (ConditionList != null)
@@ -259,17 +253,17 @@ namespace RecordLinkageNet.Core
             }
             this.ConditionList = list;
 
-            return this; 
+            return this;
         }
 
         public void EnterDoCompareCalculationModus()
         {
-            modusDoCompareCalculation = true; 
+            modusDoCompareCalculation = true;
         }
 
         public void ExitDoCompareCalculationModus()
         {
-            modusDoCompareCalculation= false;
+            modusDoCompareCalculation = false;
         }
         public bool IsDoingCompareCalculation()
         {

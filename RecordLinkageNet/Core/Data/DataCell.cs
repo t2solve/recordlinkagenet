@@ -1,12 +1,6 @@
-﻿using RecordLinkageNet.Core.Score;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core.Data
 {
@@ -23,13 +17,14 @@ namespace RecordLinkageNet.Core.Data
 
         public virtual string Value
         {
-            get {               
+            get
+            {
                 throw new NotImplementedException();
-            } 
+            }
             set
             {
-                throw new NotImplementedException();  
-            }     
+                throw new NotImplementedException();
+            }
         }
 
         public bool Equals(DataCell x, DataCell y)
@@ -37,7 +32,7 @@ namespace RecordLinkageNet.Core.Data
             throw new NotImplementedException();
         }
 
-        public int GetHashCode( DataCell obj)
+        public int GetHashCode(DataCell obj)
         {
             throw new NotImplementedException();
         }

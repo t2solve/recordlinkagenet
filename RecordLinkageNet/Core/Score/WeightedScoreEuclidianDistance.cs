@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Score
 {
@@ -21,8 +17,8 @@ namespace RecordLinkageNet.Core.Score
             Distance = -1.0f;
             ScoreA = a as WeightedScore;
             ScoreB = b as WeightedScore;
-            Distance = WeightedScoreDistanceProducer.CalcEuclidianDistance(ScoreA, ScoreB); 
-            return Distance; 
+            Distance = WeightedScoreDistanceProducer.CalcEuclidianDistance(ScoreA, ScoreB);
+            return Distance;
         }
 
         public int CompareTo(IScoreDistance other)
@@ -42,7 +38,7 @@ namespace RecordLinkageNet.Core.Score
 
             WeightedScoreEuclidianDistance otherCast = other as WeightedScoreEuclidianDistance;
             if (otherCast == null)
-                return false; 
+                return false;
 
             //only focus on distance 
             return (otherCast.Distance == this.Distance);
@@ -50,7 +46,7 @@ namespace RecordLinkageNet.Core.Score
 
         public float GetValue()
         {
-            return distance; 
+            return distance;
         }
     }
 }

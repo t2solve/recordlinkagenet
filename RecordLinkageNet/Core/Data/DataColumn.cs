@@ -2,9 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Data
 {
@@ -12,34 +9,34 @@ namespace RecordLinkageNet.Core.Data
     {
         //TODO 
         //TODO avoid public
-        public DataTableFeather ParentTable = null; 
-        public DataCell[] Rows= null; //TODO use init 
+        public DataTableFeather ParentTable = null;
+        public DataCell[] Rows = null; //TODO use init 
         public string Name = "";
         public Type DataType = null;
 
-        private int indexCounter = -1; 
+        private int indexCounter = -1;
         private int rowIndexLimit = -1;
-        
+
         //public  CompareCondition compareCondition = null;
         public DataColumn(int cellAmount, Type type)
         {
             if (cellAmount < 0)
                 throw new ArgumentOutOfRangeException("cellamount");
-            if( type==null)
+            if (type == null)
                 throw new ArgumentNullException("type");
 
             //set type
-            DataType = type; 
-            
+            DataType = type;
+
             switch (type)
             {
                 case Type stringType when stringType == typeof(string):
                     InitStringCells(cellAmount);
                     break;
-                default: 
-                    Trace.WriteLine("warning 2983298398 not implemented type: found :" + type );
+                default:
+                    Trace.WriteLine("warning 2983298398 not implemented type: found :" + type);
                     throw new NotImplementedException();
-  
+
             }
         }
         public Type GetDataTypeOfCol()
@@ -50,30 +47,30 @@ namespace RecordLinkageNet.Core.Data
         public DataCell At(int rowIndex)
         {
             if (rowIndex < 0 || rowIndex >= rowIndexLimit)
-                return null; 
+                return null;
             return Rows[rowIndex];
         }
 
         public bool AppendCell(DataCell cell)
         {
-            if(indexCounter==-1)
+            if (indexCounter == -1)
             {
                 Trace.WriteLine("warning 2983928 array not initialisied yes");
-                return false; 
-            
+                return false;
+
             }
-            if(indexCounter >= rowIndexLimit)
+            if (indexCounter >= rowIndexLimit)
             {
                 Trace.WriteLine("error 3f9g235235 array limit reached");
                 return false;
             }
             Rows[indexCounter] = cell;
-            cell.Id = (uint) indexCounter; // save what id
-            
+            cell.Id = (uint)indexCounter; // save what id
+
             //we count
             indexCounter++;
 
-            return true; 
+            return true;
         }
 
         public IEnumerator<DataCell> GetEnumerator()
@@ -83,7 +80,7 @@ namespace RecordLinkageNet.Core.Data
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator(); 
+            return GetEnumerator();
         }
 
         private void InitStringCells(int amount)
@@ -96,7 +93,7 @@ namespace RecordLinkageNet.Core.Data
                 Rows[i].Id = i;
             }
             indexCounter = 0;
-            rowIndexLimit = amount; 
+            rowIndexLimit = amount;
 
         }
 

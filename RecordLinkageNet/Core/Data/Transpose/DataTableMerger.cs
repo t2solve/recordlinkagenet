@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Transpose
 {
@@ -23,10 +21,10 @@ namespace RecordLinkageNet.Core.Transpose
         }
 
 
-        private string UnifyColumName(string name, List<string> nameList ,string definedPrefix = null)
+        private string UnifyColumName(string name, List<string> nameList, string definedPrefix = null)
         {
-            string newName = name; 
-            if(nameList.Contains(name))
+            string newName = name;
+            if (nameList.Contains(name))
             {
                 //we add a prefix 
                 string newPrefix = definedPrefix;
@@ -41,19 +39,19 @@ namespace RecordLinkageNet.Core.Transpose
 
         private bool CheckTableDataIsPresent(DataTableFeather dA, DataTableFeather dB)
         {
-            bool succes = true; 
+            bool succes = true;
             if (dA == null || dB == null)
             {
                 Trace.WriteLine("warning 345346346 DataTableFeather is null ");
-                return false; 
+                return false;
             }
             if (dA.GetAmountColumns() == 0 || dB.GetAmountColumns() == 0)
             {
                 Trace.WriteLine("warning 3463462457785 DataTableFeather has NO columns ");
-                return false; 
+                return false;
             }
 
-            return succes; 
+            return succes;
         }
 
         public bool CheckTableColumnNamesAreEqual(DataTableFeather dA, DataTableFeather dB)
@@ -84,7 +82,7 @@ namespace RecordLinkageNet.Core.Transpose
                 Trace.WriteLine("warning 2346246 indexlist is empty");
                 return false;
             }
-            return true; 
+            return true;
         }
 
         public int CountAmountOfRowsFromIndexList(List<IndexPair> indexList)
@@ -94,7 +92,7 @@ namespace RecordLinkageNet.Core.Transpose
             {
                 return indexList.Count();
             }
-            return amount; 
+            return amount;
         }
 
         public DataTableFeather MergeColumnsDataByIndexList(List<IndexPair> indexList, DataTableFeather dA, DataTableFeather dB, bool allowColumnRenamingByConflict = false)
@@ -102,7 +100,7 @@ namespace RecordLinkageNet.Core.Transpose
             //TODO change to indexfeather ? 
             DataTableFeather dMerged = null;
 
-           
+
             if (CheckIndexListIsPresent(indexList) && CheckTableDataIsPresent(dA, dB))
             {
 
@@ -113,22 +111,22 @@ namespace RecordLinkageNet.Core.Transpose
                 }
 
                 int amountRows = CountAmountOfRowsFromIndexList(indexList);
-                if (amountRows==-1)
+                if (amountRows == -1)
                 {
                     Trace.WriteLine("warning 2352523 error during calc index length");
                     return null;
                 }
 
                 //TODO test what we got as parameter  
-                Dictionary<string, string> namesMapTabB = null; 
-                dMerged = CreateTableHeader( dB, dA, amountRows, out namesMapTabB);
+                Dictionary<string, string> namesMapTabB = null;
+                dMerged = CreateTableHeader(dB, dA, amountRows, out namesMapTabB);
 
                 //we do add it to our  
                 int rowCounter = 0;
                 foreach (IndexPair indexPair in indexList)
                 {
                     DataRow rowA = dA.GetRow((int)indexPair.aIdx);
-                    DataRow rowB = dB.GetRow((int)indexPair.bIdx); ; 
+                    DataRow rowB = dB.GetRow((int)indexPair.bIdx); ;
                     //if indexRowB is max we add empty row ??? TODO remove againg
                     //uint indexRowB = indexPair.bIdx; 
                     //if (indexRowB == uint.MaxValue)
@@ -136,7 +134,7 @@ namespace RecordLinkageNet.Core.Transpose
                     //    foreach (KeyValuePair<string, DataCell> d in rowB.Data)
                     //        d.Value.Value = "";
                     //}
-                    
+
 
                     //we translate a data
                     DataRow rowATranslated = TranslateAllColumnNames(rowB, namesMapTabB);
@@ -250,7 +248,7 @@ namespace RecordLinkageNet.Core.Transpose
 
         //    //create the rows
         //    //dMerged = CreateColumnFromTwoTables(dA, dB, amountRowsForFutureTable);
-           
+
 
         //    //TODO count several things
         //    Dictionary<int, bool> rowIndexMemory = new Dictionary<int, bool>();
@@ -288,7 +286,7 @@ namespace RecordLinkageNet.Core.Transpose
 
         //                    dMerged.AddRow(rowCounter, mergedRow);
         //                }
-                      
+
         //            }
         //            rowCounter++;//count
         //        }
@@ -313,11 +311,11 @@ namespace RecordLinkageNet.Core.Transpose
         //    return dMerged; 
         //}
 
-        private DataRow TranslateAllColumnNames(DataRow d, Dictionary<string,string> namesMap)
+        private DataRow TranslateAllColumnNames(DataRow d, Dictionary<string, string> namesMap)
         {
             DataRow newRow = new DataRow(null);
-            
-            foreach(string colName  in d.Data.Keys)
+
+            foreach (string colName in d.Data.Keys)
             {
                 string colNameNew = "";
                 if (namesMap.TryGetValue(colName, out colNameNew))
@@ -329,7 +327,7 @@ namespace RecordLinkageNet.Core.Transpose
             return newRow;
         }
 
-        private DataRow MergeTwoRows(DataRow r1 ,DataRow r2)
+        private DataRow MergeTwoRows(DataRow r1, DataRow r2)
         {
             //TODO do not use fore
             DataRow newRow = new DataRow(null);

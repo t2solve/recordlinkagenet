@@ -1,12 +1,7 @@
 ﻿using RecordLinkageNet.Core.Compare;
 using RecordLinkageNet.Core.Score;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core
 {
@@ -41,7 +36,7 @@ namespace RecordLinkageNet.Core
         //private Dictionary<byte, byte> MatchScoreColumnByConditionIndex = new Dictionary<byte, byte>();
         public IScore GetScore()
         {
-            return score; 
+            return score;
         }
 
         public void SetScore(IScore score)
@@ -60,7 +55,7 @@ namespace RecordLinkageNet.Core
             if (this.idxPair.Equals(other.idxPair))
             {
                 if (this.score.Equals(other.score))
-                    return true; 
+                    return true;
             }
             return false;
         }

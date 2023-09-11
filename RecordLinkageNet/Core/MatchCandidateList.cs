@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core
 {
@@ -14,18 +10,18 @@ namespace RecordLinkageNet.Core
     public class MatchCandidateList : ICandidateSet
     {
         //TODO use a base class to share double code MatchGroupOrdered  
-        [DataMember(Name = "ListElements") ]
-        private List<MatchCandidate> listElements = new List<MatchCandidate>(); 
+        [DataMember(Name = "ListElements")]
+        private List<MatchCandidate> listElements = new List<MatchCandidate>();
 
         public MatchCandidateList AddRange(MatchCandidateList list)
         {
             listElements.AddRange(list);
-            return this; 
+            return this;
         }
 
-        public bool ContainsIndexPair(Compare.IndexPair p )
+        public bool ContainsIndexPair(Compare.IndexPair p)
         {
-            foreach(MatchCandidate c in listElements)
+            foreach (MatchCandidate c in listElements)
             {
                 if (c.GetIndexPair().Equals(p))
                     return true;
@@ -44,7 +40,7 @@ namespace RecordLinkageNet.Core
 
         public void SortByScoreTopDown()
         {
-            listElements.Sort(delegate (MatchCandidate c1, MatchCandidate c2) 
+            listElements.Sort(delegate (MatchCandidate c1, MatchCandidate c2)
             { return c1.GetScore().CompareTo(c2.GetScore()); });
 
         }

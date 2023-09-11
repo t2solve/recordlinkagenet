@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace RecordLinkageNet.Core.Compare
 {
@@ -36,7 +31,7 @@ namespace RecordLinkageNet.Core.Compare
                     return true;
             return false;
         }
-        public int GetHashCode( IndexPair obj)
+        public int GetHashCode(IndexPair obj)
         {
             // .net core version:
             //return HashCode.Combine(obj.aIdx, obj.bIdx);
@@ -49,7 +44,7 @@ namespace RecordLinkageNet.Core.Compare
         {
             return "Pair<" + aIdx + "," + bIdx + ">";
         }
-      
+
 
     }
 }

@@ -1,10 +1,7 @@
 ﻿using RecordLinkageNet.Core.Data;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
@@ -36,7 +33,7 @@ namespace RecordLinkageNet.Core
                                            select new MatchGroupOrdered()
                                            {
                                                Type = groupType,
-                                               Criteria = new GroupCriteriaContainer( g.Key),
+                                               Criteria = new GroupCriteriaContainer(g.Key),
                                                Data = g.ToList()
                                            }).ToList();
                     break;
@@ -53,7 +50,7 @@ namespace RecordLinkageNet.Core
                 case Type.ColumnValueIsKey:
 
                     throw new NotImplementedException("error 234576345");
-                    break;
+                //break;
                 case Type.Unknown:
                 default:
 

@@ -1,12 +1,8 @@
 ﻿using RecordLinkageNet.Util;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Compare.State
 {
@@ -92,12 +88,12 @@ namespace RecordLinkageNet.Core.Compare.State
 
             return true;
         }
-        protected bool LoadDefaultDataMemeber<T> ( out T data)
+        protected bool LoadDefaultDataMemeber<T>(out T data)
         {
             bool success = false;
             string file = GetSpecificFileName();
             data = default(T);
-            
+
             if (!CheckFileIsPresent(file))
             {
                 Trace.WriteLine("error 2523522132 during read file");
@@ -120,7 +116,7 @@ namespace RecordLinkageNet.Core.Compare.State
             return success;
         }
 
-        public  bool SaveDefaultDataMemeber<T>(T member)
+        public bool SaveDefaultDataMemeber<T>(T member)
         {
             if (member == null)//shortcut nothing to save so we dont do it
                 return true;

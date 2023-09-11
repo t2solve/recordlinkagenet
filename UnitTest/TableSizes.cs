@@ -3,14 +3,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RecordLinkageNet.Core.Data;
 using RecordLinkageNet.Core.Data.Transpose;
 using RecordLinkageNet.Util;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UnitTest
 {
@@ -22,11 +17,11 @@ namespace UnitTest
             if (valuePresent < valueMax)
                 return true;
 
-            return false; 
+            return false;
         }
         private bool CheckEstimate(long valuePresent, double valueMax)
         {
-            if (valuePresent < (long) valueMax)
+            if (valuePresent < (long)valueMax)
                 return true;
 
             return false;
@@ -35,12 +30,12 @@ namespace UnitTest
         [TestMethod]
         public void TestTableMemorySizes()
         {
-            long sizeStart = MemoryUsageEstimator.GetAmountMemoryWeUseFromGCInMiB(); 
+            long sizeStart = MemoryUsageEstimator.GetAmountMemoryWeUseFromGCInMiB();
             Assert.IsTrue(CheckEstimate(sizeStart, 10), "error 2372873 ");
-            Trace.WriteLine("# start mem test:  \t "+ sizeStart + "\tMiB"); 
+            Trace.WriteLine("# start mem test:  \t " + sizeStart + "\tMiB");
 
             //we construct a test set 
-            int amountData = (int) 1E+6; //mio
+            int amountData = (int)1E+6; //mio
             var testDataA = TestDataGenerator.CreateTestPersons(amountData);
             long sizePureObjectListSize = MemoryUsageEstimator.GetAmountMemoryWeUseFromGCInMiB();
             Assert.IsTrue(CheckEstimate(sizePureObjectListSize, 300), "error 253454 ");
@@ -53,7 +48,7 @@ namespace UnitTest
             long sizeNew = MemoryUsageEstimator.GetAmountMemoryWeUseFromGCInMiB();
             long sizeFeatherObject = sizeNew - sizePureObjectListSize;
             //around ~ 350 
-            Assert.IsTrue(CheckEstimate(sizeFeatherObject,sizePureObjectListSize*allowedFactor), "error 236234 ");
+            Assert.IsTrue(CheckEstimate(sizeFeatherObject, sizePureObjectListSize * allowedFactor), "error 236234 ");
             Trace.WriteLine("# table feather mem :  " + sizeFeatherObject + "\tMiB");
 
 
@@ -90,6 +85,6 @@ namespace UnitTest
             testDataA.First();
         }
 
-        
+
     }
 }

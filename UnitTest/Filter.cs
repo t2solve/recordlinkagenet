@@ -1,15 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RecordLinkageNet.Core.Compare;
 using RecordLinkageNet.Core;
+using RecordLinkageNet.Core.Compare;
 using RecordLinkageNet.Core.Data.Transpose;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace UnitTest
 {
@@ -17,7 +12,7 @@ namespace UnitTest
     public class Filter
     {
 
-     
+
 
         [TestMethod]
         public void TestMinDistanceFilter()
@@ -98,7 +93,7 @@ namespace UnitTest
         }
 
         [TestMethod]
-        public MatchGroupOrderedList FilterGroup(MatchGroupOrderedList gIn , float minValue)
+        public MatchGroupOrderedList FilterGroup(MatchGroupOrderedList gIn, float minValue)
         {
             MatchGroupOrderedList gOut = new MatchGroupOrderedList();
 

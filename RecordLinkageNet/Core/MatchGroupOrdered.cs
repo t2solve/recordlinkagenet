@@ -1,13 +1,8 @@
 ﻿using RecordLinkageNet.Core.Score;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core
 {
@@ -37,7 +32,7 @@ namespace RecordLinkageNet.Core
 
         public void SortByScoreTopDown()
         {
-            listElements.Sort(delegate (MatchCandidate c1, MatchCandidate c2) 
+            listElements.Sort(delegate (MatchCandidate c1, MatchCandidate c2)
             { return c1.GetScore().CompareTo(c2.GetScore()); });
         }
 
@@ -55,7 +50,7 @@ namespace RecordLinkageNet.Core
             this.SortByScoreTopDown();
             if (listElements.Count > 0)
                 return listElements.First();
-            return null; 
+            return null;
         }
 
         public List<MatchCandidate> Data

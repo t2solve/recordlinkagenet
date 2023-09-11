@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core.Data
 {
@@ -15,34 +9,34 @@ namespace RecordLinkageNet.Core.Data
         //TODO refactor eveything is a string here
         [DataMember(Name = "MyValue")]
         private string myValue = "";
-        public override string Value 
-        { 
+        public override string Value
+        {
             get
             {
                 return myValue;
             }
-            set 
+            set
             {
                 myValue = value;
-            } 
-        } 
+            }
+        }
 
         public bool Equals(DataCellString x, DataCellString y)
         {
-            if ( ReferenceEquals(x, y)) return true;
+            if (ReferenceEquals(x, y)) return true;
 
-            if(x !=null && y !=null)
+            if (x != null && y != null)
             {
                 if (x.GetHashCode() == y.GetHashCode())
-                    return true; 
+                    return true;
             }
 
-            return false; 
+            return false;
         }
 
-        public int GetHashCode( DataCellString obj)
+        public int GetHashCode(DataCellString obj)
         {
-           return obj.myValue.GetHashCode();
+            return obj.myValue.GetHashCode();
         }
     }
 }

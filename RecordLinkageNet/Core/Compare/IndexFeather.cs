@@ -1,18 +1,13 @@
 ﻿using RecordLinkageNet.Core.Data;
-using RecordLinkageNet.Util;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Compare
 {
     /// <summary>
     /// Class to create an index of two datasets
     /// </summary>
-    public class IndexFeather 
+    public class IndexFeather
     {
         //public enum ConstructionState
         //{
@@ -33,12 +28,12 @@ namespace RecordLinkageNet.Core.Compare
 
         private uint idxAMax = uint.MaxValue;
         private uint idxBMax = uint.MaxValue;
-        public DataTableFeather dataTabA = null; 
+        public DataTableFeather dataTabA = null;
         public DataTableFeather dataTabB = null;
 
         public uint GetMaxADim()
         {
-            return idxAMax; 
+            return idxAMax;
         }
         public uint GetMaxBDim()
         {
@@ -59,11 +54,11 @@ namespace RecordLinkageNet.Core.Compare
             }
 
             if (dataB == null)//set as copy 
-                dataB = dataA; 
-            idxAMax = (uint) dataA.GetAmountRows();
+                dataB = dataA;
+            idxAMax = (uint)dataA.GetAmountRows();
             dataTabA = dataA;
             dataTabB = dataB;
-            
+
             if (prefilter == null)
             {
                 type = IndexType.FULL_INDEX;
@@ -73,7 +68,7 @@ namespace RecordLinkageNet.Core.Compare
                 {
                     //we mark b as a, to make future steps easier
                     dataTabB = dataTabA;
-                    idxBMax = idxAMax; 
+                    idxBMax = idxAMax;
 
                     //long max = (long)idxAMax;
                     ////short estitmate 

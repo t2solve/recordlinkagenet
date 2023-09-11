@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Util
 {
@@ -14,17 +13,17 @@ namespace RecordLinkageNet.Util
     {
         private static bool CheckNameDontContainsSpecialChars(string name)
         {
-                return name.Any(ch => !char.IsLetterOrDigit(ch));
+            return name.Any(ch => !char.IsLetterOrDigit(ch));
         }
         public static bool WriteDataFeatherToSqlite(DataTableFeather tab, string tablename, string fileName, bool removeIfExists = false)
         {
             //TODO check column Names for - , # etc.
             if (tablename == null)
-                throw new ArgumentNullException("error 2398938"); 
-            if(CheckNameDontContainsSpecialChars(tablename))
+                throw new ArgumentNullException("error 2398938");
+            if (CheckNameDontContainsSpecialChars(tablename))
             {
                 Trace.WriteLine("error 239898 table name should only contain chars or digits");
-                return false; 
+                return false;
             }
             if (removeIfExists)
             {
@@ -35,7 +34,7 @@ namespace RecordLinkageNet.Util
                         File.Delete(fileName);
 
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Trace.WriteLine("error 23532522345 during delete file  " + e.ToString());
                     }
@@ -47,7 +46,7 @@ namespace RecordLinkageNet.Util
                 Trace.WriteLine("error 352534456 DataTableFeather is null object");
                 return false;
             }
-            if (tab.GetAmountColumns() == 0|| tab.GetAmountRows()==0)
+            if (tab.GetAmountColumns() == 0 || tab.GetAmountRows() == 0)
             {
                 Trace.WriteLine("error 12335677 empty DataTableFeather");
                 return false;
@@ -118,8 +117,8 @@ namespace RecordLinkageNet.Util
                             paraDictio.Add(col.Name, parameter);
                         }
 
-                        int amountRows = tab.GetAmountRows(); 
-                        for(int i = 0; i < amountRows; i++) 
+                        int amountRows = tab.GetAmountRows();
+                        for (int i = 0; i < amountRows; i++)
                         {
                             DataRow datRow = tab.GetRow(i);
                             var colNames = tab.GetColumnNames();
@@ -166,19 +165,19 @@ namespace RecordLinkageNet.Util
             //TODO check allowed table names
             //TODO check file name exist and so on 
             //TODO implement ovveride 
-            if(removeIfExists)
+            if (removeIfExists)
             {
-               if(File.Exists(fileName))
+                if (File.Exists(fileName))
                 {
                     File.Delete(fileName);
                 }
             }
-            if(objectList == null)
+            if (objectList == null)
             {
                 Trace.WriteLine("error 238293898 objectList is null object");
-                return false; 
+                return false;
             }
-            if(objectList.Count == 0)
+            if (objectList.Count == 0)
             {
                 Trace.WriteLine("error 2354235 empty objectList");
                 return false;
@@ -263,10 +262,10 @@ namespace RecordLinkageNet.Util
             {
                 Trace.WriteLine("error 239892389 during write test db to " + fileName);
                 Trace.WriteLine("error 239892389  " + e.ToString());
-                return false; 
+                return false;
             }
 
-            return true; 
+            return true;
         }
     }
 }

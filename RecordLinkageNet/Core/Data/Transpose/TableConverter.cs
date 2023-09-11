@@ -1,11 +1,7 @@
-﻿using RecordLinkageNet.Core.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Data.Transpose
 {
@@ -14,7 +10,7 @@ namespace RecordLinkageNet.Core.Data.Transpose
         public static System.Data.DataTable CreateDataTableFromFeather(DataTableFeather dataFeather)
         {
             if (dataFeather == null)
-                throw new ArgumentNullException("dataFeather"); 
+                throw new ArgumentNullException("dataFeather");
 
             System.Data.DataTable dataTable = new System.Data.DataTable();
             foreach (string name in dataFeather.GetColumnNames())

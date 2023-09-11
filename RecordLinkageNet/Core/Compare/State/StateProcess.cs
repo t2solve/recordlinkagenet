@@ -1,19 +1,9 @@
-﻿using RecordLinkageNet.Util;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace RecordLinkageNet.Core.Compare.State
+﻿namespace RecordLinkageNet.Core.Compare.State
 {
 
     public class StateProcess : CompareState
     {
-        private MatchCandidateList listOfMachtes = null; 
+        private MatchCandidateList listOfMachtes = null;
 
         public StateProcess() : base()
         {
@@ -29,8 +19,8 @@ namespace RecordLinkageNet.Core.Compare.State
         }
 
         public override bool Save()
-        {        
-            return SaveDefaultDataMemeber(listOfMachtes); ; 
+        {
+            return SaveDefaultDataMemeber(listOfMachtes); ;
         }
     }
 }

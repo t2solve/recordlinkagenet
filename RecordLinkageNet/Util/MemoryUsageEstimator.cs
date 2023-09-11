@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Util
 {
@@ -55,18 +49,18 @@ namespace RecordLinkageNet.Util
             }
 
         }
-        public static bool CheckCreateArrayPossible(long amountElement, int approxmiatedSizeOfElementInBytes )
+        public static bool CheckCreateArrayPossible(long amountElement, int approxmiatedSizeOfElementInBytes)
         {
             long memLimitMaxInMiB = 2000;
             //A) constraint a, limit elements in array
-            if (amountElement>=magicNumberMaxElementsInArray)
+            if (amountElement >= magicNumberMaxElementsInArray)
             {
                 Trace.WriteLine("waring 299283 to much elements will not fit in one array, exceeds limit");
-                return false; 
+                return false;
             }
 
             //long memLimitPhysicalInMB = GetPhysicalAvailableMemoryInMiB(); //alias mem left
-            long memLimitTotallInMiB = (long) GetRamUsedInMegaByte();// GetTotalMemoryInMiB();
+            long memLimitTotallInMiB = (long)GetRamUsedInMegaByte();// GetTotalMemoryInMiB();
             //long memWeUseInMiB = GetAmountMemoryWeUseFromGCInMiB();
             //TODO repair
             if (CheckGCAllowsHugeObjects())
@@ -96,8 +90,8 @@ namespace RecordLinkageNet.Util
         public static long GetAmountMemoryWeUseFromGCInMiB()
         {
             //Retrieves the number of bytes currently thought to be allocated
-            long amountInBytes =   GC.GetTotalMemory(false);
-            return amountInBytes / converionFactorByteToMB; 
+            long amountInBytes = GC.GetTotalMemory(false);
+            return amountInBytes / converionFactorByteToMB;
         }
 
         //get system infos found at: 

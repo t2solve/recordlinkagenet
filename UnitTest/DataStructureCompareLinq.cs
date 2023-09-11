@@ -1,17 +1,7 @@
-﻿using AutoBogus;
-using Bogus;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnitTest;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RecordLinkageNet.Core.Data;
-using System.Reflection;
-using System.Diagnostics;
 using RecordLinkageNet.Core.Data.Transpose;
+using System.Linq;
 
 namespace UnitTest
 {
@@ -19,7 +9,7 @@ namespace UnitTest
 
     public class DataStructureCompareLinq
     {
-       
+
         [TestMethod]
         public void TestAutoBugsReadToDataStructure()
         {
@@ -29,7 +19,7 @@ namespace UnitTest
             var testDataUnion = TestDataGenerator.CreateTestPersons(100); //generate union amount
             testDataA.AddRange(testDataUnion);
             testDataB.AddRange(testDataUnion);
-            int amountRows = testDataA.Count; 
+            int amountRows = testDataA.Count;
 
             //we construct two tables
             // convert 

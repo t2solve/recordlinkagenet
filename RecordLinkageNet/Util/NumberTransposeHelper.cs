@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace RecordLinkage.Core
 {
@@ -576,8 +571,8 @@ namespace RecordLinkage.Core
             {
                 if (m == TransposeModus.LOG10)
                 {
-                    if (log10ValueRange0to1[i] >= x )
-                        return i; 
+                    if (log10ValueRange0to1[i] >= x)
+                        return i;
                 }
                 if (m == TransposeModus.LINEAR)
                 {
@@ -594,7 +589,7 @@ namespace RecordLinkage.Core
             if (x == 0)
                 return 0.0f;
             if (x == 255)
-                return 1.0f; 
+                return 1.0f;
             if (m == TransposeModus.LOG10)
             {
                 return log10ValueRange0to1[x];
@@ -603,7 +598,7 @@ namespace RecordLinkage.Core
             {
                 return linearValueRange0to1[x];
             }
-            return -1.0f; 
+            return -1.0f;
         }
 
 

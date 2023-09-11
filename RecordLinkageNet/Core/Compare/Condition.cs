@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Compare
 {
@@ -11,7 +7,7 @@ namespace RecordLinkageNet.Core.Compare
     /// Class which defines what and how to compare datacolumns
     /// </summary>
     [DataContract(Name = "Condition", Namespace = "RecordLinkageNet")]
-    public class Condition : IEquatable<Condition> , IComparable<Condition>
+    public class Condition : IEquatable<Condition>, IComparable<Condition>
     {
         public enum StringMethod
         {
@@ -46,7 +42,7 @@ namespace RecordLinkageNet.Core.Compare
         [DataMember(Name = "NameColNewLabel")]
         public string NameColNewLabel { get; set; } = null;
         [DataMember(Name = "ConditionIndex")]
-        public byte ConditionIndex { get; set; } = 0; 
+        public byte ConditionIndex { get; set; } = 0;
 
         //an exlusive list we have implemted 
         public void SetNewColName()//TODO call during set NameColA 

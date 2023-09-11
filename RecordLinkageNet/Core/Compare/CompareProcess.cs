@@ -1,12 +1,7 @@
 ﻿using RecordLinkageNet.Core.Compare.State;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Compare
 {
@@ -15,14 +10,14 @@ namespace RecordLinkageNet.Core.Compare
         private string storageFolder = String.Empty;
         private CompareState stateLast = null;
         private CompareState stateNow = null;
-        private Dictionary<CompareState, DateTime> compareStatesHistory = new Dictionary<CompareState, DateTime>();
+        private Dictionary<CompareState, DateTime> compareStatesHistory = new();
 
         public CompareProcess()
         {
 
             this.stateNow = new StateInit();
             this.stateNow.SetContext(this);
-            this.stateLast = this.stateNow; 
+            this.stateLast = this.stateNow;
 
             this.storageFolder = Environment.GetFolderPath(
                 Environment.SpecialFolder.LocalApplicationData);
@@ -60,7 +55,7 @@ namespace RecordLinkageNet.Core.Compare
             //        break;
             //    case CompareState.Type.Process:
             //        if(Configuration.Instance.IsValide)
-                     
+
             //    case CompareState.Type.Uknown:
             //    default:
             //        Trace.WriteLine("error 2093929 wrong type");
@@ -73,7 +68,7 @@ namespace RecordLinkageNet.Core.Compare
         {
             bool success = false;
 
-            foreach(var pair in this.compareStatesHistory)
+            foreach (var pair in this.compareStatesHistory)
             {
                 //we check if save it needed 
                 //if (pair.Value == DateTime.MinValue)
@@ -82,7 +77,7 @@ namespace RecordLinkageNet.Core.Compare
                     if (!partSuccess)
                     {
                         Trace.WriteLine("warning 394898 error during save state: " + pair.Key.Name);
-                        return success; 
+                        return success;
                     }
                 }
             }
@@ -93,8 +88,6 @@ namespace RecordLinkageNet.Core.Compare
 
         public bool Load()
         {
-            bool success = false;
-
             foreach (var pair in this.compareStatesHistory)
             {
 
@@ -103,12 +96,11 @@ namespace RecordLinkageNet.Core.Compare
                 {
                     Trace.WriteLine("warning 325235 error during load state: " + pair.Key.Name);
                     //return success;
+
                 }
 
             }
-            success = true;
-
-            return success;
+            return true;
         }
     }
 }

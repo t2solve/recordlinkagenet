@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RecordLinkageNet.Core.Compare;
 using RecordLinkageNet.Core.Data;
-using RecordLinkageNet.Core.Data.Transpose;
 using RecordLinkageNet.Core.Transpose;
+using System.Collections.Generic;
 
 namespace UnitTest
 {
@@ -32,12 +27,12 @@ namespace UnitTest
             for (uint i = 0; i < tabA.GetAmountRows(); i++)
                 indexList.Add(new IndexPair(i, i));
 
-            DataTableFeather tabMerged =  merger.MergeColumnsDataByIndexList(indexList,  tabB, tabA,true);
+            DataTableFeather tabMerged = merger.MergeColumnsDataByIndexList(indexList, tabB, tabA, true);
             //DataTableWriter.WriteAsCSV("Z:dataMerged.csv", tabMerged);
             //DataTableWriter.WriteAsCSV("Z:dataA.csv", tabA);
             //DataTableWriter.WriteAsCSV("Z:dataB.csv", tabB);
 
-            int amountDataMemberInTestClass = 5; 
+            int amountDataMemberInTestClass = 5;
             //we test for specific cells 
             Assert.AreEqual(tabA.GetCellAt(0, 0).Value, tabMerged.GetCellAt(0, 0).Value, "error during merge");
             Assert.AreEqual(tabB.GetCellAt(0, 0).Value, tabMerged.GetCellAt(0 + amountDataMemberInTestClass, 0).Value, "error during merge");
@@ -67,7 +62,7 @@ namespace UnitTest
                 indexList.Add(new IndexPair(i, i));
 
             Assert.AreEqual(10, merger.CountAmountOfRowsFromIndexList(indexList),
-                "error 23482347878 wrong index list row calc" );
+                "error 23482347878 wrong index list row calc");
 
             //we add diagonal
             for (uint i = 0; i < tabA.GetAmountRows(); i++)

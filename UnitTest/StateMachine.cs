@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UnitTest
 {
@@ -79,7 +77,7 @@ namespace UnitTest
             //compare 
             Assert.IsTrue(string.Compare(stateWeLoad.Name, "Init") == 0);
             //now its the same
-            Assert.IsTrue(DateTime.Compare(before, stateWeLoad.Time)== 0);
+            Assert.IsTrue(DateTime.Compare(before, stateWeLoad.Time) == 0);
 
 
         }
@@ -112,10 +110,10 @@ namespace UnitTest
             CompareProcess process = new CompareProcess();
             StateConfiguration conState = new StateConfiguration();
             conState.SetContext(process);
-            conState.DoLogDataTabA = true; 
+            conState.DoLogDataTabA = true;
             conState.DoLogDataTabB = true;
 
-            Assert.IsTrue( conState.Save());
+            Assert.IsTrue(conState.Save());
 
             //clear old values 
             config.Reset();

@@ -1,17 +1,10 @@
 ﻿using RecordLinkage.Core;
 using RecordLinkageNet.Core.Data;
 using RecordLinkageNet.Util;
-using Simsala.Tool;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 using static RecordLinkageNet.Core.Configuration;
 
 namespace RecordLinkageNet.Core.Compare.State
@@ -32,7 +25,7 @@ namespace RecordLinkageNet.Core.Compare.State
         //TODO config  FilterParameterThresholdRelativMinScore
         //TODO NumberTransposeModus .. Strategy not stored right now
 
-        public StateConfiguration():base()
+        public StateConfiguration() : base()
         {
             this.Name = "Configuration";
             this.type = Type.Configuration;
@@ -59,7 +52,7 @@ namespace RecordLinkageNet.Core.Compare.State
                 if (tabA == null)
                 {
                     Trace.WriteLine("error 343489898 during tabA");
-                    
+
                     //return success; 
                 }
             }
@@ -75,7 +68,7 @@ namespace RecordLinkageNet.Core.Compare.State
             }
 
             //create index
-            if (tabA != null&&tabB!=null)
+            if (tabA != null && tabB != null)
                 Configuration.Instance.AddIndex(new IndexFeather().Create(tabA, tabB));
             else
                 Trace.WriteLine("warning 989898 27874 index in config not created");
@@ -98,9 +91,9 @@ namespace RecordLinkageNet.Core.Compare.State
                 //if (Configuration.Instance.IsValide())
                 //    success = true; 
                 //var foobar = Configuration.Instance.IsValide();
-                success = true; 
+                success = true;
             }
-            else Trace.WriteLine("error 9384948 during read conifg wrapper"); 
+            else Trace.WriteLine("error 9384948 during read conifg wrapper");
 
             return success;
         }
@@ -119,8 +112,8 @@ namespace RecordLinkageNet.Core.Compare.State
                     //we compare the hash
                     if (HashValueFactory.CheckFileHasSha512Value(arte.Sha512HashValue, fileToLoad))
                     {
-                
-                        tab = SqliteReader.ReadTableFromSqliteFile( fileToLoad,arte.TableName);
+
+                        tab = SqliteReader.ReadTableFromSqliteFile(fileToLoad, arte.TableName);
                         if (tab != null)
                             return tab;
                         else
@@ -129,19 +122,19 @@ namespace RecordLinkageNet.Core.Compare.State
                 }
 
             }
-            return tab; 
+            return tab;
         }
 
         public override bool Save()
         {
             bool successA = false;
             bool successB = false;
-            bool sucConList = false; 
+            bool sucConList = false;
 
             if (Configuration.Instance.IsValide())
             {
                 //TODO check if they are the same
-                if(doLogDataTabA)
+                if (doLogDataTabA)
                 {
                     successA = WriteDataTabAndArtefact(defaultNameA, "tabAdata.sqlite", "tabA",
                         Configuration.Instance.Index.dataTabA);
@@ -157,26 +150,27 @@ namespace RecordLinkageNet.Core.Compare.State
                 }
                 else
                 {
-                    successB = true; 
+                    successB = true;
                 }
                 string fileConfig = GetSpecificFileName();
 
 
                 ConfigSingeltonWrapper confWrap = new ConfigSingeltonWrapper();
                 try
-                { 
-                //we copy all with same field name
-                //https://stackoverflow.com/questions/8181484/copy-object-properties-reflection-or-serialization-which-is-faster
-                var fields = Configuration.Instance.GetType().GetFields(BindingFlags.Public| BindingFlags.Instance);
-                foreach (var field in fields)
                 {
-                    var value = field.GetValue(Configuration.Instance);
-                    field.SetValue(confWrap, value);
+                    //we copy all with same field name
+                    //https://stackoverflow.com/questions/8181484/copy-object-properties-reflection-or-serialization-which-is-faster
+                    var fields = Configuration.Instance.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+                    foreach (var field in fields)
+                    {
+                        var value = field.GetValue(Configuration.Instance);
+                        field.SetValue(confWrap, value);
+                    }
                 }
-                }catch(Exception e)
+                catch (Exception e)
                 {
                     Trace.WriteLine("error 2938989 during copy all of the config properties to class " + e.ToString());
-                    return false; 
+                    return false;
                 }
                 //hand copy 
                 confWrap.ConditionList = Configuration.Instance.ConditionList;
@@ -197,10 +191,10 @@ namespace RecordLinkageNet.Core.Compare.State
             //TODO write all parameter of class
 
 
-            return successA && successB && sucConList; 
+            return successA && successB && sucConList;
         }
 
-        private bool WriteDataTabAndArtefact(string artefactName, string relateFileNameSqlite,string tableName,DataTableFeather tab)
+        private bool WriteDataTabAndArtefact(string artefactName, string relateFileNameSqlite, string tableName, DataTableFeather tab)
         {
             bool success = false;
             DataTableArtefactHelper tabArtefact = new DataTableArtefactHelper();
@@ -208,7 +202,7 @@ namespace RecordLinkageNet.Core.Compare.State
             tabArtefact.TableName = tableName;
             //we write the table 
             string file = GetFileNameWithPath(tabArtefact.RelativFilename);
-            if (SqliteWriter.WriteDataFeatherToSqlite(tab,tabArtefact.TableName, file,true))
+            if (SqliteWriter.WriteDataFeatherToSqlite(tab, tabArtefact.TableName, file, true))
             {
                 tabArtefact.Sha512HashValue = HashValueFactory.GetSha512Value(file);
                 if (tabArtefact.Sha512HashValue != null)
@@ -227,17 +221,17 @@ namespace RecordLinkageNet.Core.Compare.State
                 Trace.WriteLine("error 35235 during write dataTabA");
                 return false;
             }
-            return success; 
+            return success;
         }
 
 
-        private bool WriteArtefact(string name , DataTableArtefactHelper a )
+        private bool WriteArtefact(string name, DataTableArtefactHelper a)
         {
-            bool success = false; 
-            string file = GetFileNameWithPath(name); 
+            bool success = false;
+            string file = GetFileNameWithPath(name);
             try
             {
-                success = ClassWriterToXML.WriteClassInstanceToXml(a,file);
+                success = ClassWriterToXML.WriteClassInstanceToXml(a, file);
             }
             catch (Exception e)
             {
@@ -249,7 +243,7 @@ namespace RecordLinkageNet.Core.Compare.State
         private bool LoadArtefact(string file, out DataTableArtefactHelper artefact)
         {
             bool success = false;
-            artefact = null; 
+            artefact = null;
             if (!CheckFileIsPresent(file))
             {
                 Trace.WriteLine("error 23525345 during read file");
@@ -285,7 +279,7 @@ namespace RecordLinkageNet.Core.Compare.State
             //TODO overthink this !! is doubled code atm, see configuration class
             //data parts 
             [DataMember(Name = "Strategy")]
-            public CalculationStrategy Strategy { get;  set; } = CalculationStrategy.WeightedConditionSum;
+            public CalculationStrategy Strategy { get; set; } = CalculationStrategy.WeightedConditionSum;
             [DataMember(Name = "ConditionList")]
             public ConditionList ConditionList { get; set; } = null;
             [DataMember(Name = "NumberTransposeModus")]
@@ -296,9 +290,9 @@ namespace RecordLinkageNet.Core.Compare.State
 
             //filter parameter 
             [DataMember(Name = "FilterParameterThresholdRelativMinScore")]
-            public float FilterParameterThresholdRelativMinScore { get;  set; } = 0.7f;//used by FilterRelativMinScore
+            public float FilterParameterThresholdRelativMinScore { get; set; } = 0.7f;//used by FilterRelativMinScore
             [DataMember(Name = "FilterParameterThresholdRelativMinAllowedDistanceToTopScore")]
-            public float FilterParameterThresholdRelativMinAllowedDistanceToTopScore { get;  set; } = 0.2f;
+            public float FilterParameterThresholdRelativMinAllowedDistanceToTopScore { get; set; } = 0.2f;
 
             //[DataMember(Name = "FilterParameter")]
             //public Dictionary<string, float> FilterParameter = new Dictionary<string, float>();

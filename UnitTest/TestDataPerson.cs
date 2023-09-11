@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Bogus;
-using Microsoft.Data.Sqlite;
-using Microsoft.ML;
+﻿using Bogus;
 using Microsoft.ML.Data;
 using RecordLinkageNet.Core.Data;
 using RecordLinkageNet.Core.Data.Transpose;
 using RecordLinkageNet.Util;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 
 namespace UnitTest
 {
@@ -27,7 +21,7 @@ namespace UnitTest
                 person.City = 'a' + person.City.Remove(0, 1);
 
             }
-            return list; 
+            return list;
         }
 
 
@@ -55,25 +49,25 @@ namespace UnitTest
             return list;
         }
 
-        public static string WriteTestSqliteTableIfNotExists(int amountPersons=-1,string fileName="",string tableName="")
+        public static string WriteTestSqliteTableIfNotExists(int amountPersons = -1, string fileName = "", string tableName = "")
         {
-            if(amountPersons==-1)
-                amountPersons =(int)1E+6; //mio
-            if(string.IsNullOrEmpty(fileName))
-               fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "test.db");
+            if (amountPersons == -1)
+                amountPersons = (int)1E+6; //mio
+            if (string.IsNullOrEmpty(fileName))
+                fileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "test.db");
             if (string.IsNullOrEmpty(tableName))
                 tableName = "PersonList";
 
             //check if exsits
             if (File.Exists(fileName))
-                return fileName; 
+                return fileName;
 
             List<TestDataPerson> personList = CreateTestPersons(amountPersons);
 
-            if(!SqliteWriter.WriteObjectListToSqliteStringBulkFile(personList, tableName, fileName))
+            if (!SqliteWriter.WriteObjectListToSqliteStringBulkFile(personList, tableName, fileName))
             {
-                Trace.WriteLine("error 2o389283 "); 
-                fileName = ""; 
+                Trace.WriteLine("error 2o389283 ");
+                fileName = "";
             }
             return fileName;
         }

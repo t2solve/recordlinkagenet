@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Simsala.Tool
+namespace RecordLinkageNet.Util
 {
     public class HashValueFactory
     {
@@ -18,12 +14,12 @@ namespace Simsala.Tool
             bool success = false;
             string shaWeDoHave = GetSha512Value(filename);
             if (string.Compare(shaWeDoHave, shaToCheck) == 0)
-                success = true; 
-            return success; 
+                success = true;
+            return success;
         }
-        public static String GetSha512Value(string filename)
+        public static string GetSha512Value(string filename)
         {
-            String retValue = null;
+            string retValue = null;
             byte[] values = GetHashSha512FromFile(filename);
             if (values == null)
                 return retValue;
@@ -40,7 +36,7 @@ namespace Simsala.Tool
                 using (FileStream stream = File.OpenRead(filename))
                 {
                     foo = new byte[stream.Length];
-                    foo  = algoHash.ComputeHash(stream);
+                    foo = algoHash.ComputeHash(stream);
                     stream.Close();
                     stream.Dispose();
 
@@ -85,7 +81,7 @@ namespace Simsala.Tool
             return algoHash.ComputeHash(plainTextWithSaltBytes);
         }
 
-        public static String CalcStringTest(string input, string saltIn)
+        public static string CalcStringTest(string input, string saltIn)
         {
             string s2 = "";
 

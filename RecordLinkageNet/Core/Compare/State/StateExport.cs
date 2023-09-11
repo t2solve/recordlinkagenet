@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using System.Runtime.Serialization;
 
 namespace RecordLinkageNet.Core.Compare.State
 {
@@ -15,12 +9,12 @@ namespace RecordLinkageNet.Core.Compare.State
         {
             this.Name = "Export";
             this.type = Type.Export;
-            this.exportArtifact = new ExportArtifact(); 
+            this.exportArtifact = new ExportArtifact();
         }
 
         public override bool Load()
         {
-            return LoadDefaultDataMemeber(out exportArtifact); 
+            return LoadDefaultDataMemeber(out exportArtifact);
         }
 
         public override bool Save()
@@ -30,7 +24,7 @@ namespace RecordLinkageNet.Core.Compare.State
 
         public string FileName { get => exportArtifact.FileName; set => exportArtifact.FileName = value; }
         public bool FlagDoEmptyRows { get => exportArtifact.FlagDoEmptyRows; set => exportArtifact.FlagDoEmptyRows = value; }
-        
+
         public string GetFileNameAndPathToExport()
         {
             return GetFileNameWithPath(exportArtifact.FileName);

@@ -1,10 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RecordLinkage.Core;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UnitTest
 {
@@ -14,17 +10,18 @@ namespace UnitTest
         [TestMethod]
         public void TestLog10ExaktMatchBothDirections()
         {
-            Dictionary<byte, float> testExaktBoundary = new Dictionary<byte, float>();
+            Dictionary<byte, float> testExaktBoundary = new Dictionary<byte, float>
+            {
+                { 2, 0.198140055946704f },
+                { 250, 0.996542243139966f },
+                { 254, 0.999393762638686f }
+            };
 
-            testExaktBoundary.Add(2, 0.198140055946704f);
-            testExaktBoundary.Add(250, 0.996542243139966f);
-            testExaktBoundary.Add(254, 0.999393762638686f);
-
-            foreach ( var p in testExaktBoundary )
-            { 
+            foreach (var p in testExaktBoundary)
+            {
 
                 byte valByte = NumberTransposeHelper.TransposeFloatToByteRange01(p.Value, NumberTransposeHelper.TransposeModus.LOG10);
-                Assert.IsTrue(valByte == p.Key, "missmatch  FloatToByte  byte:\t"+ p.Key + "\tfloat:\t" + p.Value);
+                Assert.IsTrue(valByte == p.Key, "missmatch  FloatToByte  byte:\t" + p.Key + "\tfloat:\t" + p.Value);
 
                 float valFloat = NumberTransposeHelper.TransposeByteToFloatRange01(p.Key, NumberTransposeHelper.TransposeModus.LOG10);
                 Assert.IsTrue(p.Value == valFloat, "missmatch  ByteToFloat  byte:\t" + p.Key + "\tfloat:\t" + p.Value);
@@ -42,7 +39,7 @@ namespace UnitTest
 
             testCategory.Add(0.5f, 15);
             testCategory.Add(0.52f, 16);
-            testCategory.Add(0.9999f, 254); 
+            testCategory.Add(0.9999f, 254);
 
             foreach (var p in testCategory)
             {
@@ -76,7 +73,7 @@ namespace UnitTest
         }
         [TestMethod]
         public void TestRangeLimit()
-        { 
+        {
             //upper 
             Assert.AreEqual(NumberTransposeHelper.TransposeFloatToByteRange01(1.2f, NumberTransposeHelper.TransposeModus.LOG10), byte.MaxValue, "error during upper range test");
             Assert.AreEqual(NumberTransposeHelper.TransposeFloatToByteRange01(239898f, NumberTransposeHelper.TransposeModus.LINEAR), byte.MaxValue, "error during upper range test");
@@ -85,5 +82,5 @@ namespace UnitTest
             Assert.AreEqual(NumberTransposeHelper.TransposeFloatToByteRange01(-0.01f, NumberTransposeHelper.TransposeModus.LINEAR), byte.MinValue, "error during lower range test");
         }
     }
-    
+
 }

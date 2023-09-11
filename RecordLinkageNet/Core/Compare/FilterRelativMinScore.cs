@@ -1,10 +1,6 @@
 ﻿using RecordLinkageNet.Core.Score;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Compare
 {
@@ -15,13 +11,13 @@ namespace RecordLinkageNet.Core.Compare
 
         public FilterRelativMinScore(float minThresholdInPercentage)
         {
-            if(minThresholdInPercentage<0||minThresholdInPercentage>1.0f)
+            if (minThresholdInPercentage < 0 || minThresholdInPercentage > 1.0f)
             {
                 Trace.WriteLine("error 29382983 parameter minTresholdInPerentage out of range [0.0f,1.0f]");
 
                 throw new ArgumentException("error 29382983 parameter out of range");
             }
-            Configuration.Instance.SetFilterParameterThresholdRelativMinScore( minThresholdInPercentage);
+            Configuration.Instance.SetFilterParameterThresholdRelativMinScore(minThresholdInPercentage);
             //this.minThresholdInPercentage = minThresholdInPercentage;
         }
 
@@ -30,11 +26,11 @@ namespace RecordLinkageNet.Core.Compare
             MatchCandidateList newList = new MatchCandidateList();
             foreach (MatchCandidate mc in g)
             {
-                IScore score = mc.GetScore(); 
+                IScore score = mc.GetScore();
                 //TODO differt scoring type 
                 if (score is WeightedScore)
                 {
-                    float scorePercentage = WeightedScoreProducer.Instance.CalcRelativeScoreValueInPercentage((WeightedScore) score);
+                    float scorePercentage = WeightedScoreProducer.Instance.CalcRelativeScoreValueInPercentage((WeightedScore)score);
 
                     if (scorePercentage >= Configuration.Instance.FilterParameterThresholdRelativMinScore)
                         newList.Add(mc);
@@ -50,7 +46,7 @@ namespace RecordLinkageNet.Core.Compare
             var gAsI = g as ICandidateSet;
             if (gAsI != null)
                 return this.Apply(gAsI) as MatchCandidateList;
-            return null; 
+            return null;
         }
 
 

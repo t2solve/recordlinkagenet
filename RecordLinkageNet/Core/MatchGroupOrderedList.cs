@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core
 {
@@ -15,7 +11,7 @@ namespace RecordLinkageNet.Core
         public MatchGroupOrderedList()
         {
             this.listElements = new List<MatchGroupOrdered>();
-        }   
+        }
 
         public void Add(MatchGroupOrdered o)
         {
@@ -29,7 +25,7 @@ namespace RecordLinkageNet.Core
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator(); 
+            return this.GetEnumerator();
         }
 
         public List<MatchGroupOrdered> Data

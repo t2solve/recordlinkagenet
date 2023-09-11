@@ -6,15 +6,10 @@ using RecordLinkageNet.Core.Data;
 using RecordLinkageNet.Core.Data.Transpose;
 using RecordLinkageNet.Core.Distance;
 using RecordLinkageNet.Core.Score;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace UnitTest
 {
@@ -29,7 +24,7 @@ namespace UnitTest
                 formatter.Serialize(ms, obj);
                 ms.Position = 0;
 
-                return (TestDataPerson) formatter.Deserialize(ms);
+                return (TestDataPerson)formatter.Deserialize(ms);
             }
         }
 
@@ -164,18 +159,18 @@ namespace UnitTest
             Assert.IsTrue(listFiltered.Count() == candidateList.Count());
 
             //TODO check elements  !!!
-            Dictionary<IndexPair,MatchCandidate>  mapList =  new Dictionary<IndexPair,MatchCandidate>();
+            Dictionary<IndexPair, MatchCandidate> mapList = new Dictionary<IndexPair, MatchCandidate>();
             foreach (MatchCandidate mc in candidateList)
                 mapList.Add(mc.GetIndexPair(), mc);
 
-            foreach(MatchCandidate mcA in listFiltered)
+            foreach (MatchCandidate mcA in listFiltered)
             {
                 Assert.IsTrue(mapList.ContainsKey(mcA.GetIndexPair()));
                 Assert.IsTrue(mapList[mcA.GetIndexPair()] is MatchCandidate);
-                    
+
                 //we test if they are the same 
                 MatchCandidate mcB = mapList[mcA.GetIndexPair()];
-                Assert.IsTrue(mcA.Equals(mcB));    
+                Assert.IsTrue(mcA.Equals(mcB));
             }
 
 
@@ -247,7 +242,7 @@ namespace UnitTest
             testScoreCreate3.Add("PostalCode", 0f);
             testScoreCreate3.Add("Street", 0f);
 
-            for(int i=0;i<1;i++)
+            for (int i = 0; i < 1; i++)
             {
                 var p = testScoreCreate3.ElementAt(i);
                 Assert.IsTrue(WeightedScoreProducer.Instance.AddScorePartAndWeightIt(score3, p.Key, p.Value));
@@ -255,7 +250,7 @@ namespace UnitTest
             for (int i = 1; i < 4; i++)
             {
                 var p = testScoreCreate3.ElementAt(i);
-                
+
                 Assert.IsFalse(WeightedScoreProducer.Instance.AddScorePartAndWeightIt(score3, p.Key, p.Value));
             }
 

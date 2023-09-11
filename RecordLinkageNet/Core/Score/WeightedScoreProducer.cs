@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Score
 {
@@ -32,7 +30,7 @@ namespace RecordLinkageNet.Core.Score
         private float scoreAbsTotalMaxReachable = -1.0f;
         private int amountScoreParts = 0;
 
-        public bool AddScorePartAndWeightIt(WeightedScore scoreObj,string conditionName, float comparisionResult)
+        public bool AddScorePartAndWeightIt(WeightedScore scoreObj, string conditionName, float comparisionResult)
         {
             bool success = false;
             //we get the index 
@@ -41,24 +39,24 @@ namespace RecordLinkageNet.Core.Score
             {
                 Trace.WriteLine("error 2932398 during get condition by name : " + conditionName);
                 throw new ArgumentException("error 2932398 columnName wrong");
-                return success;
+                //return success;
             }
 
             byte scoreTransformed = TransposeComparisonResult(comparisionResult);
-            
+
             //calc
             float scorePartWeighted = GetWeightForConditionIndex(index) * scoreTransformed;
             //add
-            float scoreSummedParts =  scoreObj.AddScorePart(index, scorePartWeighted, scoreTransformed);
-            
-            
-            if(CheckWeCouldStillReachMinimum(scoreObj,scoreSummedParts))
-                success = true; 
+            float scoreSummedParts = scoreObj.AddScorePart(index, scorePartWeighted, scoreTransformed);
+
+
+            if (CheckWeCouldStillReachMinimum(scoreObj, scoreSummedParts))
+                success = true;
 
             return success;
         }
 
-        private float GetWeightForConditionIndex( byte index)
+        private float GetWeightForConditionIndex(byte index)
         {
             float weight = Configuration.Instance.ConditionList.GetConditionByIndex(index).ScoreWeight;
             if (weight == -1.0f)
@@ -67,7 +65,7 @@ namespace RecordLinkageNet.Core.Score
                 throw new ArgumentNullException("error 34983948");
 
             }
-            return weight; 
+            return weight;
         }
 
         public bool CheckScoreOverMinThreshold(WeightedScore scoreObj)
@@ -76,7 +74,7 @@ namespace RecordLinkageNet.Core.Score
                 return false;
             return CheckWeCouldStillReachMinimum(scoreObj, scoreObj.GetScoreValue());
         }
-        private bool CheckWeCouldStillReachMinimum(WeightedScore scoreObj,float scoreSummedParts)
+        private bool CheckWeCouldStillReachMinimum(WeightedScore scoreObj, float scoreSummedParts)
         {
             if (scoreSummedParts > this.thresholdMinScoreAbsTotalAccepted)
                 return true;
@@ -91,16 +89,16 @@ namespace RecordLinkageNet.Core.Score
 
             //we calc what we could add max
             float addableRest = 0.0f;
-            foreach(byte index in listOfMissingIndexParts)
+            foreach (byte index in listOfMissingIndexParts)
             {
                 addableRest += (byte.MaxValue * GetWeightForConditionIndex(index));
             }
 
-            
-            if ((scoreSummedParts + addableRest) >= this.thresholdMinScoreAbsTotalAccepted)
-                return true; 
 
-            return false; 
+            if ((scoreSummedParts + addableRest) >= this.thresholdMinScoreAbsTotalAccepted)
+                return true;
+
+            return false;
         }
 
         public byte TransposeComparisonResult(float result)
@@ -122,12 +120,12 @@ namespace RecordLinkageNet.Core.Score
                 throw new ArgumentOutOfRangeException("error 2093029309 parameter");
             }
             else
-            { 
+            {
                 this.thresholdMinTresholdInPerentage = percentage;
                 this.thresholdMinScoreAbsTotalAccepted = CalcAbsMinimumScoreWhichShouldBeReached();
             }
-            
-            
+
+
         }
 
         public float CalcRelativeScoreValueInPercentage(WeightedScore scoreObj)
@@ -138,12 +136,12 @@ namespace RecordLinkageNet.Core.Score
             //TODO check range etc.
 
             float percent = 0.0f;
-            percent = scoreObj.GetScoreValue() / this.scoreAbsTotalMaxReachable ;
+            percent = scoreObj.GetScoreValue() / this.scoreAbsTotalMaxReachable;
             return percent;
         }
 
         private float CalcAbsMinimumScoreWhichShouldBeReached()
-        {   
+        {
             float minAbs = this.thresholdMinTresholdInPerentage * scoreAbsTotalMaxReachable;
             return minAbs;
         }

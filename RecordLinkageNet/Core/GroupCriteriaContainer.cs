@@ -1,6 +1,5 @@
 ﻿using RecordLinkageNet.Core.Data;
 using System.Runtime.Serialization;
-using System.Xml.Linq;
 
 namespace RecordLinkageNet.Core
 {
@@ -14,9 +13,9 @@ namespace RecordLinkageNet.Core
         [DataMember(Name = "IndexCell")]
         private DataCell indexCell = null;
 
-        public GroupCriteriaContainer(uint indexKey )
+        public GroupCriteriaContainer(uint indexKey)
         {
-            this.indexKey = indexKey; 
+            this.indexKey = indexKey;
         }
         public GroupCriteriaContainer(DataCell indexCell)
         {

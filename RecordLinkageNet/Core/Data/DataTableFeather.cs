@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Data
 {
@@ -21,7 +19,7 @@ namespace RecordLinkageNet.Core.Data
             {
                 Trace.WriteLine("error 2938928398 wrong col index :" + colIndex);
                 throw new IndexOutOfRangeException("GetColumnByIndex wrong index");
-                return false;
+                //return false;
             }
             return true;
         }
@@ -32,7 +30,7 @@ namespace RecordLinkageNet.Core.Data
             {
                 Trace.WriteLine("error 1242343546234 wrong row index :" + rowIndex);
                 throw new IndexOutOfRangeException("CheckRowIndexIsInRange wrong index");
-                return false;
+                //return false;
             }
             return true;
         }
@@ -111,7 +109,7 @@ namespace RecordLinkageNet.Core.Data
             {
                 Trace.WriteLine("warning 29389832 misshaped rowSizes, old rowAmount is: " + this.rowIndexMax);
                 throw new ArrayTypeMismatchException("wrong size");
-                return true;
+                //return true;
             }//wed add all columns
             return false;
         }
@@ -146,7 +144,7 @@ namespace RecordLinkageNet.Core.Data
 
             namedColumnsMap.Add(name, c);
             c.ParentTable = this;
-            c.Name = name; 
+            c.Name = name;
 
             indexedColumnsMap.Add(columnIndexMax, c);
             columnIndexMax += 1;
@@ -191,18 +189,18 @@ namespace RecordLinkageNet.Core.Data
 
         public DataTableFeather AddRow(int rowIndex, DataRow row)
         {
-            if (rowIndex>=0&& rowIndex < rowIndexMax)
+            if (rowIndex >= 0 && rowIndex < rowIndexMax)
             {
-                foreach(var colName in row.Data.Keys)
+                foreach (var colName in row.Data.Keys)
                 {
-                    DataColumn col = null; 
-                    if(namedColumnsMap.TryGetValue(colName, out col))
+                    DataColumn col = null;
+                    if (namedColumnsMap.TryGetValue(colName, out col))
                     {
                         //TODO we do a type check
                         //we get the cell 
-                         DataCell cell = col.At(rowIndex);
+                        DataCell cell = col.At(rowIndex);
                         //we replace
-                        if(cell!=null)
+                        if (cell != null)
                         {
                             cell.Value = row.Data[colName].Value;
                         }
@@ -213,9 +211,9 @@ namespace RecordLinkageNet.Core.Data
 
                 }
             }
-            else Trace.WriteLine("error 23536546 wrong index " + rowIndex );
+            else Trace.WriteLine("error 23536546 wrong index " + rowIndex);
 
-            return this; 
+            return this;
         }
 
         public DataCell GetCellAt(int columnIndex, int rowIndex)
@@ -224,15 +222,15 @@ namespace RecordLinkageNet.Core.Data
             if (rowIndex >= 0 && rowIndex < rowIndexMax)
             {
                 int amountColumns = GetAmountColumns();
-                if(columnIndex>=0 && columnIndex < amountColumns)
+                if (columnIndex >= 0 && columnIndex < amountColumns)
                 {
-                    DataColumn column = null; 
+                    DataColumn column = null;
                     if (indexedColumnsMap.TryGetValue(columnIndex, out column))
                     {
                         cell = column.At(rowIndex);
-                        if(cell != null)
+                        if (cell != null)
                             return cell;
-                        else 
+                        else
                             Trace.WriteLine("error 546456 during get cell in table ");
 
                     }
@@ -267,7 +265,7 @@ namespace RecordLinkageNet.Core.Data
         //            else Trace.WriteLine("error 23253459 col name not found int table :" + colName);
 
         //        }
-          
+
 
         //    return this;
         //}

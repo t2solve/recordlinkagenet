@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordLinkageNet.Core.Compare
 {
@@ -32,7 +29,7 @@ namespace RecordLinkageNet.Core.Compare
                 float absoluteMinValueThreshold = amountConditions * byte.MaxValue *
                     Configuration.Instance.FilterParameterThresholdRelativMinAllowedDistanceToTopScore;
 
-                if (amountConditions > 0 )// && absoluteMinValue > 0)
+                if (amountConditions > 0)// && absoluteMinValue > 0)
                 {
                     retObj = new MatchGroupOrdered();
                     var topScoredCand = matchGroupOrderes.GetTopScoreCandidate();

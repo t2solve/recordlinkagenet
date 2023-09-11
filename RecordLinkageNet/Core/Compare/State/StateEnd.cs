@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RecordLinkageNet.Core.Compare.State
+﻿namespace RecordLinkageNet.Core.Compare.State
 {
     public class StateEnd : CompareState
     {
@@ -19,13 +13,13 @@ namespace RecordLinkageNet.Core.Compare.State
         public override bool Load()
         {
             //return LoadDefaultDataMemeber(out thinWeStore);
-            return true; 
+            return true;
         }
 
         public override bool Save()
         {
             //return SaveDefaultDataMemeber(thinWeStore);
-            return true; 
+            return true;
         }
     }
 

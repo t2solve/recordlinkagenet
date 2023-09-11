@@ -1,16 +1,15 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Diagnostics;
-using RecordLinkageNet.Core;
-using System;
-using System.IO;
-using RecordLinkageNet.Core.Compare;
 using RecordLinkage.Core;
-using System.Collections.Generic;
-using System.Linq;
+using RecordLinkageNet.Core;
+using RecordLinkageNet.Core.Compare;
 using RecordLinkageNet.Core.Data;
+using RecordLinkageNet.Core.Data.Transpose;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using RecordLinkageNet.Core.Data.Transpose;
 
 namespace UnitTest
 {
@@ -24,10 +23,10 @@ namespace UnitTest
             sw.Start();
             int amountTestSet = 1000;
 
-            int amountTestValueUnion = (int)( (float) amountTestSet  * (0.1f)); // 10 percent
+            int amountTestValueUnion = (int)((float)amountTestSet * (0.1f)); // 10 percent
             var testDataA = TestDataGenerator.CreateTestPersons(amountTestSet);
             var testDataUnion = TestDataGenerator.CreateTestPersons(amountTestValueUnion); //generate union amount
-           
+
             //we do a copy of a list https://stackoverflow.com/a/65584515/14105642
             var testDataUnion2 = testDataUnion.Select(b => b with { }).ToList();
             //we fake manipulate all 
@@ -65,7 +64,7 @@ namespace UnitTest
             config.AddIndex(new IndexFeather().Create(tabB, tabA));
             config.AddConditionList(conList);
             config.SetStrategy(Configuration.CalculationStrategy.WeightedConditionSum);
-            config.SetNumberTransposeModus(NumberTransposeHelper.TransposeModus.LOG10);;
+            config.SetNumberTransposeModus(NumberTransposeHelper.TransposeModus.LOG10); ;
 
             //we init a worker
             WorkScheduler workScheduler = new WorkScheduler();

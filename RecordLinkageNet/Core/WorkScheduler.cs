@@ -1,17 +1,14 @@
 ﻿using RecordLinkageNet.Core.Compare;
 using RecordLinkageNet.Core.Data;
-using RecordLinkageNet.Util;
+using RecordLinkageNet.Core.Distance;
+using RecordLinkageNet.Core.Score;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using RecordLinkageNet.Core.Distance;
-using RecordLinkage.Core;
-using System.Threading;
-using RecordLinkageNet.Core.Score;
 
 namespace RecordLinkageNet.Core
 {
@@ -42,20 +39,20 @@ namespace RecordLinkageNet.Core
 
             public int CalcPercentageDone()
             {
-                UInt64 amountTODO = aIdxAmount * bIdxAmount; 
+                UInt64 amountTODO = aIdxAmount * bIdxAmount;
                 UInt64 amountDone = aIdxEnd * bIdxAmount;
 
-                UInt64 percentage = amountDone * 100 / amountTODO; 
+                UInt64 percentage = amountDone * 100 / amountTODO;
                 return (int)percentage;
             }
         }
 
         public async Task<MatchCandidateList> Compare(CancellationToken stopToken, IProgress<int> progress = null)
         {
-            if(!config.IsValide())
+            if (!config.IsValide())
             {
                 Trace.WriteLine("warning 293898 abort Compare, configuration is not valide");
-                return null; 
+                return null;
             }
 
             //TODO check config before compute
@@ -79,7 +76,7 @@ namespace RecordLinkageNet.Core
             };
 
             List<MatchCandidateList> resultList = new List<MatchCandidateList>();
-            var consumer = new ActionBlock<JobSet>(x => resultList.Add(WorkScheduler.ProcessJobSet(x,progress)), consumerOptions);
+            var consumer = new ActionBlock<JobSet>(x => resultList.Add(WorkScheduler.ProcessJobSet(x, progress)), consumerOptions);
             queue.LinkTo(consumer, new DataflowLinkOptions { PropagateCompletion = true, });
 
             // Wait for everything to complete.
@@ -135,14 +132,14 @@ namespace RecordLinkageNet.Core
 
             uint aMaxTest = config.Index.GetMaxADim(); //100
 
-            for (uint a = 0; a < aMaxTest ; a+=stepSize)
+            for (uint a = 0; a < aMaxTest; a += stepSize)
             {
                 if (a >= aMaxTest) //do a padding
                     a = aMaxTest - 1;
 
                 JobSet set = new JobSet();
                 set.aIdxStart = a;
-                set.aIdxEnd =  a + stepSize;
+                set.aIdxEnd = a + stepSize;
                 set.aIdxAmount = config.Index.GetMaxADim();
                 //complete B
                 set.bIdxStart = 0;
@@ -151,9 +148,9 @@ namespace RecordLinkageNet.Core
                 //set.configuration = config;
 
                 await queue.SendAsync(set);
-               
+
             }
-            queue.Complete(); 
+            queue.Complete();
 
         }
 
@@ -165,17 +162,17 @@ namespace RecordLinkageNet.Core
 
 
             //TODO differ all strats
-            switch(conf.Strategy)
+            switch (conf.Strategy)
             {
                 case Configuration.CalculationStrategy.WeightedConditionSum:
                     mCan.SetScore(new WeightedScore(mCan));
                     break;
                 case Configuration.CalculationStrategy.Unknown:
                     throw new Exception("error 238787 no strategy selected");
-                    return null;
+                    //return null;
             }
-            
-            
+
+
             int conditionCounter = 0;
             //int conditionAmount = configuration.ConditionList.GetAmountConditions(); 
             //we do compare all
@@ -211,16 +208,16 @@ namespace RecordLinkageNet.Core
                             result = IsStringSame(cellA.Value, cellB.Value);
                             break;
                         case Condition.StringMethod.JaroWinklerSimilarity:
-                            result = (float)JaroWinkler.JaroDistance(cellA.Value, cellB.Value);
+                            result = (float)JaroWinkler.JaroDistance(cellA.Value, cellB.Value);                 
                             break;
                         case Condition.StringMethod.HammingDistance:
-                            result = (float)Hamming.HammingDistance(cellA.Value, cellB.Value);
+                            result = (float)Hamming.HammingDistanceNormalizedToRange0To1(cellA.Value, cellB.Value);
                             break;
                         case Condition.StringMethod.DamerauLevenshteinDistance:
-                            result = (float)DamerauLevenshtein.DamerauLevenshteinDistance(cellA.Value, cellB.Value);
+                            result = (float)DamerauLevenshtein.DamerauLevenshteinDistanceNormalizedToRange0To1(cellA.Value, cellB.Value);
                             break;
                         case Condition.StringMethod.ShannonEntropyDistance:
-                            result = (float)ShannonEntropy.ShannonEntropyDistance(cellA.Value, cellB.Value);
+                            result = (float)ShannonEntropy.ShannonEntropyDistanceNormalizedToRange0To1(cellA.Value, cellB.Value);
                             break;
                         case Condition.StringMethod.MyCustomizedDistance:
                             result = (float)CustomizedDistance.MyCustomizedDistance(cellA.Value, cellB.Value);
@@ -228,7 +225,7 @@ namespace RecordLinkageNet.Core
                         default:
                             Trace.WriteLine("error critical  20392093 try to use not implemented compare method");
                             throw new NotImplementedException();
-                            break;
+                            //break;
                     }
                 }//end comparable
 
@@ -237,7 +234,7 @@ namespace RecordLinkageNet.Core
                 if (result == -1.0f)
                 {
                     throw new Exception("error 29382938989 during calc distance");
-            
+
                 }
                 if (conf.Strategy == Configuration.CalculationStrategy.WeightedConditionSum)
                 {
@@ -256,7 +253,6 @@ namespace RecordLinkageNet.Core
         private static float IsStringSame(string a, string b)
         {
             //TODO move to other class, is a short cut here 
-            float result = 0;
             if (string.IsNullOrEmpty(a) || string.IsNullOrEmpty(b))
                 return 0.0f;
 
@@ -266,7 +262,7 @@ namespace RecordLinkageNet.Core
                 return 0.0f;
         }
 
-        private static MatchCandidateList ProcessJobSet(JobSet jobSet, IProgress<int> progressInformer=null)
+        private static MatchCandidateList ProcessJobSet(JobSet jobSet, IProgress<int> progressInformer = null)
         {
             MatchCandidateList ret = new MatchCandidateList();
             uint jobIdCounter = 0;
@@ -279,20 +275,20 @@ namespace RecordLinkageNet.Core
                     var indexPair = new IndexPair(a, b);
 
                     var matchingResult = DoMatching2(indexPair); //, jobSet.configuration);
-                    if(matchingResult!=null)
+                    if (matchingResult != null)
                         ret.Add(matchingResult);
 
                     jobIdCounter += 1;
-                  
+
                 }
 
             //we calc a progress
             if (progressInformer != null)
-                 progressInformer.Report(jobSet.CalcPercentageDone()); 
+                progressInformer.Report(jobSet.CalcPercentageDone());
 
             return ret;
         }
- 
+
 
     }
 }
