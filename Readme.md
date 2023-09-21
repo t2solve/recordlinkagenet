@@ -14,6 +14,7 @@ Besides it tries to use the effective parts of the c# language (e.g. linq, dataf
 
 ## features
 - string comparision with multiple string metrics
+- uses scoring method to calculate overall similarity 
 - uses own datatable struture to reduce memory footprint (in comparsison to system.data.datatable)
 - uses dataflow to reduce memory footprint
 - uses parallelism to reduce runtime
