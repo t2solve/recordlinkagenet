@@ -69,6 +69,8 @@ await resultTask;
 int amount = resultTask.Result.Count();
 ```
 
+More Details could be found at [Examples Repository](https://github.com/t2solve/RecordLinkageNetExamples)
+
 The project implements mutliple metrics for string comparision as extensions:
 
 - HammingDistance
